@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <scripts>
+    <organization>
+      <name>OGC</name>
+      <standard>
+        <name>Web Map Service (WMS)</name>
+        <version>
+          <name>1.1.1</name>
+          <suite>
+            <namespace-uri>http://www.opengis.net/wms</namespace-uri>
+            <prefix>wms</prefix>
+            <local-name>main_wms</local-name>
+            <title>WMS 1.1.1 Conformance Test Suite</title>
+            <description>Checks WMS implementations for conformance to OGC
+              01-068r3.</description>
+          </suite>
+          <revision>
+            <name>1.10</name>
+            <sources>
+              <source>wms/1.1.1/ctl</source>
+            </sources>
+            <webdir>wms/1.1.1/site</webdir>
+          </revision>
+        </version>
+      </standard>
+    </organization>
+  </scripts>
+</config>

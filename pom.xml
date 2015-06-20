@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.geoserver</groupId>
   <artifactId>cite</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
   <name>Compliance + Interopability Testing + Evaluation (CITE) Module</name>
 
   <build>
@@ -14,6 +15,7 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.7</version>
+        <inherited>false</inherited>
         <dependencies>
           <dependency>
             <groupId>org.apache.ant</groupId>
@@ -32,19 +34,8 @@
             <phase>clean</phase>
             <configuration>
               <tasks>
-  <!-- clean the cite1 component -->
-  <delete dir="${engine}/components/cite1"/>
-
-  <!-- delete test scripts -->
-  <delete includeemptydirs="true"> 
-    <fileset dir="${engine}" includes="scripts/**/*"/>
-  </delete>
-
-  <!-- clean the engine -->
-  <ant dir="${engine}" target="clean"/>
-
-  <!-- remove build.properties -->
-  <delete file="${engine}/build.properties"/>
+                <!-- clean te_base -->
+                <delete dir="${basedir}/te_base" />
               </tasks>
             </configuration>
             <goals>
@@ -52,142 +43,43 @@
             </goals>
           </execution>
           <execution>
-             <id>pre</id>
-             <phase>process-sources</phase>
-             <configuration>
-               <tasks> 
-  <typedef resource="net/sf/antcontrib/antlib.xml">
-    <classpath refid="maven.dependency.classpath"/>
-  </typedef>
-
-  <mkdir dir="${scripts}"/>
-
-  <!-- copy the test scripts over -->
-  <if>
-    <available file="${tests}/wfs/1.0.0"/>
-    <then>
-      <copy todir="${scripts}/wfs-1.0.0">
-         <fileset dir="${tests}/wfs/1.0.0/${wfs10.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wfs/1.1.0"/>
-    <then>
-      <copy todir="${scripts}/wfs-1.1.0">
-         <fileset dir="${tests}/wfs/1.1.0/${wfs11.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wms/1.1.1"/>
-    <then>
-      <copy todir="${scripts}/wms-1.1.1">
-         <fileset dir="${tests}/wms/1.1.1/${wms11.tag}" includes="**/*"/> 
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wms/1.3.0"/>
-    <then>
-      <copy todir="${scripts}/wms-1.3.0">
-         <fileset dir="${tests}/wms/1.3.0/${wms13.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wcs/1.0.0"/>
-    <then>
-      <copy todir="${scripts}/wcs-1.0.0">
-         <fileset dir="${tests}/wcs/1.0.0/${wcs10.tag}" includes="**/*"/> 
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wcs/1.1.1"/>
-    <then>
-      <copy todir="${scripts}/wcs-1.1.1">
-         <fileset dir="${tests}/wcs/1.1.1/${wcs11.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/wcs/2.0.0"/>
-    <then>
-      <copy todir="${scripts}/wcs-2.0.0">
-         <fileset dir="${tests}/wcs/2.0.0/${wcs20.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-  <if>
-    <available file="${tests}/csw/2.0.2"/>
-    <then>
-      <copy todir="${scripts}/csw-2.0.2">
-         <fileset dir="${tests}/csw/2.0.2/${csw202.tag}" includes="**/*"/>
-      </copy>
-    </then>
-  </if>
-
-  <!-- copy over cite1 component -->
-  <mkdir dir="${engine}/components"/>
-  <copy todir="${engine}/components">
-    <fileset dir="${basedir}" includes="cite1/**/*"/>
-  </copy>
- 
-  <mkdir dir="${engine}/custom/templates"/>
-
-  <!-- create the engine build.properties file -->
-  <copy file="${basedir}/engine.build.properties" 
-     tofile="${engine}/build.properties">
-    <filterset>
-      <filter token="BASEDIR" value="${basedir}"/>
-    </filterset>
-  </copy>
-
-  <!-- for windows, change \ to \\ -->
-  <replace file="${engine}/build.properties" token="\" value="\\" />
-
-  <!-- copy over the pom and realm.properties file for the engine -->
-  <!--
-  <copy tofile="${basedir}/engine/pom.xml" file="${basedir}/pom-engine.xml"/> 
-  <copy todir="${basedir}/engine" file="${basedir}/realm.properties"/> 
-  -->
-
-  <!-- create users and workdir -->
-  <mkdir dir="${basedir}/users/geoserver"/>
-  <mkdir dir="${basedir}/target/work"/>
-  <mkdir dir="${basedir}/target/logs"/>
-
-  <!-- create "fake" tomcat lib directory -->
-  <mkdir dir="${basedir}/target/lib"/>
-
-  <!-- create the session files for the webapp -->
-  <mkdir dir="${basedir}/target/sessions"/>
-  <copy todir="${basedir}/target/sessions">
-    <fileset dir="${basedir}/sessions" includes="*.xml.*"/>
-    <filterset>
-      <filter token="wfs10.rev" value="${wfs10.rev}"/>
-      <filter token="wfs11.rev" value="${wfs11.rev}"/>
-      <filter token="wms11.rev" value="${wms11.rev}"/>
-      <filter token="wms13.rev" value="${wms13.rev}"/>
-      <filter token="wcs10.rev" value="${wcs10.rev}"/>
-      <filter token="wcs11.rev" value="${wcs11.rev}"/>
-      <filter token="wcs20.rev" value="${wcs20.rev}"/>
-      <filter token="cs2202.rev" value="${csw202.rev}"/>
-    </filterset>
-  </copy>
-               </tasks> 
-             </configuration>
-             <goals>
-                <goal>run</goal>
-             </goals>
-          </execution>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
+            <id>pre</id>
+            <phase>process-sources</phase>
             <configuration>
               <tasks>
-  <ant dir="${engine}"/>
+                <typedef resource="net/sf/antcontrib/antlib.xml">
+                  <classpath refid="maven.dependency.classpath" />
+                </typedef>
+
+                <!-- unzip the console runner -->
+                <mkdir dir="${basedir}/te_console" />
+                <first id="te_console_zip">
+                  <fileset dir="${basedir}/engine/teamengine-console/target/"
+                    includes="teamengine-console-**-bin.zip" />
+                </first>
+                <unzip src="${toString:te_console_zip}" dest="${basedir}/te_console" />
+
+
+                <!-- create te_base -->
+                <mkdir dir="${basedir}/te_base" />
+                <first id="te_base_zip">
+                  <fileset dir="${basedir}/engine/teamengine-console/target/"
+                    includes="teamengine-console-**-base.zip" />
+                </first>
+                <unzip src="${toString:te_base_zip}" dest="${basedir}/te_base" />
+
+                <!-- unzip the wms 1.1 tests in place -->
+                <first id="ets_wms11_ctl">
+                  <fileset dir="${basedir}/ets-wms11/target/" includes="ets-wms11-**-ctl.zip" />
+                </first>
+                <unzip src="${toString:ets_wms11_ctl}" dest="${basedir}/te_base/scripts" />
+                <first id="ets_wms11_deps">
+                  <fileset dir="${basedir}/ets-wms11/target/" includes="ets-wms11-**-deps.zip" />
+                </first>
+                <unzip src="${toString:ets_wms11_deps}" dest="${basedir}/te_base/resources/lib" />
+
+                <!-- copy the configuration declaring all cite tests -->
+                <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
               </tasks>
             </configuration>
             <goals>
@@ -197,46 +89,59 @@
         </executions>
       </plugin>
       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-dependency-plugin</artifactId>
-         <configuration>
-            <artifactItems>
-               <artifactItem>
-                  <groupId>tomcat</groupId>
-                  <artifactId>catalina</artifactId>
-                  <version>5.5.9</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${basedir}/target/lib</outputDirectory>
-               </artifactItem>
-               <artifactItem>
-                  <groupId>javax.servlet</groupId>
-                  <artifactId>servlet-api</artifactId>
-                  <version>2.4</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${basedir}/target/lib</outputDirectory>
-               </artifactItem>
-            </artifactItems>
-            <stripVersion>true</stripVersion>
-         </configuration>
-         <executions>
-           <execution>
-             <id>pre</id>
-             <phase>process-sources</phase>
-             <goals>
-               <goal>copy</goal>
-             </goals>
-           </execution>
-         </executions>
-      </plugin> 
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <inherited>false</inherited>
+        <configuration>
+          <path>/teamengine</path>
+          <port>9090</port>
+          <warSourceDirectory>${engine}/teamengine-web/target/teamengine</warSourceDirectory>
+          <ignorePackaging>true</ignorePackaging>
+          <systemProperties>
+            <TE_BASE>${tebase}</TE_BASE>
+          </systemProperties>
+          <addWarDependenciesInClassloader>true</addWarDependenciesInClassloader>
+          <contextFile>context.xml</contextFile>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19</version>
+            <type>jar</type>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.10.2.0</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.10.2.0</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.opengis.cite.teamengine</groupId>
+            <artifactId>teamengine-realm</artifactId>
+            <version>${te-version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
 
   <profiles>
     <profile>
       <id>windows</id>
-      <activation>   
+      <activation>
         <os>
           <family>windows</family>
         </os>
@@ -247,11 +152,11 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <dependencies>
               <dependency>
-                 <groupId>sun.jdk</groupId>
-                 <artifactId>tools</artifactId>
-                 <version>1.5.0</version>
-                 <scope>system</scope>
-                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                <groupId>sun.jdk</groupId>
+                <artifactId>tools</artifactId>
+                <version>1.5.0</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/../lib/tools.jar</systemPath>
               </dependency>
             </dependencies>
           </plugin>
@@ -271,11 +176,11 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <dependencies>
               <dependency>
-                 <groupId>sun.jdk</groupId>
-                 <artifactId>tools</artifactId>
-                 <version>1.5.0</version>
-                 <scope>system</scope>
-                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                <groupId>sun.jdk</groupId>
+                <artifactId>tools</artifactId>
+                <version>1.5.0</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/../lib/tools.jar</systemPath>
               </dependency>
             </dependencies>
           </plugin>
@@ -285,27 +190,19 @@
   </profiles>
 
   <properties>
+    <ets-resources-version>15.06.04</ets-resources-version>
+    <te-version>4.1.0</te-version>
     <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 
     <engine>${basedir}/engine</engine>
     <tests>${basedir}/tests</tests>
     <scripts>${engine}/scripts</scripts>
-
-    <wfs10.rev>r3</wfs10.rev>
-    <wfs10.tag>tags/r3</wfs10.tag>
-    <wfs11.rev>${maven.build.timestamp}</wfs11.rev>
-    <wfs11.tag>trunk</wfs11.tag>
-    <wms11.rev>${maven.build.timestamp}</wms11.rev>
-    <wms11.tag>trunk</wms11.tag>
-    <wms13.rev>r3</wms13.rev>
-    <wms13.tag>tags/r3</wms13.tag>
-    <wcs10.rev>r2</wcs10.rev>
-    <wcs10.tag>trunk</wcs10.tag>
-    <wcs11.rev>r0</wcs11.rev>
-    <wcs11.tag>tags/r0</wcs11.tag>
-    <wcs20.rev>r5</wcs20.rev>
-    <wcs20.tag>tags/r5</wcs20.tag>
-    <csw202.rev>r3</csw202.rev>
-    <csw202.tag>tags/r3</csw202.tag>
+    <tebase>${basedir}/te_base</tebase>
   </properties>
+
+  <modules>
+    <module>engine</module>
+    <module>ets-wms11</module>
+    <module>web</module>
+  </modules>
 </project>

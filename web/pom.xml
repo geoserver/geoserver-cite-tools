@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>cite</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>teamengine</artifactId>
+  <packaging>war</packaging>
+  <name>CITE web runner module</name>
+  <version>1.0</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.1.1</version>
+        <configuration>
+          <overlays>
+            <overlay>
+              <groupId>org.opengis.cite.teamengine</groupId>
+              <artifactId>teamengine-web</artifactId>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <path>/teamengine</path>
+          <port>9090</port>
+          <!-- <warSourceDirectory>../teamengine/teamengine-web/target/teamengine</warSourceDirectory> -->
+          <ignorePackaging>true</ignorePackaging>
+          <systemProperties>
+            <TE_BASE>../te_base</TE_BASE>
+          </systemProperties>
+          <contextFile>src/main/resources/context.xml</contextFile>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19</version>
+            <type>jar</type>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.10.2.0</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.10.2.0</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.opengis.cite.teamengine</groupId>
+            <artifactId>teamengine-realm</artifactId>
+            <version>${te-version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.opengis.cite.teamengine</groupId>
+      <artifactId>teamengine-web</artifactId>
+      <type>war</type>
+      <version>${te-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opengis.cite</groupId>
+      <artifactId>ets-resources</artifactId>
+      <version>${ets-resources-version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+
+</project>
