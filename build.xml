@@ -1,137 +1,193 @@
 <project name="cite_tools" default="usage">
 
-  <property name="enginedir" value="${basedir}/engine"/>
-  <property name="scriptdir" value="${basedir}/engine/scripts"/>
-  <property name="workdir" value="${basedir}/target/work"/>
-  <property name="logdir" value="${basedir}/users/geoserver"/>
-  <property name="cite.headless.formroot" value="forms"/>
+  <property name="enginedir" value="${basedir}/engine" />
+  <property name="te_base" value="${basedir}/te_base" />
+  <property name="te_console" value="${basedir}/te_console" />
+  <property name="scriptdir" value="${te_base}/scripts" />
+  <property name="workdir" value="${basedir}/target/work" />
+  <property name="logdir" value="${basedir}/target/geoserver-logs" />
+  <property name="forms" value="forms" />
+  <property name="ets-resources-version" value="15.06.04" />
 
   <condition property="script.ext" value="bat" else="sh">
-    <os family="windows"/>
+    <os family="windows" />
   </condition>
   <condition property="script.exe" value="cmd" else="sh">
-    <os family="windows"/>
+    <os family="windows" />
+  </condition>
+  <condition property="script.bin" value="windows" else="unix">
+    <os family="windows" />
+  </condition>
+  <condition property="debugParams" value="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000" else="">
+    <isset property="debug"/>
   </condition>
 
   <target name="usage">
-    <echo message=""/>
-    <echo message="Targets:"/>
-    <echo message=""/>
-    <echo message=" wfs-1.0        --&gt; Run WFS 1.0 tests"/>
-    <echo message=" wfs-1.0-log    --&gt; View WFS 1.0 test log"/>
-    <echo message=" wfs-1.1        --&gt; Run WFS 1.1 tests"/>
-    <echo message=" wfs-1.1-log    --&gt; View WFS 1.1 test log"/>
-    <echo message=" wms-1.1        --&gt; Run WMS 1.1 tests"/>
-    <echo message=" wms-1.1-log    --&gt; View WMS 1.1 test log"/>
-    <echo message=" wms-1.3        --&gt; Run WMS 1.3 tests"/>
-    <echo message=" wms-1.3-log    --&gt; View WMS 1.3 test log"/>
-    <echo message=" wcs-1.0        --&gt; Run WCS 1.0 tests"/>
-    <echo message=" wcs-1.0-log    --&gt; View WCS 1.0 test log"/>
-    <echo message=" wcs-1.1        --&gt; Run WCS 1.1 tests"/>
-    <echo message=" wcs-1.1-log    --&gt; View WCS 1.1 test log"/>
-    <echo message=" csw-2.0.2      --&gt; Run CSW 2.0.2 tests"/>
-    <echo message=" csw-2.0.2-log  --&gt; View CSW 2.0.2 test log"/>
-    <echo message=" clean          --&gt; Cleans results from previous test runs"/>
-    <echo message=" webapp         --&gt; Runs teamengine web application"/>
+    <echo message="" />
+    <echo message="Targets:" />
+    <echo message="" />
+    <echo message=" wfs-1.0        --&gt; Run WFS 1.0 tests" />
+    <echo message=" wfs-1.0-log    --&gt; View WFS 1.0 test log" />
+    <echo message=" wfs-1.1        --&gt; Run WFS 1.1 tests" />
+    <echo message=" wfs-1.1-log    --&gt; View WFS 1.1 test log" />
+    <echo message=" wms-1.1        --&gt; Run WMS 1.1 tests" />
+    <echo message=" wms-1.1-log    --&gt; View WMS 1.1 test log" />
+    <echo message=" wms-1.3        --&gt; Run WMS 1.3 tests" />
+    <echo message=" wms-1.3-log    --&gt; View WMS 1.3 test log" />
+    <echo message=" wcs-1.0        --&gt; Run WCS 1.0 tests" />
+    <echo message=" wcs-1.0-log    --&gt; View WCS 1.0 test log" />
+    <echo message=" wcs-1.1        --&gt; Run WCS 1.1 tests" />
+    <echo message=" wcs-1.1-log    --&gt; View WCS 1.1 test log" />
+    <echo message=" csw-2.0.2      --&gt; Run CSW 2.0.2 tests" />
+    <echo message=" csw-2.0.2-log  --&gt; View CSW 2.0.2 test log" />
+    <echo message=" clean          --&gt; Cleans results from previous test runs" />
+    <echo message=" webapp         --&gt; Runs teamengine web application" />
   </target>
 
   <target name="clean">
-    <delete includeemptydirs="true">
-      <fileset dir="users/geoserver" includes="**/*"/>
-    </delete>
+    <exec dir="${basedir}/engine" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wms11" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <delete dir="te_base" includeemptydirs="true" />
+    <delete dir="te_console" includeemptydirs="true" />
+  </target>
+
+  <target name="build">
+    <!-- build the engine -->
+    <exec dir="${enginedir}" executable="mvn">
+      <env key="MAVEN_OPTS" value="-Xmx512m" />
+      <arg line="install -Pogc.cite -Dets-resources-version=${ets-resources-version}" />
+    </exec>
+    <!-- build the scripts -->
+    <exec dir="${basedir}/ets-wms11" executable="mvn">
+      <arg line="install" />
+    </exec>
+
+    <!-- unzip the console runner -->
+    <mkdir dir="${basedir}/te_console" />
+    <first id="te_console_zip">
+      <fileset dir="${basedir}/engine/teamengine-console/target/" includes="teamengine-console-**-bin.zip" />
+    </first>
+    <unzip src="${toString:te_console_zip}" dest="${basedir}/te_console" />
+
+
+    <!-- create te_base -->
+    <mkdir dir="${basedir}/te_base" />
+    <first id="te_base_zip">
+      <fileset dir="${basedir}/engine/teamengine-console/target/" includes="teamengine-console-**-base.zip" />
+    </first>
+    <unzip src="${toString:te_base_zip}" dest="${basedir}/te_base" />
+
+    <!-- unzip the wms 1.1 tests in place -->
+    <first id="ets_wms11_ctl">
+      <fileset dir="${basedir}/ets-wms11/target/" includes="ets-wms11-**-ctl.zip" />
+    </first>
+    <unzip src="${toString:ets_wms11_ctl}" dest="${basedir}/te_base/scripts" />
+    <first id="ets_wms11_deps">
+      <fileset dir="${basedir}/ets-wms11/target/" includes="ets-wms11-**-deps.zip" />
+    </first>
+    <unzip src="${toString:ets_wms11_deps}" dest="${basedir}/te_base/resources/lib" />
+
+    <!-- copy the configuration declaring all cite tests -->
+    <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
   </target>
 
   <target name="webapp">
-    <exec dir="${enginedir}" executable="mvn">
-      <env key="MAVEN_OPTS" value="-Xmx512m"/>
-      <arg line="jetty:run-exploded"/>
+    <exec dir="${basedir}" executable="mvn">
+      <env key="TE_BASE" value="${basedir}/te_base" />
+      <env key="MAVEN_OPTS" value="-Xmx512m" />
+      <!-- we have to run it without considering subprojects -->
+      <arg line="tomcat7:run -N" />
     </exec>
   </target>
 
   <target name="wfs-1.0">
     <antcall target="run-test">
-      <param name="sources" 
-        value="-source=${scriptdir}/wfs-1.0.0/ctl/wfs.xml"/>
-      <param name="session" value="wfs-1.0.0"/>
+      <param name="sources" value="-source=${scriptdir}/wfs-1.0.0/ctl/wfs.xml" />
+      <param name="session" value="wfs-1.0.0" />
     </antcall>
   </target>
   <target name="wfs-1.0-log">
     <antcall target="view-log">
-      <param name="session" value="wfs-1.0.0"/>
+      <param name="session" value="wfs-1.0.0" />
     </antcall>
   </target>
 
   <target name="wfs-1.1">
     <antcall target="run-test">
-      <param name="sources" 
-        value="-source=${scriptdir}/wfs-1.1.0/ctl/all.xml"/>
-      <param name="session" value="wfs-1.1.0"/>
+      <param name="sources" value="-source=${scriptdir}/wfs-1.1.0/ctl/all.xml" />
+      <param name="session" value="wfs-1.1.0" />
     </antcall>
   </target>
   <target name="wfs-1.1-log">
     <antcall target="view-log">
-      <param name="session" value="wfs-1.1.0"/>
+      <param name="session" value="wfs-1.1.0" />
     </antcall>
   </target>
-  
+
   <target name="wms-1.1">
     <antcall target="run-test">
-      <param name="sources" value="-source=${scriptdir}/wms-1.1.1/ctl/functions.xml -source=${scriptdir}/wms-1.1.1/ctl/wms.xml" />
-      <param name="session" value="wms-1.1.1"/>
+      <param name="sources" value="-source=${scriptdir}/wms/1.1.1/ctl/functions.xml -source=${scriptdir}/wms/1.1.1/ctl/wms.xml" />
+      <param name="session" value="wms-1.1.1" />
+      <param name="forms" value="-form=${forms}/wms-1.1.1.xml -form=${forms}/yes.xml"/>
     </antcall>
   </target>
   <target name="wms-1.1-log">
     <antcall target="view-log">
-      <param name="session" value="wms-1.1.1"/>
+      <param name="session" value="wms-1.1.1" />
+      <param name="forms" value="-form=${forms}/wms-1.1.1.xml -form=${forms}/yes.xml"/>
     </antcall>
   </target>
 
   <target name="wms-1.3">
-    <property name="ctldir" value="${scriptdir}/wms-1.3.0/ctl"/>
+    <property name="ctldir" value="${scriptdir}/wms-1.3.0/ctl" />
     <antcall target="run-test">
       <param name="sources" value="-source=${ctldir}/functions.xml -source=${ctldir}/interactive.xml -source=${ctldir}/basic_elements.xml -source=${ctldir}/getcapabilities.xml -source=${ctldir}/getmap.xml -source=${ctldir}/getfeatureinfo.xml -source=${ctldir}/recommendations.xml -source=${ctldir}/dimensions.xml -source=${ctldir}/main.xml" />
-      <param name="session" value="wms-1.3.0"/>
+      <param name="session" value="wms-1.3.0" />
     </antcall>
   </target>
   <target name="wms-1.3-log">
     <antcall target="view-log">
-      <param name="session" value="wms-1.3.0"/>
+      <param name="session" value="wms-1.3.0" />
     </antcall>
   </target>
 
   <target name="wcs-1.0">
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wcs-1.0.0/ctl/wcs.xml" />
-      <param name="session" value="wcs-1.0.0"/>
+      <param name="session" value="wcs-1.0.0" />
     </antcall>
   </target>
   <target name="wcs-1.0-log">
     <antcall target="view-log">
-      <param name="session" value="wcs-1.0.0"/>
+      <param name="session" value="wcs-1.0.0" />
     </antcall>
   </target>
 
   <target name="wcs-1.1">
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wcs-1.1.1/ctl/wcs.xml" />
-      <param name="session" value="wcs-1.1.1"/>
+      <param name="session" value="wcs-1.1.1" />
     </antcall>
   </target>
   <target name="wcs-1.1-log">
     <antcall target="view-log">
-      <param name="session" value="wcs-1.1.1"/>
+      <param name="session" value="wcs-1.1.1" />
     </antcall>
   </target>
 
   <target name="csw-2.0.2">
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/csw-2.0.2/ctl/all.xml" />
-      <param name="session" value="csw-2.0.2"/>
+      <param name="session" value="csw-2.0.2" />
     </antcall>
   </target>
   <target name="csw-2.0.2-log">
     <antcall target="view-log">
-      <param name="session" value="csw-2.0.2"/>
+      <param name="session" value="csw-2.0.2" />
     </antcall>
   </target>
 
@@ -145,20 +201,19 @@
    -->
   <target name="run-test">
     <exec dir="." executable="${script.exe}">
-      <env key="JAVA_OPTS" value="-Xmx512m -Dcite.headless=${cite.headless} -Dcite.headless.formroot=${cite.headless.formroot}"/>
-      <!--env key="JAVA_OPTS" value="-Xmx512m -Dcite.headless=true -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"/-->
-      <arg line="${enginedir}/bin/test.${script.ext}"/>
-      <arg line="-mode=test -workdir=${workdir} -logdir=${logdir} -session=${session} ${sources}"/>
+      <env key="JAVA_OPTS" value="-Xmx512m -Dcite.headless=${cite.headless} -Dcite.headless.formroot=${cite.headless.formroot} ${debugParams}" />
+      <env key="TE_BASE" value="${basedir}/te_base" />
+      <arg line="${te_console}/bin/${script.bin}/test.${script.ext}" />
+      <arg line="-mode=test -session=${session} ${forms} ${sources}" />
     </exec>
-    <copy file="${basedir}/target/sessions/session.xml.${session}" 
-      tofile="${logdir}/${session}/session.xml"/>
+    <!-- <copy file="${basedir}/target/sessions/session.xml.${session}" tofile="${logdir}/${session}/session.xml" /> -->
   </target>
 
   <target name="view-log">
     <exec dir="." executable="${script.exe}">
-      <env key="JAVA_OPTS" value="-Xmx512m"/>
-      <arg line="${enginedir}/bin/viewlog.${script.ext}"/>
-      <arg line="-logdir=${logdir} -session=${session}"/>
+      <env key="JAVA_OPTS" value="-Xmx512m" />
+      <arg line="${te_console}/bin/${script.bin}/viewlog.${script.ext}" />
+      <arg line="-logdir=${te_base}/users/${user.name} -session=${session}" />
     </exec>
   </target>
 
