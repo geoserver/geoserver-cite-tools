@@ -19,7 +19,7 @@
     <os family="windows" />
   </condition>
   <condition property="debugParams" value="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000" else="">
-    <isset property="debug"/>
+    <isset property="debug" />
   </condition>
 
   <target name="usage">
@@ -68,6 +68,9 @@
     <exec dir="${basedir}/ets-wms13" executable="mvn">
       <arg line="install" />
     </exec>
+    <exec dir="${basedir}/ets-wfs10" executable="mvn">
+      <arg line="install" />
+    </exec>
 
     <!-- unzip the console runner -->
     <mkdir dir="${basedir}/te_console" />
@@ -98,7 +101,17 @@
       <fileset dir="${basedir}/ets-wms13/target/" includes="ets-wms13-**-ctl.zip" />
     </first>
     <unzip src="${toString:ets_wms13_ctl}" dest="${basedir}/te_base/scripts" />
+    <!-- unzip the wfs 1.0 tests in place -->
+    <first id="ets_wfs10_ctl">
+      <fileset dir="${basedir}/ets-wfs10/target/" includes="ets-wfs10-**-ctl.zip" />
+    </first>
+    <unzip src="${toString:ets_wfs10_ctl}" dest="${basedir}/te_base/scripts" />
+    <first id="ets_wfs10_deps">
+      <fileset dir="${basedir}/ets-wfs10/target/" includes="ets-wfs10-**-deps.zip" />
+    </first>
+    <unzip src="${toString:ets_wfs10_deps}" dest="${basedir}/te_base/resources/lib" />
 
+    
     <!-- copy the configuration declaring all cite tests -->
     <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
   </target>
@@ -114,8 +127,9 @@
 
   <target name="wfs-1.0">
     <antcall target="run-test">
-      <param name="sources" value="-source=${scriptdir}/wfs-1.0.0/ctl/wfs.xml" />
+      <param name="sources" value="-source=${scriptdir}/wfs/1.0.0/ctl/wfs.xml" />
       <param name="session" value="wfs-1.0.0" />
+      <param name="forms" value="-form=${forms}/wfs-1.0.0.xml" />
     </antcall>
   </target>
   <target name="wfs-1.0-log">
@@ -140,7 +154,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wms/1.1.1/ctl/functions.xml -source=${scriptdir}/wms/1.1.1/ctl/wms.xml" />
       <param name="session" value="wms-1.1.1" />
-      <param name="forms" value="-form=${forms}/wms-1.1.1.xml -form=${forms}/yes.xml"/>
+      <param name="forms" value="-form=${forms}/wms-1.1.1.xml -form=${forms}/yes.xml" />
     </antcall>
   </target>
   <target name="wms-1.1-log">
@@ -154,7 +168,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${ctldir}/functions.xml -source=${ctldir}/interactive.xml -source=${ctldir}/basic_elements.xml -source=${ctldir}/getcapabilities.xml -source=${ctldir}/getmap.xml -source=${ctldir}/getfeatureinfo.xml -source=${ctldir}/recommendations.xml -source=${ctldir}/dimensions.xml -source=${ctldir}/main.xml" />
       <param name="session" value="wms-1.3.0" />
-      <param name="forms" value="-form=${forms}/wms-1.3.0.xml -form=${forms}/yes.xml"/>
+      <param name="forms" value="-form=${forms}/wms-1.3.0.xml -form=${forms}/yes.xml" />
     </antcall>
   </target>
   <target name="wms-1.3-log">

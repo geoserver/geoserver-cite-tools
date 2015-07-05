@@ -46,6 +46,27 @@
           </revision>
         </version>
       </standard>
+      <standard>
+        <name>Web Feature Service (WFS)</name>
+        <version>
+          <name>1.0.0</name>
+          <suite>
+            <namespace-uri>http://www.opengis.net/wfs</namespace-uri>
+            <prefix>wfs</prefix>
+            <local-name>main_wfs</local-name>
+            <title>WFS 1.0 Conformance Test Suite</title>
+            <description>Checks WFS implementations for conformance to OGC
+              02-058.</description>
+          </suite>
+          <revision>
+            <name>1.8</name>
+            <sources>
+              <source>wfs/1.0.0/ctl</source>
+            </sources>
+            <webdir>wfs/1.0.0/site</webdir>
+          </revision>
+        </version>
+      </standard>
     </organization>
   </scripts>
 </config>
