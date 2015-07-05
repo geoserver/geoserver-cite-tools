@@ -78,7 +78,8 @@
             <local-name>wfs-1.1.0-compliance-suite</local-name>
             <title>WFS 1.1.0 Conformance Test Suite</title>
             <description>Checks WFS implementations for conformance to OGC
-              04-094.</description>
+              04-094.
+            </description>
           </suite>
           <revision>
             <name>1.23</name>
@@ -87,6 +88,28 @@
             </sources>
             <resources>wfs/1.1.0/resources</resources>
             <webdir>wfs/1.1.0/site</webdir>
+          </revision>
+        </version>
+      </standard>
+      <standard>
+        <name>Web Coverage Service (WCS)</name>
+        <version>
+          <name>1.0.0</name>
+          <suite>
+            <namespace-uri>http://www.opengis.net/wcs</namespace-uri>
+            <prefix>wcs1-0-0</prefix>
+            <local-name>main_wcs1-0-0</local-name>
+            <title>WCS 1.0.0 Conformance Test Suite</title>
+            <description>Checks WCS implementations for conformance to OGC
+              05-076.</description>
+          </suite>
+          <revision>
+            <name>1.11-SNAPSHOT</name>
+            <sources>
+              <source>wcs/1.0.0/ctl</source>
+            </sources>
+            <resources>wcs/1.0.0/resources</resources>
+            <webdir>wcs/1.0.0/site</webdir>
           </revision>
         </version>
       </standard>
