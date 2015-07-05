@@ -10,3 +10,6 @@
 [submodule "ets-wfs10"]
 	path = ets-wfs10
 	url = git@github.com:opengeospatial/ets-wfs10.git
+[submodule "ets-wfs11"]
+	path = ets-wfs11
+	url = git@github.com:opengeospatial/ets-wfs11.git
