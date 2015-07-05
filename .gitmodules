@@ -4,3 +4,6 @@
 [submodule "ets-wms11"]
 	path = ets-wms11
 	url = git@github.com:opengeospatial/ets-wms11.git
+[submodule "ets-wms13"]
+	path = ets-wms13
+	url = git@github.com:opengeospatial/ets-wms13.git

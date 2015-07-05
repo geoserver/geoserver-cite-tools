@@ -32,7 +32,7 @@
           <warSourceDirectory>${engine}/teamengine-web/target/teamengine</warSourceDirectory>
           <ignorePackaging>true</ignorePackaging>
           <systemProperties>
-            <TE_BASE>${tebase}</TE_BASE>
+            <TE_BASE>${basedir}/te_base</TE_BASE>
           </systemProperties>
           <addWarDependenciesInClassloader>true</addWarDependenciesInClassloader>
           <contextFile>context.xml</contextFile>
@@ -74,7 +74,7 @@
   
 
   <properties>
-    <te-version>4.1.0</te-version>
+    <te-version>4.2-SNAPSHOT</te-version>
     <engine>${basedir}/engine</engine>
   </properties>
 </project>
