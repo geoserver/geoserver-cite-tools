@@ -101,7 +101,8 @@
             <local-name>main_wcs1-0-0</local-name>
             <title>WCS 1.0.0 Conformance Test Suite</title>
             <description>Checks WCS implementations for conformance to OGC
-              05-076.</description>
+              05-076.
+            </description>
           </suite>
           <revision>
             <name>1.11-SNAPSHOT</name>
@@ -110,6 +111,29 @@
             </sources>
             <resources>wcs/1.0.0/resources</resources>
             <webdir>wcs/1.0.0/site</webdir>
+          </revision>
+        </version>
+      </standard>
+      <standard>
+        <name>Catalogue Service - Web (CSW)</name>
+        <version>
+          <name>2.0.2</name>
+          <suite>
+            <namespace-uri>http://www.opengis.net/cat/csw/2.0.2</namespace-uri>
+            <prefix>csw</prefix>
+            <local-name>csw-2.0.2-compliance-suite</local-name>
+            <title>CSW 2.0.2 Conformance Test Suite</title>
+            <description>Checks catalogue implementations for conformance to the
+              CSW part of OGC 07-006r1.
+            </description>
+          </suite>
+          <revision>
+            <name>1.12</name>
+            <sources>
+              <source>csw/2.0.2/ctl</source>
+            </sources>
+            <resources>csw/2.0.2/resources</resources>
+            <webdir>csw/2.0.2/site</webdir>
           </revision>
         </version>
       </standard>

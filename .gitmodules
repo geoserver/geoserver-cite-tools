@@ -16,3 +16,9 @@
 [submodule "ets-wcs10"]
 	path = ets-wcs10
 	url = git@github.com:opengeospatial/ets-wcs10.git
+[submodule "ets-wcs11"]
+	path = ets-wcs11
+	url = git@github.com:opengeospatial/ets-wcs11.git
+[submodule "ets-csw202"]
+	path = ets-csw202
+	url = git@github.com:opengeospatial/ets-csw202.git
