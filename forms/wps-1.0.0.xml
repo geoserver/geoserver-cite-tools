@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<values>
+  <value key="service-url">http://localhost:8080/geoserver/wps</value>
+  <value key="updatesequence-high">1000</value>
+  <value key="updatesequence-low">0</value>
+</values>

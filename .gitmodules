@@ -22,3 +22,6 @@
 [submodule "ets-csw202"]
 	path = ets-csw202
 	url = git@github.com:opengeospatial/ets-csw202.git
+[submodule "ets-wps10"]
+	path = ets-wps10
+	url = https://github.com/opengeospatial/ets-wps10

@@ -40,6 +40,8 @@
     <echo message=" wcs-1.1-log    --&gt; View WCS 1.1 test log" />
     <echo message=" csw-2.0.2      --&gt; Run CSW 2.0.2 tests" />
     <echo message=" csw-2.0.2-log  --&gt; View CSW 2.0.2 test log" />
+    <echo message=" wps-1.0        --&gt; Run WPS 1.0 tests" />
+    <echo message=" wps-1.0-log    --&gt; View WPS 1.0 test log" />
     <echo message=" clean          --&gt; Cleans results from previous test runs" />
     <echo message=" webapp         --&gt; Runs teamengine web application" />
   </target>
@@ -81,6 +83,9 @@
       <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-csw202" executable="mvn">
+      <arg line="install -DskipTests" />
+    </exec>
+    <exec dir="${basedir}/ets-wps10" executable="mvn">
       <arg line="install -DskipTests" />
     </exec>
 
@@ -154,6 +159,11 @@
       <fileset dir="${basedir}/ets-csw202/target/" includes="ets-csw20-**-ctl.zip" />
     </first>
     <unzip src="${toString:ets_csw202_ctl}" dest="${basedir}/te_base/scripts" />
+    <!-- unzip the wps 1.0 tests in place -->
+    <first id="ets_wps10_ctl">
+      <fileset dir="${basedir}/ets-wps10/target/" includes="ets-wps10-**-ctl.zip" />
+    </first>
+    <unzip src="${toString:ets_wps10_ctl}" dest="${basedir}/te_base/scripts" />
 
     <!-- copy the configuration declaring all cite tests -->
     <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
@@ -262,6 +272,24 @@
       <param name="session" value="csw-2.0.2" />
     </antcall>
   </target>
+  
+  <target name="wps-1.0.0">
+      <antcall target="run-test">
+        <param name="sources" value="-source=${scriptdir}/wps/1.0.0/ctl/DescribeProcess.xml 
+          -source=${scriptdir}/wps/1.0.0/ctl/Execute.xml
+          -source=${scriptdir}/wps/1.0.0/ctl/functions.xml
+          -source=${scriptdir}/wps/1.0.0/ctl/GetCapabilities.xml
+          -source=${scriptdir}/wps/1.0.0/ctl/OWS.xml
+          -source=${scriptdir}/wps/1.0.0/ctl/wps.xml" />
+        <param name="session" value="wps-1.0.0" />
+        <param name="forms" value="-form=${forms}/wps-1.0.0.xml" />
+      </antcall>
+    </target>
+    <target name="wps-1.0.0-log">
+      <antcall target="view-log">
+        <param name="session" value="wps-1.0.0" />
+      </antcall>
+    </target>
 
   <!-- 
    Fires up the engine. 
