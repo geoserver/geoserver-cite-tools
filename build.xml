@@ -98,6 +98,10 @@
       <fileset dir="${basedir}/engine/teamengine-console/target/" includes="teamengine-console-**-base.zip" />
     </first>
     <unzip src="${toString:te_base_zip}" dest="${basedir}/te_base" />
+    <!-- clean up the example scripts -->
+    <delete>
+      <fileset dir="${te_base}/scripts" includes="**"/>
+    </delete>
 
     <!-- unzip the wms 1.1 tests in place -->
     <first id="ets_wms11_ctl">
