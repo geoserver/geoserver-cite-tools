@@ -1,142 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-  <scripts>
-    <organization>
-      <name>OGC</name>
-      <standard>
-        <name>Web Map Service (WMS)</name>
-        <version>
-          <name>1.1.1</name>
-          <suite>
-            <namespace-uri>http://www.opengis.net/wms</namespace-uri>
-            <prefix>wms</prefix>
-            <local-name>main_wms</local-name>
-            <title>WMS 1.1.1 Conformance Test Suite</title>
-            <description>Checks WMS implementations for conformance to OGC
-              01-068r3.
-            </description>
-          </suite>
-          <revision>
-            <name>1.10</name>
-            <sources>
-              <source>wms/1.1.1/ctl</source>
-            </sources>
-            <webdir>wms/1.1.1/site</webdir>
-          </revision>
-        </version>
-      </standard>
-      <standard>
-        <name>Web Map Service (WMS)</name>
-        <version>
-          <name>1.3.0</name>
-          <suite>
-            <namespace-uri>https://cite.opengeospatial.org/wms-1.3.0/src/ctl
-            </namespace-uri>
-            <prefix>wms-1.3.0</prefix>
-            <local-name>compliance_suite</local-name>
-            <title>WMS 1.3 Conformance Test Suite</title>
-            <description>Verifies conformance to ISO 19128:2005.</description>
-          </suite>
-          <revision>
-            <name>1.11</name>
-            <sources>
-              <source>wms/1.3.0/ctl</source>
-            </sources>
-            <webdir>wms/1.3.0/site</webdir>
-          </revision>
-        </version>
-      </standard>
-      <standard>
-        <name>Web Feature Service (WFS)</name>
-        <version>
-          <name>1.0.0</name>
-          <suite>
-            <namespace-uri>http://www.opengis.net/wfs</namespace-uri>
-            <prefix>wfs</prefix>
-            <local-name>main_wfs</local-name>
-            <title>WFS 1.0 Conformance Test Suite</title>
-            <description>Checks WFS implementations for conformance to OGC
-              02-058.
-            </description>
-          </suite>
-          <revision>
-            <name>1.8</name>
-            <sources>
-              <source>wfs/1.0.0/ctl</source>
-            </sources>
-            <webdir>wfs/1.0.0/site</webdir>
-          </revision>
-        </version>
-      </standard>
-      <standard>
-        <name>Web Feature Service (WFS)</name>
-        <version>
-          <name>1.1.0</name>
-          <suite>
-            <namespace-uri>http://www.occamlab.com/ctl</namespace-uri>
-            <prefix>ctl</prefix>
-            <local-name>wfs-1.1.0-compliance-suite</local-name>
-            <title>WFS 1.1.0 Conformance Test Suite</title>
-            <description>Checks WFS implementations for conformance to OGC
-              04-094.
-            </description>
-          </suite>
-          <revision>
-            <name>1.23</name>
-            <sources>
-              <source>wfs/1.1.0/ctl</source>
-            </sources>
-            <resources>wfs/1.1.0/resources</resources>
-            <webdir>wfs/1.1.0/site</webdir>
-          </revision>
-        </version>
-      </standard>
-      <standard>
-        <name>Web Coverage Service (WCS)</name>
-        <version>
-          <name>1.0.0</name>
-          <suite>
-            <namespace-uri>http://www.opengis.net/wcs</namespace-uri>
-            <prefix>wcs1-0-0</prefix>
-            <local-name>main_wcs1-0-0</local-name>
-            <title>WCS 1.0.0 Conformance Test Suite</title>
-            <description>Checks WCS implementations for conformance to OGC
-              05-076.
-            </description>
-          </suite>
-          <revision>
-            <name>1.11-SNAPSHOT</name>
-            <sources>
-              <source>wcs/1.0.0/ctl</source>
-            </sources>
-            <resources>wcs/1.0.0/resources</resources>
-            <webdir>wcs/1.0.0/site</webdir>
-          </revision>
-        </version>
-      </standard>
-      <standard>
-        <name>Catalogue Service - Web (CSW)</name>
-        <version>
-          <name>2.0.2</name>
-          <suite>
-            <namespace-uri>http://www.opengis.net/cat/csw/2.0.2</namespace-uri>
-            <prefix>csw</prefix>
-            <local-name>csw-2.0.2-compliance-suite</local-name>
-            <title>CSW 2.0.2 Conformance Test Suite</title>
-            <description>Checks catalogue implementations for conformance to the
-              CSW part of OGC 07-006r1.
-            </description>
-          </suite>
-          <revision>
-            <name>1.12</name>
-            <sources>
-              <source>csw/2.0.2/ctl</source>
-            </sources>
-            <resources>csw/2.0.2/resources</resources>
-            <webdir>csw/2.0.2/site</webdir>
-          </revision>
-        </version>
-      </standard>
-    </organization>
-  </scripts>
+   <scripts>
+      <organization>
+         <name>OGC</name>
+         <standard>
+            <name>Web Map Service (WMS)</name>
+            <version>
+               <name>1.1.1</name>
+               <suite>        
+                  <namespace-uri>http://www.opengis.net/wms</namespace-uri>
+                  <prefix>wms</prefix>
+                  <local-name>main_wms</local-name>
+                  <title>WMS 1.1.1 Conformance Test Suite</title>
+                  <description>Checks WMS implementations for conformance to OGC 01-068r3.</description>
+               </suite>
+               <revision>
+                  <name>1.10</name>
+                  <sources>
+                     <source>wms/1.1.1/ctl</source>
+                  </sources>
+                  <webdir>wms/1.1.1/site</webdir>
+               </revision>
+            </version>
+            <version>
+               <name>1.3.0</name>
+               <suite>
+                  <namespace-uri>https://cite.opengeospatial.org/wms-1.3.0/src/ctl</namespace-uri>
+                  <prefix>wms-1.3.0</prefix>
+                  <local-name>compliance_suite</local-name>
+                  <title>WMS 1.3 Conformance Test Suite</title>
+                  <description>Verifies conformance to ISO 19128:2005.</description>
+               </suite>
+               <revision>
+                  <name>1.11</name>
+                  <sources>
+                     <source>wms/1.3.0/ctl</source>
+                  </sources>
+                  <webdir>wms/1.3.0/site</webdir>
+               </revision>
+            </version>
+         </standard>
+         <standard>
+            <name>Catalogue Service - Web (CSW)</name>
+            <version>
+               <name>2.0.2</name>
+               <suite>
+                  <namespace-uri>http://www.opengis.net/cat/csw/2.0.2</namespace-uri>
+                  <prefix>csw</prefix>
+                  <local-name>csw-2.0.2-compliance-suite</local-name>
+                  <title>CSW 2.0.2 Conformance Test Suite</title>
+                  <description>Checks catalogue implementations for conformance to the CSW part of OGC 07-006r1.</description>
+               </suite>
+               <revision>
+                  <name>1.12</name>
+                  <sources>
+                     <source>csw/2.0.2/ctl</source>
+                  </sources>
+                  <resources>csw/2.0.2/resources</resources>
+                  <webdir>csw/2.0.2/site</webdir>
+               </revision>
+            </version>
+         </standard>
+         <standard>
+            <name>Web Processing Service (WPS)</name>
+            <version>
+               <name>1.0.0</name>
+               <suite>
+                  <namespace-uri>http://www.opengis.net/wps/1.0.0</namespace-uri>
+                  <prefix>wps</prefix>
+                  <local-name>suite</local-name>
+                  <title>WPS 1.0 Conformance Test Suite</title>
+                  <description>Checks WPS implementations for conformance to OGC 05-007r7.</description>
+               </suite>
+               <revision>
+                  <name>0.4</name>
+                  <status>Beta</status>
+                  <sources>
+                     <source>wps/1.0.0/ctl</source>
+                  </sources>
+                  <resources>wps/1.0.0/resources</resources>
+                  <webdir>wps/1.0.0/site</webdir>
+               </revision>
+            </version>
+         </standard>
+         <standard>
+            <name>Web Feature Service (WFS)</name>
+            <version>
+               <name>1.0.0</name>
+               <suite>
+                  <namespace-uri>http://www.opengis.net/wfs</namespace-uri>
+                  <prefix>wfs</prefix>
+                  <local-name>main_wfs</local-name>
+                  <title>WFS 1.0 Conformance Test Suite</title>
+                  <description>Checks WFS implementations for conformance to OGC 02-058.</description>
+               </suite>
+               <revision>
+                  <name>1.8</name>
+                  <sources>
+                     <source>wfs/1.0.0/ctl</source>
+                  </sources>
+                  <webdir>wfs/1.0.0/site</webdir>
+               </revision>
+            </version>
+            <version>
+               <name>1.1.0</name>
+               <suite>
+                  <namespace-uri>http://www.occamlab.com/ctl</namespace-uri>
+                  <prefix>ctl</prefix>
+                  <local-name>wfs-1.1.0-compliance-suite</local-name>
+                  <title>WFS 1.1.0 Conformance Test Suite</title>
+                  <description>Checks WFS implementations for conformance to OGC 04-094.</description>
+               </suite>
+               <revision>
+                  <name>1.23</name>
+                  <sources>
+                     <source>wfs/1.1.0/ctl</source>
+                  </sources>
+                  <resources>wfs/1.1.0/resources</resources>
+                  <webdir>wfs/1.1.0/site</webdir>
+               </revision>
+            </version>
+<!--
+            <version>
+               <name>2.0</name>
+               <suite>
+                  <namespace-uri>http://www.opengis.net/cite/iso19142</namespace-uri>
+                  <prefix>tns</prefix>
+                  <local-name>ets-wfs20-1.19</local-name>
+                  <title>WFS 2.0 (ISO 19142:2010) Conformance Test Suite</title>
+                  <description>Checks WFS 2.0 implementations for conformance to ISO 19142:2010.</description>
+               </suite>
+               <revision>
+                  <name>1.19</name>
+                  <sources>
+                     <source>wfs20/2.0.0/ctl</source>
+                  </sources>
+                  <webdir>wfs20/2.0.0/site</webdir>
+               </revision>
+            </version>
+-->
+         </standard>
+         <standard>
+            <name>Web Coverage Service (WCS)</name>
+            <version>
+               <name>1.0.0</name>
+               <suite>
+                  <namespace-uri>http://www.opengis.net/wcs</namespace-uri>
+                  <prefix>wcs1-0-0</prefix>
+                  <local-name>main_wcs1-0-0</local-name>
+                  <title>WCS 1.0.0 Conformance Test Suite</title>
+                  <description>Checks WCS implementations for conformance to OGC 05-076.</description>
+               </suite>
+               <revision>
+                  <name>1.10</name>
+                  <sources>
+                     <source>wcs/1.0.0/ctl</source>
+                  </sources>
+                  <resources>wcs/1.0.0/resources</resources>
+                  <webdir>wcs/1.0.0/site</webdir>
+               </revision>
+            </version>
+         </standard>
+      </organization>
+   </scripts>
 </config>

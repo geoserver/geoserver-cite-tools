@@ -25,3 +25,6 @@
 [submodule "ets-wps10"]
 	path = ets-wps10
 	url = https://github.com/opengeospatial/ets-wps10
+[submodule "ets-wfs20"]
+	path = ets-wfs20
+	url = https://github.com/opengeospatial/ets-wfs20

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<values>
+  <value key="fid"></value>
+  <value key="wfs-uri">http://localhost:8080/geoserver/ows?service=wfs&amp;version=2.0.0&amp;request=GetCapabilities
+  </value>
+</values>
