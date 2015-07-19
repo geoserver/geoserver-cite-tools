@@ -63,22 +63,22 @@
     </exec>
     <!-- build the scripts -->
     <exec dir="${basedir}/ets-wms11" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-wms13" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-wfs10" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-wfs11" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-wcs10" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-wcs11" executable="mvn">
-      <arg line="install" />
+      <arg line="install -DskipTests" />
     </exec>
     <exec dir="${basedir}/ets-csw202" executable="mvn">
       <arg line="install -DskipTests" />
@@ -246,7 +246,9 @@
 
   <target name="csw-2.0.2">
     <antcall target="run-test">
-      <param name="sources" value="-source=${scriptdir}/csw-2.0.2/ctl/all.xml" />
+      <param name="sources" value="-source=${scriptdir}/csw/2.0.2/ctl/functions.xml 
+        -source=${scriptdir}/csw/2.0.2/ctl/common.xml -source=${scriptdir}/csw/2.0.2/ctl/capability-tests.xml
+        -source=${scriptdir}/csw/2.0.2/ctl/main.xml" />
       <param name="session" value="csw-2.0.2" />
       <param name="forms" value="-form=${forms}/csw-2.0.2.xml" />
     </antcall>
