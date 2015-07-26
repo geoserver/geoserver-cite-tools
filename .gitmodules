@@ -28,3 +28,6 @@
 [submodule "ets-wfs20"]
 	path = ets-wfs20
 	url = https://github.com/opengeospatial/ets-wfs20
+[submodule "ets-wmts10"]
+	path = ets-wmts10
+	url = https://github.com/opengeospatial/ets-wmts10

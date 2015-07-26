@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<values>
+  <value key="capabilities-url">http://localhost:8080/geoserver/gwc/service/wmts?REQUEST=GetCapabilities
+  </value>
+</values>

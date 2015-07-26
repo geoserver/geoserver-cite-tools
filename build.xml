@@ -31,8 +31,8 @@
     <echo message=" wfs-1.1        --&gt; Run WFS 1.1 tests" />
     <echo message=" wfs-1.1-log    --&gt; View WFS 1.1 test log" />
     <!--
-    <echo message=" wfs-2.0        --&gt; Run WFS 2.0 tests" />
-    <echo message=" wfs-2.0-log    --&gt; View WFS 2.0 test log" />
+    <echo message=" wfs-2.0        - -&gt; Run WFS 2.0 tests" />
+    <echo message=" wfs-2.0-log    - -&gt; View WFS 2.0 test log" />
     -->
     <echo message=" wms-1.1        --&gt; Run WMS 1.1 tests" />
     <echo message=" wms-1.1-log    --&gt; View WMS 1.1 test log" />
@@ -46,6 +46,8 @@
     <echo message=" csw-2.0.2-log  --&gt; View CSW 2.0.2 test log" />
     <echo message=" wps-1.0        --&gt; Run WPS 1.0 tests" />
     <echo message=" wps-1.0-log    --&gt; View WPS 1.0 test log" />
+    <echo message=" wmts-1.0       --&gt; Run WMTS 1.0 tests" />
+    <echo message=" wmts-1.0-log   --&gt; View WMTS 1.0 test log" />
     <echo message=" clean          --&gt; Cleans results from previous test runs" />
     <echo message=" webapp         --&gt; Runs teamengine web application" />
   </target>
@@ -92,7 +94,12 @@
     <exec dir="${basedir}/ets-wps10" executable="mvn">
       <arg line="install -DskipTests" />
     </exec>
+    <!--
     <exec dir="${basedir}/ets-wfs20" executable="mvn">
+      <arg line="install -DskipTests" />
+    </exec>
+    -->
+    <exec dir="${basedir}/ets-wmts10" executable="mvn">
       <arg line="install -DskipTests" />
     </exec>
 
@@ -181,6 +188,11 @@
     </first>
     <unzip src="${toString:ets_wfs20_deps}" dest="${basedir}/te_base/resources/lib" />
     -->
+    <!-- unzip the wmts 1.0 tests in place -->
+    <first id="ets_wmts10_ctl">
+      <fileset dir="${basedir}/ets-wmts10/target/" includes="ets-wmts10-**-ctl.zip" />
+    </first>
+    <unzip src="${toString:ets_wmts10_ctl}" dest="${basedir}/te_base/scripts" />
 
     <!-- copy the configuration declaring all cite tests -->
     <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
