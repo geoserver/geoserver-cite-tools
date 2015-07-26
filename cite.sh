@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 if [ $# -lt 2 ]; then
   echo "This program is used to run the GeoServer CITE nightly tests"
   echo "Usage: $0 <profile> [<version>]"
@@ -36,7 +34,7 @@ unzip $DIST/${VERSION}/geoserver-${VERSION}-latest-bin.zip -d work
 
 # grab the right data directory
 pushd work
-if [ "$VERSION" -eq "master" ]; then
+if [ "$VERSION" == "master" ]; then
    svn export "https://github.com/geoserver/geoserver/master/data/cite${PROFILE}"
 else
    svn export "https://github.com/geoserver/geoserver/branches/${VERSION}/data/cite${PROFILE}"
@@ -70,6 +68,14 @@ JAVA_OPTS="-Xmx256m -XX:MaxPermSize=128m" ./startup.sh -Djetty.port=$PORT >& geo
 PID=$!
 popd
 
+#  build the tools
+git submodule update
+ant clean build
+
+# prepare the form files for the port used here
+cp -r forms work/forms
+sed -i "s/localhost:8080/localhost:${PORT}/g" work/forms/*.xml
+
 # wait until geoserver has started
 N=100
 ONLINE=0
@@ -91,12 +97,9 @@ else
   echo "GeoServer is online"
 fi
 
-#  build the tools
-git submodule update
-ant clean build
 
 # run the test
-ant $PROFILE
+ant -debug -Dformsdir="work/forms" $PROFILE
 
 # generate the log, looking for failures
 ant ${PROFILE}-log | grep Failed

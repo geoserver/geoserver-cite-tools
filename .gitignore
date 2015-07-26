@@ -2,4 +2,5 @@
 /target
 /te_base
 /te_console
+/work
 .ant-targets-build.xml

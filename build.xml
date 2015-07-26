@@ -6,7 +6,7 @@
   <property name="scriptdir" value="${te_base}/scripts" />
   <property name="workdir" value="${basedir}/target/work" />
   <property name="logdir" value="${basedir}/target/geoserver-logs" />
-  <property name="forms" value="forms" />
+  <property name="formsdir" value="forms" />
   <property name="ets-resources-version" value="15.06.04" />
 
   <condition property="script.ext" value="bat" else="sh">
@@ -59,6 +59,38 @@
     <exec dir="${basedir}/ets-wms11" executable="mvn">
       <arg line="clean" />
     </exec>
+    <exec dir="${basedir}/ets-wms13" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wfs10" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wfs11" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wfs20" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wcs10" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wcs11" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <!--
+    <exec dir="${basedir}/ets-wcs20" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    -->
+    <exec dir="${basedir}/ets-csw202" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wps10" executable="mvn">
+      <arg line="clean" />
+    </exec>
+    <exec dir="${basedir}/ets-wmts10" executable="mvn">
+      <arg line="clean" />
+    </exec>
     <delete dir="te_base" includeemptydirs="true" />
     <delete dir="te_console" includeemptydirs="true" />
   </target>
@@ -67,32 +99,32 @@
     <!-- build the engine -->
     <exec dir="${enginedir}" executable="mvn">
       <env key="MAVEN_OPTS" value="-Xmx512m" />
-      <arg line="install -Pogc.cite -DskipTests -nsu -Dets-resources-version=${ets-resources-version}" />
+      <arg line="install -Pogc.cite -DskipTests -Dmaven.site.skip=true -nsu -Dets-resources-version=${ets-resources-version}" />
     </exec>
     <!-- build the scripts -->
     <exec dir="${basedir}/ets-wms11" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wms13" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wfs10" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wfs11" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wcs10" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wcs11" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-csw202" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wps10" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
     <!--
     <exec dir="${basedir}/ets-wfs20" executable="mvn">
@@ -100,7 +132,7 @@
     </exec>
     -->
     <exec dir="${basedir}/ets-wmts10" executable="mvn">
-      <arg line="install -DskipTests" />
+      <arg line="install -DskipTests -nsu" />
     </exec>
 
     <!-- unzip the console runner -->
@@ -211,7 +243,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wfs/1.0.0/ctl/wfs.xml" />
       <param name="session" value="wfs-1.0.0" />
-      <param name="forms" value="-form=${forms}/wfs-1.0.0.xml" />
+      <param name="forms" value="-form=${formsdir}/wfs-1.0.0.xml" />
     </antcall>
   </target>
   <target name="wfs-1.0-log">
@@ -225,7 +257,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${ctldir}/main.ctl -source=${ctldir}/functions.ctl -source=${ctldir}/parsers.ctl -source=${ctldir}/readiness-tests.ctl" />
       <param name="session" value="wfs-1.1.0" />
-      <param name="forms" value="-form=${forms}/wfs-1.1.0.xml" />
+      <param name="forms" value="-form=${formsdir}/wfs-1.1.0.xml" />
     </antcall>
   </target>
   <target name="wfs-1.1-log">
@@ -238,7 +270,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wms/1.1.1/ctl/functions.xml -source=${scriptdir}/wms/1.1.1/ctl/wms.xml" />
       <param name="session" value="wms-1.1.1" />
-      <param name="forms" value="-form=${forms}/wms-1.1.1.xml -form=${forms}/yes.xml" />
+      <param name="forms" value="-form=${formsdir}/wms-1.1.1.xml -form=${formsdir}/yes.xml" />
     </antcall>
   </target>
   <target name="wms-1.1-log">
@@ -252,7 +284,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${ctldir}/functions.xml -source=${ctldir}/interactive.xml -source=${ctldir}/basic_elements.xml -source=${ctldir}/getcapabilities.xml -source=${ctldir}/getmap.xml -source=${ctldir}/getfeatureinfo.xml -source=${ctldir}/recommendations.xml -source=${ctldir}/dimensions.xml -source=${ctldir}/main.xml" />
       <param name="session" value="wms-1.3.0" />
-      <param name="forms" value="-form=${forms}/wms-1.3.0.xml -form=${forms}/yes.xml" />
+      <param name="forms" value="-form=${formsdir}/wms-1.3.0.xml -form=${formsdir}/yes.xml" />
     </antcall>
   </target>
   <target name="wms-1.3-log">
@@ -265,7 +297,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wcs/1.0.0/ctl/wcs.xml" />
       <param name="session" value="wcs-1.0.0" />
-      <param name="forms" value="-form=${forms}/wcs-1.0.0.xml" />
+      <param name="forms" value="-form=${formsdir}/wcs-1.0.0.xml" />
     </antcall>
   </target>
   <target name="wcs-1.0-log">
@@ -278,7 +310,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wcs/1.1.1/ctl/wcs.xml" />
       <param name="session" value="wcs-1.1.1" />
-      <param name="forms" value="-form=${forms}/wcs-1.1.1.xml" />
+      <param name="forms" value="-form=${formsdir}/wcs-1.1.1.xml" />
     </antcall>
   </target>
   <target name="wcs-1.1-log">
@@ -293,7 +325,7 @@
         -source=${scriptdir}/csw/2.0.2/ctl/common.xml -source=${scriptdir}/csw/2.0.2/ctl/capability-tests.xml
         -source=${scriptdir}/csw/2.0.2/ctl/main.xml" />
       <param name="session" value="csw-2.0.2" />
-      <param name="forms" value="-form=${forms}/csw-2.0.2.xml" />
+      <param name="forms" value="-form=${formsdir}/csw-2.0.2.xml" />
     </antcall>
   </target>
   <target name="csw-2.0.2-log">
@@ -311,7 +343,7 @@
           -source=${scriptdir}/wps/1.0.0/ctl/OWS.xml
           -source=${scriptdir}/wps/1.0.0/ctl/wps.xml" />
       <param name="session" value="wps-1.0.0" />
-      <param name="forms" value="-form=${forms}/wps-1.0.0.xml" />
+      <param name="forms" value="-form=${formsdir}/wps-1.0.0.xml" />
     </antcall>
   </target>
   <target name="wps-1.0.0-log">
@@ -325,7 +357,7 @@
     <antcall target="run-test">
       <param name="sources" value="-source=${scriptdir}/wfs20/2.0.0/ctl/wfs-suite.ctl" />
       <param name="session" value="wfs-2.0.0" />
-      <param name="forms" value="-form=${forms}/wfs-2.0.0.xml" />
+      <param name="forms" value="-form=${formsdir}/wfs-2.0.0.xml" />
     </antcall>
   </target>
   <target name="wfs-2.0.0-log">
