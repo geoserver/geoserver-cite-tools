@@ -13,15 +13,15 @@ Building the Tools
 
 1. Clone the ``geoserver-cite-tools`` repository:
 
-        % git clone git://github.com/jdeolive/geoserver-cite-tools.git 
+        % git clone git://github.com/geoserver/geoserver-cite-tools.git 
         
 1. Update/initialize submodules:
 
         % git submodule update --init
 
-1. Build the tools with Ant:
+1. Build the tools and scripts with Ant:
 
-        % ant build
+        % ant clean build
 
 Testing from Command Line
 -------------------------
@@ -60,10 +60,6 @@ To view the log of a test run execute the ant command passing it the service
 name suffixed with "-log". For example, to view the WFS 1.0 logs:
 
     ant wfs-1.0-log
-
-To clean results from previous test runs run the command:
-
-    ant clean
 
 Testing from the Web Application
 --------------------------------
