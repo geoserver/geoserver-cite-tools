@@ -202,3 +202,23 @@ Now it's possible to add the headless test command to ``build.xml``:
     </target>
     
 And finally commit all the changes. 
+
+Running tests on a build server
+===============================
+
+Two scripts have been provided to help build server integration.
+
+``cite-build.sh`` forces the update of submodules (Team Engine, test scripts)
+and performs a clean build of them all. This module takes no parameters.
+It's a slow to run script that one should run once a day, just before starting to run all the CITE tests.
+
+``cite.sh`` runs a particular test from a checkout previously built using ``cite-build.sh``.
+In particular, it unpacks the right version of GeoServer from the nightly builds, sets up the
+required data directory, runs the setup command ``init.sh`` found in the data directory,
+starts GeoServer, runs the test, stops GeoServer and verifies if the test passed, or not.
+The return status will be 0 for a pass, 1 for a failure.
+
+The command line invocation is ``cite.sh <profile> <version>`` where profile is one of the
+GeoServer CITE profiles, and version is the GeoServer branch to be tested (e.g. ``master``, ``2.7.x``).
+The scripts assumes it will find the corresponding nightly build at ``/var/www/geoserver/${VERSION}/geoserver-${VERSION}-latest-bin.zip``
+

@@ -68,10 +68,6 @@ JAVA_OPTS="-Xmx256m -XX:MaxPermSize=128m" ./startup.sh -Djetty.port=$PORT >& geo
 PID=$!
 popd
 
-#  build the tools
-git submodule update
-ant clean build
-
 # prepare the form files for the port used here
 cp -r forms work/forms
 sed -i "s/localhost:8080/localhost:${PORT}/g" work/forms/*.xml
