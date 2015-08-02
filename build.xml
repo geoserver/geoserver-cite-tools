@@ -199,7 +199,7 @@
     <first id="ets_wcs11_ctl">
       <fileset dir="${basedir}/ets-wcs11/target/" includes="ets-wcs11-**-ctl.zip" />
     </first>
-    <unzip src="${toString:ets_wcs10_ctl}" dest="${basedir}/te_base/scripts" />
+    <unzip src="${toString:ets_wcs11_ctl}" dest="${basedir}/te_base/scripts" />
     <!-- unzip the csw 2.0.2 tests in place -->
     <first id="ets_csw202_ctl">
       <fileset dir="${basedir}/ets-csw202/target/" includes="ets-csw20-**-ctl.zip" />
