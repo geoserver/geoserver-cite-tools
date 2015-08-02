@@ -112,7 +112,7 @@
       <arg line="install -DskipTests -nsu" />
     </exec>
     <exec dir="${basedir}/ets-wfs11" executable="mvn">
-      <arg line="install -DskipTests -nsu" />
+      <arg line="install -DskipTests -nsu -Dmaven.compiler.source=1.5 -Dmaven.compiler.target=1.5" />
     </exec>
     <exec dir="${basedir}/ets-wcs10" executable="mvn">
       <arg line="install -DskipTests -nsu" />
