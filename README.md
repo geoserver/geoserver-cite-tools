@@ -14,7 +14,7 @@ Building the Tools
 1. Clone the ``geoserver-cite-tools`` repository:
 
         % git clone git://github.com/geoserver/geoserver-cite-tools.git 
-        
+
 1. Update/initialize submodules:
 
         % git submodule update --init
@@ -87,7 +87,7 @@ on the target revision and execute the following commands form the checkout root
     git checkout <targetRevision>
     cd ..
     git commit -m "Updating the TeamEngine to <tag/revision> for <whatever reason>"
-   
+
 Updating a CITE test
 --------------------
 
@@ -105,13 +105,13 @@ and get the right form contents to run the test headless.
 
 In order to add the new git submodule, for example for WPS 1.0, check the location and revision
 of the  WPS tests at https://github.com/opengeospatial/ and then run the following commands (in particular,
-these are adding verison 0.4 of the test suite):
+these are adding version 0.4 of the test suite):
 
     git submodule add https://github.com/opengeospatial/ets-wps10
     git checkout 1e78a36ca8071584171e356288a3bbcee6b39668
 
 Get into the WPS test suite module and manually build it, then check the target contents, which
-might contain one or two zip files (a ctl file, and then eventually a set of resource jars needed
+might contain one or two zip files (a ctl file, and optionally a set of resource jars needed
 for the tests):
 
     mvn clean install -nsu
@@ -137,7 +137,7 @@ Modify the main Ant file to make it unpack the scripts in te_base, e.g.:
     +    <exec dir="${basedir}/ets-wps10" executable="mvn">
     +      <arg line="install -DskipTests" />
     +    </exec>
-     
+
          <!-- unzip the console runner -->
          <mkdir dir="${basedir}/te_console" />
     @@ -154,6 +159,11 @@
@@ -149,7 +149,7 @@ Modify the main Ant file to make it unpack the scripts in te_base, e.g.:
     +      <fileset dir="${basedir}/ets-wps10/target/" includes="ets-wps10-**-ctl.zip" />
     +    </first>
     +    <unzip src="${toString:ets_wps10_ctl}" dest="${basedir}/te_base/scripts" />
-     
+
          <!-- copy the configuration declaring all cite tests -->
          <copy file="config.xml" tofile="${basedir}/te_base/config.xml" />
 
@@ -157,7 +157,7 @@ Check the files are correctly unpacked in ${te_base}/scripts and then run the we
 for a round of interactive testing in order to collect suitable form results:
 
     ant webapp
-    
+
 The webapp logs will contain logs detailing the contents of the forms file, like in this example::
 
      [exec] INFO: Setting form results:
@@ -176,7 +176,7 @@ Thus, create a ``forms/wps-1.0.0.xml`` file with the following contents:
         <value key="updatesequence-high">1000</value>
         <value key="updatesequence-low">0</value>
      </values>
-     
+
 Now it's possible to add the headless test command to ``build.xml``:
 
     <target name="wps-1.0.0">
@@ -196,7 +196,7 @@ Now it's possible to add the headless test command to ``build.xml``:
         <param name="session" value="wps-1.0.0" />
       </antcall>
     </target>
-    
+
 And finally commit all the changes. 
 
 Running tests on a build server
