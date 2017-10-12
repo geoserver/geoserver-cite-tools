@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:xi="http://www.w3.org/2001/XInclude" 
+  xmlns:ctl="http://www.occamlab.com/ctl"
+  xmlns:ocp="http://www.occamlab.com/te/parsers"
+  xmlns:tep="http://teamengine.sourceforge.net/parsers"
+  xmlns:wrs="http://www.opengis.net/cat/wrs/1.0">
+
+  <xi:include href="functions.xml"/>
+   
+  <ctl:test name="ctl:compare-images">
+    <ctl:param name="img1-src"/>
+    <ctl:param name="img2-src"/>
+    <ctl:param name="img1-label"/>
+    <ctl:param name="img2-label"/>
+    <ctl:param name="text-label"/>
+    <ctl:assertion>The received image must be similar to the reference image.</ctl:assertion>
+    <ctl:comment>Prompts the user to assess the degree of similarity between a 
+    received image and a reference image. Fails if the user chooses 'no', passes 
+    if 'yes'.</ctl:comment>
+    <ctl:code>
+		<xsl:variable name="img-width">350</xsl:variable>
+		<xsl:variable name="img-height">350</xsl:variable>
+		<xsl:variable name="form-width">800</xsl:variable>
+		<xsl:variable name="form-height">600</xsl:variable>		
+		<xsl:variable name="form-values">
+		  <ctl:form width="{$form-width}" height="{$form-height}">
+		   <table border="2">
+			  <tr>
+				 <td>
+					<b><xsl:value-of select="$img1-label"/></b>
+				 </td>
+				 <td>
+					<b><xsl:value-of select="$img2-label"/></b>
+				 </td>
+			  </tr>
+			  <tr>
+				 <td>
+					<img width="{$img-width}" height="{$img-height}">
+					   <xsl:attribute name="src"><xsl:value-of select="$img1-src"/></xsl:attribute>
+					</img>
+				 </td>
+				 <td>
+					<img width="{$img-width}" height="{$img-height}">
+					   <xsl:attribute name="src"><xsl:value-of select="$img2-src"/></xsl:attribute>
+					</img>
+				 </td>
+			  </tr>
+		   </table>
+		   <p>
+			   <xsl:value-of select="$text-label"/>
+		   </p>
+		   <p>
+			  <input xmlns="" type="submit" name="submit" value="yes"/>
+			  <input xmlns="" type="submit" name="submit" value="no"/>
+		   </p>
+		</ctl:form>
+	  </xsl:variable>
+	  <xsl:if test="not($form-values/values/value[@key='submit']='yes')">
+		<ctl:message>[FAILURE] Images are dissimilar.</ctl:message>
+		<ctl:fail/>
+	  </xsl:if>
+    </ctl:code>
+  </ctl:test>
+ 
+	<!-- Sample usage:
+	<ctl:call-test name="ctl:SchematronValidatingParser">
+		<ctl:with-param name="doc" select="$response"/>
+		<ctl:with-param name="schema">sch/csw/2.0.2/CSWCapabilities.sch</ctl:with-param>
+		<ctl:with-param name="phase">DefaultPhase</ctl:with-param>
+	</ctl:call-test>
+    -->
+	<ctl:test name="ctl:SchematronValidatingParser">
+			<ctl:param name="doc"/>
+			<ctl:param name="schema"/>
+			<ctl:param name="phase"/>
+			<ctl:assertion>Validate an XML instance against a Schematron schema using the given phase.</ctl:assertion>
+			<ctl:code>
+				<xsl:choose>
+					<xsl:when test="not($doc)">
+						<ctl:message>Error: Null input document.</ctl:message>
+						<ctl:fail/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="results">
+							<ctl:call-function name="ctl:SchematronValidator">
+								<ctl:with-param name="doc"><xsl:copy-of select="$doc"/></ctl:with-param>
+								<ctl:with-param name="schema" select="string($schema)"/>
+								<ctl:with-param name="phase" select="string($phase)"/>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:if test="count($results/*) > 0">
+							<ctl:message>Total number of errors detected: <xsl:copy-of select="count($results/*)"/></ctl:message>
+							<xsl:for-each select="$results/*">
+								<ctl:message><xsl:value-of select="concat('Error ', position())"/>: <xsl:copy-of select="."/></ctl:message>
+							</xsl:for-each>
+							<ctl:fail/>
+						</xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+			</ctl:code>
+	</ctl:test>	
+
+	<!-- Sample usage:
+	<ctl:call-test name="ctl:XMLValidatingParser">
+			<ctl:with-param name="doc"><xsl:copy-of select="$response"/></ctl:with-param>
+			<ctl:with-param name="instruction">
+				<ctlp:schemas>
+					<ctlp:schema type="resource">xsd/ogc/csw/2.0.2/csw-2.0.2.xsd</ctlp:schema>
+				</ctlp:schemas>
+			</ctl:with-param>
+	</ctl:call-test>
+    -->
+  <ctl:test name="ctl:XMLValidatingParser">
+    <ctl:param name="doc"/>
+    <ctl:param name="instruction"/>
+    <ctl:assertion>Validates the XML instance against the set of XML Schemas specified using the given instruction parameter.</ctl:assertion>
+    <ctl:code>
+		<xsl:choose>
+			<xsl:when test="not($doc)">
+				<ctl:message>Error: Null input document.</ctl:message>
+				<ctl:fail/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="results">
+					<ctl:call-function name="ctl:XMLValidator">
+						<ctl:with-param name="doc"><xsl:copy-of select="$doc"/></ctl:with-param>
+						<ctl:with-param name="instruction"><xsl:copy-of select="$instruction"/></ctl:with-param>
+					</ctl:call-function>
+				</xsl:variable>
+				<xsl:if test="count($results/*) > 0">
+					<ctl:message>Total number of errors detected: <xsl:copy-of select="count($results/*)"/></ctl:message>
+					<xsl:for-each select="$results/*">
+						<ctl:message><xsl:value-of select="concat('Error ', position())"/>: <xsl:copy-of select="."/></ctl:message>
+					</xsl:for-each>
+					<ctl:fail/>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+    </ctl:code>
+  </ctl:test>
+    
+  <!-- Sample usage:
+	<ctl:call-test name="ctl:XMLValidatingParser.CSW">
+	    <ctl:with-param name="doc"><xsl:copy-of select="$response//content/*"/></ctl:with-param>
+	</ctl:call-test>
+    -->
+	<ctl:test name="ctl:XMLValidatingParser.CSW">
+			<ctl:param name="doc"/>
+			<ctl:assertion>
+            Validates a given XML document against the CSW 2.0.2 schema set.
+            </ctl:assertion>
+			<ctl:code>
+				<ctl:call-test name="ctl:XMLValidatingParser">
+					<ctl:with-param name="doc"><xsl:copy-of select="$doc"/></ctl:with-param>
+					<ctl:with-param name="instruction">				
+						<ocp:schemas>
+							<ocp:schema type="resource">xsd/ogc/csw/2.0.2/csw-2.0.2.xsd</ocp:schema>
+						</ocp:schemas>
+					</ctl:with-param>
+				</ctl:call-test>
+			</ctl:code>
+	</ctl:test>
+    
+	<ctl:parser name="tep:XMLValidatingParser.CSW">
+		<ctl:java class="com.occamlab.te.parsers.XMLValidatingParser" 
+                  method="parse" 
+                  initialized="true">
+			<ctl:with-param name="schemas_links">
+				<ocp:schemas>
+					<ocp:schemas>
+							<ocp:schema type="resource">xsd/ogc/csw/2.0.2/csw-2.0.2.xsd</ocp:schema>
+						</ocp:schemas>
+				</ocp:schemas>
+			</ctl:with-param>
+		</ctl:java>
+	</ctl:parser>
+    
+  <!-- Sample usage:
+  <ctl:call-test name="ctl:XMLValidatingParser.WRS">
+    <ctl:with-param name="doc"><xsl:copy-of select="$response//content/*"/></ctl:with-param>
+  </ctl:call-test>
+    -->
+  <ctl:test name="ctl:XMLValidatingParser.WRS">
+    <ctl:param name="doc"/>
+    <ctl:assertion>
+    A service response entity must validate against the WRS schemas.
+    </ctl:assertion>
+    <ctl:code>
+        <ctl:call-test name="ctl:XMLValidatingParser">
+            <ctl:with-param name="doc"><xsl:copy-of select="$doc"/></ctl:with-param>
+            <ctl:with-param name="instruction">				
+                <ocp:schemas>
+                    <ocp:schema type="resource">xsd/ogc/wrs/1.0/wrs-1.0.0.xsd</ocp:schema>
+                </ocp:schemas>
+            </ctl:with-param>
+        </ctl:call-test>
+    </ctl:code>
+  </ctl:test>
+
+  <ctl:parser name="tep:XMLValidatingParser.WRS">
+		<ctl:java class="com.occamlab.te.parsers.XMLValidatingParser" 
+                  method="parse" 
+                  initialized="true">
+			<ctl:with-param name="schemas_links">
+				<ocp:schemas>
+					<ocp:schemas>
+							<ocp:schema type="resource">xsd/ogc/wrs/1.0/wrs-1.0.0.xsd</ocp:schema>					
+						</ocp:schemas>
+				</ocp:schemas>
+			</ctl:with-param>
+		</ctl:java>
+	</ctl:parser>
+
+	<ctl:parser name="tep:XMLValidatingParser.OWS">
+		<ctl:java class="com.occamlab.te.parsers.XMLValidatingParser" method="parse" initialized="true">
+			<ctl:with-param name="schemas_links">
+				<ocp:schemas>
+					<ocp:schema type="resource">xsd/ogc/ows/1.0.0/ows-1.0.0.xsd</ocp:schema>
+				</ocp:schemas>
+			</ctl:with-param>
+		</ctl:java>
+	</ctl:parser>	
+	
+	<ctl:parser name="tep:XMLValidatingParser.XMLSchema">
+		<ctl:java class="com.occamlab.te.parsers.XMLValidatingParser" method="parse" initialized="true">
+			<ctl:with-param name="schemas_links">
+				<ocp:schemas>
+					<ocp:schema type="resource">xsd/w3c/xmlschema/1.0/XMLSchema.xsd</ocp:schema>
+				</ocp:schemas>
+			</ctl:with-param>
+		</ctl:java>
+	</ctl:parser>
+    
+    <!-- Sample usage:
+	<tep:SchematronValidatingParser>
+	    <ocp:schemas>
+		    <ocp:schema type="resource" phase="Default">sch/csw/2.0.2/CSWCapabilities.sch</ocp:schema>
+	    </ocp:schemas>
+	</tep:SchematronValidatingParser>
+    -->
+	<ctl:parser name="tep:SchematronValidatingParser">
+		<ctl:param name="schema_link"/>
+		<ctl:java class="com.occamlab.te.parsers.SchematronValidatingParser" 
+                  method="parse" 
+                  initialized="true"/>
+	</ctl:parser>		
+	
+	<!-- Sample usage:
+	<tep:SchematronValidatingParser.CSWCapabilities />
+    -->
+	<ctl:parser name="tep:SchematronValidatingParser.CSWCapabilities">
+		<ctl:java class="com.occamlab.te.parsers.SchematronValidatingParser" 
+                  method="parse" 
+                  initialized="true">
+			<ctl:with-param name="schema_link">
+					<ocp:schemas>
+						<ocp:schema type="resource" phase="DefaultPhase">sch/csw/2.0.2/Capabilities.sch</ocp:schema>
+					</ocp:schemas>
+			</ctl:with-param>
+		</ctl:java>
+	</ctl:parser>
+  
+</ctl:package>

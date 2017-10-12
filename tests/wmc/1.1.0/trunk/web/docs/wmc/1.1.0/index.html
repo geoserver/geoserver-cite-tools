@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Web Map Context 1.1.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the following OGC specifications:</p>
+<ul>
+  <li><em>Web Map Context Documents</em>, version 1.1.0 <a href="http://portal.opengeospatial.org/files/?artifact_id=8618">[OGC 05-005]</a></li>
+  <li><em>Web Map Service Implementation Specification</em>, version 1.1.1 <a href="http://portal.opengeospatial.org/files/?artifact_id=1081&version=1&format=pdf">[OGC 01-068r3]</a></li>
+</ul>
+
+
+<h2>What is tested</h2>
+<ul>
+  <li><strong>All trials</strong></li>
+    <ul>
+      <li>Standalone context document or context collection document syntax</li>
+    </ul>
+  </li>
+  <li><strong>Follow Links option</strong></li>
+    <ul>
+      <li>Availability of linked resources and integrity of link attributes (format, width, and height)</li>
+      <li>Integrity of essential layer information from layers derived from WMS version 1.0.0, 1.1.0, or 1.1.1 sources</li>
+      <li>Integrity of context documents in a context collection</li>
+    </ul>
+  </li>
+  <li><strong>Unique IDs recommendation</strong></li>
+    <ul>
+      <li>Uniqueness of the root element's id within the context document or context collection document</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>What is not tested</h2>
+<ul>
+  <li>Integrity of layers derived from sources other than WMS 1.0.0, 1.1.0, or 1.1.1</li>
+  <li>Integrity of Styled Layer Descriptors</li>
+</ul>
+
+<h2><a name="assumptions">Assumptions</a></h2>
+<p>
+  This test suite assumes the following with respect to the Context 1.1.0 specification:
+</p>
+<ul>
+  <li>The online resource the &lt;Server&gt; element identifies is the HTTP GET resource
+      for the GetCapabilities request.
+  </li>
+  <li>Online resources in xlink:href attributes are absolute URLs.  Relative URLs are not allowed except
+      that for the SLD OnlineResource the xlink:href attribute may reference an inline &lt;StyledLayerDescriptor&gt;
+      in the same context document.  In this case, the test suite allows any value that begins with "#".
+  </li>
+</ul>
+
+<h2>Release Notes</h2>
+<p>
+  Release notes are available from the <a href="relnotes.txt">relnotes.txt</a>.
+</p>
+
+</body>
+</html>

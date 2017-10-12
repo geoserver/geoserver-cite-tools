@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SPS 2.0.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the following OGC specifications, best practices, and discussion papers:</p>
+<ul>
+  <li><em>Sensor Planning Service Implementation Specification</em>, version 2.0.0 <a href="http://portal.opengeospatial.org/files/?artifact_id=38478">[OGC 09-000]</a></li>
+  <li><em>OpenGIS Web Services Common Specification</em>, version 1.1.0 <a href="https://portal.opengeospatial.org/files/?artifact_id=20040">[OGC 06-121r3]</a></li>
+  <li><em>A URN Namespace for the Open Geospatial Consortium (OGC)</em>, version 2 <a href="https://portal.opengeospatial.org/files/?artifact_id=18747">[OGC 06-166]</a></li>
+  <li><em>Definition Identifier URNs in OGC Namespace</em>, version 1.1.2 <a href="https://portal.opengeospatial.org/files/?artifact_id=24045">[OGC 07-092r1]</a></li>
+</ul>
+<h2>What is tested</h2>
+<ul>
+  <li><strong>Basic/Core conformance class (mandatory operations)</strong></li>
+    <ul>
+      <li>GetCapabilities, GET method/POST method</li>
+      <li>DescribeTasking, POST method</li>
+      <li>Submit, POST method</li>
+	  <li>GetStatus, POST method</li>
+	  <li>GetTask, POST method</li>
+      <li>DescribeResultAccess, POST method</li>
+	  <li>DescribeSensor, POST method</li>
+      <li>This includes testing:</li>
+    <ul>
+  <li>All required aspects of the mandatory operations of the SPS:  GetCapabilities, DescribeTasking, Submit, GetStatus, GetTask, DescribeResultAccess and DescribeSensor</li>
+  <li>Valid exception reporting according to the specification</li>
+  <li>The Capabilities document lists all of the mandatory operations of the SPS specification in the OperationsMetadata section</li>
+  <li>Any non-mandatory operations listed in the OperationsMetadata section have valid SPS operation names</li>
+  </ul>
+  </ul>
+</ul>
+
+<h2>What is not tested</h2>
+Optional operations of the SPS:
+<ul>
+  
+    <li>ReservationManager interface: Reserve, Confirm </li> 
+	<li>FeasibilityController interface: GetFeasibility</li>
+	<li>TaskUpdater interface: Update</li>
+	<li>TaskCanceller interface: Cancel</li>
+	<li>SensorDescriptionManager interface: UpdateSensorDescription</li>
+</ul>
+
+<h2>Test data</h2>
+<p>
+N/A.  There is no test data provided for this test suite as test data in the case of an SPS would be a specific, virtual or real sensor system.  Requiring implementers to implement a specific sensor system in order to run compliance tests is unnecessary; therefore, these compliance tests were designed to be generic enough to work with any SPS implementation providing access to any sensor system.
+</p>
+
+<h2>Namespaces</h2>
+<p>
+    <ul>
+        <li>SensorML v1.0.0 - http://www.opengis.net/sensorML/1.0</li>
+        <li>SensorML v1.0.1 - http://www.opengis.net/sensorML/1.0.1</li> 
+        <li>TML - http://www.opengis.net/tml</li>
+        <li>SWE Common - http://www.opengis.net/swe/1.0</li>
+        <li>OWS Common - http://www.opengis.net/ows</li>
+        <li>SPS - http;//www.opengis.net/sps/2.0</li>
+        <li>GML - http://www.opengis.net/gml</li>
+    </ul>
+</p>
+
+<h2>Schemas</h2>
+<p>
+    All schemas used in these tests are located in the OGC schema repository:  <a href="http://schemas.opengis.net">http://schemas.opengis.net</a>.
+</p>
+
+<h2>Release Notes</h2>
+<p>
+  Release notes are available from the <a href="relnotes.txt">relnotes.txt</a>.
+</p>
+
+</body>
+</html>

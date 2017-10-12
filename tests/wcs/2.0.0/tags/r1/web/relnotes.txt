@@ -1,0 +1,10 @@
+WCS 2.0 Test Suite Release Notes
+
+Changes included in latest revision:
+
+2011-07-06 (jyu):
+- Created
+- Added GetKVP test
+- Added PostXML test
+
+

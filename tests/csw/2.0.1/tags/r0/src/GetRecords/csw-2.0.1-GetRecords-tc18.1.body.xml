@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc18.1 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1" resultType="results">
+  <csw:Query typeNames="csw:Record" xmlns:ows="http://www.opengis.net/ows">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+        <ogc:And>
+          <ogc:Not>
+            <ogc:BBOX>
+              <ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+              <gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:6.11:4326">
+                <gml:lowerCorner>40.0 -9.0</gml:lowerCorner>
+                <gml:upperCorner>50.0 -5.0</gml:upperCorner>
+              </gml:Envelope>
+            </ogc:BBOX>
+          </ogc:Not>
+          <ogc:PropertyIsEqualTo matchCase="false">
+            <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:type</ogc:PropertyName>
+            <ogc:Literal>HTTP://purl.org/dc/dcmitype/dataset</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+        </ogc:And>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

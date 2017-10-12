@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package xmlns:ctl="http://www.occamlab.com/ctl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wcs="http://www.opengis.net/wcs/2.0" xmlns:ctlp="http://www.occamlab.com/te/parsers" xmlns:wcs2="http://www.opengis.net/wcs/2.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+	<!--NOTE: As there is no canonical practice among and within communities dealing with coverages to use one particular protocol none of the protocols specified in WCS extensions is mandatory. In practice, this may lead to a lack of interoperability between client and server implementations. In future user communities might agree eventually to make on particular protocol binding mandatory.We use the GetCapabilities in HTTP Get KVP as a intially starting point--> 
+	<ctl:test name="wcs2:main">
+		<ctl:param name="url"/>
+		<ctl:assertion>Test the WCS 2.0.</ctl:assertion>
+		<ctl:code>
+      
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcs/2.0/wcsGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>      
+      			<xsl:choose>
+        			<xsl:when test="string-length($Capabilities)!=0">
+         
+					<ctl:message>[MESSAGE] Test the three protocol extensions(GetKVP, PostXML and SOAP) when they are available</ctl:message>
+					<xsl:choose>
+      			   			<xsl:when test="(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_soap/1.0') or  contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_post-xml/1.0') or contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_get-kvp/1.0'))">
+      			    				<ctl:message>test gml coverage by the supported protocol extensions</ctl:message> 
+  								<!--Get the provided protocol extensions and invoke their tests-->         
+								<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_get-kvp/1.0')">
+									<ctl:call-test name="wcs2:get-kvp-main">
+										<ctl:with-param name="url" select="$url"/>        
+									</ctl:call-test>            									
+								</xsl:if>
+								<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_post-xml/1.0')">
+									<ctl:call-test name="wcs2:post-xml-main">
+										<ctl:with-param name="url" select="$url"/>        
+									</ctl:call-test>             
+								</xsl:if>
+								<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_soap/1.0')">
+									<ctl:call-test name="wcs2:soap-main">
+										<ctl:with-param name="url" select="$url"/>        
+									</ctl:call-test>              
+								</xsl:if>  
+								<ctl:call-test name="wcs2:core-main">
+									<ctl:with-param name="url" select="$url"/>        
+								</ctl:call-test> 								
+
+      		  				</xsl:when>      
+		
+						<xsl:otherwise>         
+							<ctl:message>[FAILURE] The entry does not provide the required extensions</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+      		  		</xsl:when> 	
+		        	<xsl:otherwise>
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+		        	</xsl:otherwise>
+      			</xsl:choose>
+		</ctl:code>
+	</ctl:test>   
+</ctl:package>

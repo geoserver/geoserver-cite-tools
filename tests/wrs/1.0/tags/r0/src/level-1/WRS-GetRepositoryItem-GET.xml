@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:parsers="http://www.occamlab.com/te/parsers"
+ xmlns:p="http://teamengine.sourceforge.net/parsers"
+ xmlns:saxon="http://saxon.sf.net/"
+ xmlns:wrs="http://www.opengis.net/cat/wrs/1.0"
+ xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+ xmlns:csw="http://www.opengis.net/cat/csw/1.0.0" 
+ xmlns:dc="http://purl.org/dc/elements/1.1/" 
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:gmd="http://www.isotc211.org/2005/gmd"
+ xmlns:gco="http://www.isotc211.org/2005/gco" >
+
+    <ctl:test name="wrs:GetRepositoryItem-GET">
+      <param name="wrs.capabilities.doc" />
+      <ctl:assertion>
+      Run test group for GetRepositoryItem requests using the GET method.
+      </ctl:assertion>
+      <ctl:code>
+        <xsl:variable name="wrs.GetRepositoryItem.get.url">
+		    <xsl:value-of select="$wrs.capabilities.doc//ows:OperationsMetadata/ows:Operation[@name='GetRepositoryItem']/ows:DCP/ows:HTTP/ows:Get/@xlink:href"/>
+		</xsl:variable>
+        <xsl:variable name="wrs.GetRecords.post.url">
+            <xsl:value-of select="$wrs.capabilities.doc//ows:OperationsMetadata/ows:Operation[@name='GetRecords']/ows:DCP/ows:HTTP/ows:Post/@xlink:href"/>
+	    </xsl:variable>
+        <ctl:message>Target endpoint is <xsl:value-of select="$wrs.GetRepositoryItem.get.url"/></ctl:message>
+        
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRepositoryItem-tc1.1">
+		<ctl:with-param name="wrs.GetRepositoryItem.get.url" select="$wrs.GetRepositoryItem.get.url"/>
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+      </ctl:code>
+    </ctl:test>
+   
+    <ctl:test name="wrs:wrs-1.0.0-GetRepositoryItem-tc1.1">
+		<ctl:param name="wrs.GetRepositoryItem.get.url"/>
+		<ctl:param name="wrs.GetRecords.post.url"/>		
+		<ctl:assertion>Validate that the catalogue correctly stores ISO 19139 (Dataset) objects.</ctl:assertion>
+		<ctl:comment>Pass if the test data instance is present and has the correct values for the given 
+		slots and the associated repository item is also present and correct.</ctl:comment>
+		<ctl:link>OGC 05-008</ctl:link>
+		<ctl:code>
+
+			<!-- Get the ISO 19139 Dataset (from the test suite test data) -->
+			<xsl:variable name="getrecords.response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</ctl:url>
+					<ctl:method>POST</ctl:method>
+					<ctl:body>
+						<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+						xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+						xmlns:ogc="http://www.opengis.net/ogc"
+						xmlns:wrs="http://www.opengis.net/cat/wrs/1.0"
+						xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+						outputFormat="application/xml; charset=UTF-8"
+						resultType="results" startPosition="1" maxRecords="5">
+							<csw:Query typeNames="wrs:ExtrinsicObject">
+							   <csw:ElementSetName typeNames="wrs:ExtrinsicObject">full</csw:ElementSetName>
+							   <csw:Constraint version="1.1.0">
+									<ogc:Filter>
+										<ogc:And>
+											<ogc:PropertyIsEqualTo>
+												<ogc:PropertyName>@objectType</ogc:PropertyName>
+												<ogc:Literal>urn:ogc:def:ebRIM-ObjectType:OGC:Dataset</ogc:Literal>
+											</ogc:PropertyIsEqualTo>
+											<ogc:BBOX>
+												<ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/terms/spatial"]/wrs:ValueList/wrs:AnyValue[1]</ogc:PropertyName>
+												<gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+													<gml:lowerCorner>44.0 6.5</gml:lowerCorner>
+													<gml:upperCorner>49.5 10.0</gml:upperCorner>
+												</gml:Envelope>
+											</ogc:BBOX>										
+										</ogc:And>
+									</ogc:Filter>
+								</csw:Constraint>
+							</csw:Query>
+						</csw:GetRecords>
+					</ctl:body>
+				</ctl:request>
+			</xsl:variable>
+
+			<xsl:variable name="object.id"><xsl:copy-of select="string($getrecords.response//wrs:ExtrinsicObject[1]/@id)"/></xsl:variable>
+
+			<!-- Get the associated repository item for the dataset -->
+			<xsl:variable name="repository.item">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$wrs.GetRepositoryItem.get.url"/>
+					</ctl:url>
+					<ctl:method>GET</ctl:method>
+					<ctl:param name="REQUEST">GetRepositoryItem</ctl:param>
+					<ctl:param name="SERVICE">WRS</ctl:param>
+					<ctl:param name="VERSION">1.0.0</ctl:param>
+					<ctl:param name="ID"><xsl:value-of select="escape-html-uri($object.id)"/></ctl:param>
+				</ctl:request>
+			</xsl:variable>
+
+            <xsl:choose>
+              <xsl:when test="($object.id = '') or not($repository.item//gmd:DS_Dataset)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <!-- Check for correctness of the extrinsic object -->
+                <xsl:variable name="object.type" select="$getrecords.response//wrs:ExtrinsicObject/@objectType"/>
+                <xsl:if test="not($object.type = 'urn:ogc:def:ebRIM-ObjectType:OGC:Dataset')">
+                    <ctl:message>[FAILURE] Expected @objectType of "urn:ogc:def:ebRIM-ObjectType:OGC:Dataset" on the ExtrinsicObject, yet found <xsl:value-of select="$object.type"/></ctl:message>
+                    <ctl:fail/>
+				</xsl:if>
+                <xsl:if test="not($getrecords.response//wrs:ExtrinsicObject/wrs:repositoryItemRef/@xlink:href)">
+                    <ctl:message>[FAILURE] Expected a child wrs:repositoryItemRef/@xlink:href on the ExtrinsicObject.</ctl:message>
+                    <ctl:fail/>
+				</xsl:if>				
+                <!-- Check for correctness of the repository item -->
+                <xsl:if test="not($repository.item//gmd:DS_Dataset/gmd:has/gmd:MD_Metadata)">
+                  <ctl:message>[FAILURE] Expected the repository item to be gmd:DS_Dataset document containing gmd:MD_Metadata under the "http://www.isotc211.org/2005/gmd" namespace.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="apos"><xsl:text>'</xsl:text></xsl:variable>
+                <xsl:variable name="title" select="$repository.item//gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString"/>
+                <xsl:if test="not($title = concat('wa',$apos,' Hol mu',$apos,'mey puS je neH ghaj qo',$apos,' Hoch'))">
+                    <ctl:message>[FAILURE] Expected the repository item to contain a title of "wa' Hol mu'mey puS je neH ghaj qo' Hoch", yet found <xsl:value-of select="$title"/></ctl:message>
+                    <ctl:fail/>
+				</xsl:if>              
+			  </xsl:otherwise>
+            </xsl:choose>
+
+		</ctl:code>
+	</ctl:test>
+	
+</ctl:package>

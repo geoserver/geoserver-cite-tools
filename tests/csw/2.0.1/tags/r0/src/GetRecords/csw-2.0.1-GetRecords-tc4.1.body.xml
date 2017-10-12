@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc4.1 -->
+<csw:GetRecords service="CSW" version="2.0.1" 
+  xmlns:csw="http://www.opengis.net/cat/csw" 
+  resultType="results">
+  <csw:Query typeNames="csw:Record">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+    <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:SortProperty>
+        <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:identifier</ogc:PropertyName>
+        <ogc:SortOrder>ASC</ogc:SortOrder>
+      </ogc:SortProperty>
+    </ogc:SortBy>
+  </csw:Query>
+</csw:GetRecords>

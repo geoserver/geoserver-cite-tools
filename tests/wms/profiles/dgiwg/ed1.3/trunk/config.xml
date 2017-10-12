@@ -1,0 +1,11 @@
+<config>
+	<profile>
+		<namespace-uri>https://cite.opengeospatial.org/wms/1.3.0/profiles/dgiwg/ed1.3/ets/ctl</namespace-uri>
+		<prefix>dgiwg</prefix>
+		<local-name>wms-1.3.0_profile</local-name>
+		<title>DGIWG Profile for Web Map Service (WMS) 1.3.0</title>
+		<description>Validates that a WMS 1.3.0 is compliant with DGIWG the Profile.</description>
+	</profile>
+	<source>ctl</source>
+</config>
+

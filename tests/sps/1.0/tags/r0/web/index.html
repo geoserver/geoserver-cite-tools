@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SPS 1.0.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the following OGC specifications, best practices, and discussion papers:</p>
+<ul>
+  <li><em>Sensor Planning Service Implementation Specification</em>, version 1.0.0 <a href="http://portal.opengeospatial.org/files/?artifact_id=23180">[OGC 07-014r3]</a></li>
+  <li><em>OpenGIS Web Services Common Specification</em>, version 1.0.0 <a href="https://portal.opengeospatial.org/files/?artifact_id=8798">[OGC 05-008c1]</a></li>
+  <li><em>A URN Namespace for the Open Geospatial Consortium (OGC)</em>, version 2 <a href="https://portal.opengeospatial.org/files/?artifact_id=18747">[OGC 06-166]</a></li>
+  <li><em>Definition Identifier URNs in OGC Namespace</em>, version 1.1.2 <a href="https://portal.opengeospatial.org/files/?artifact_id=24045">[OGC 07-092r1]</a></li>
+</ul>
+<h2>What is tested</h2>
+<ul>
+  <li><strong>Basic/Core conformance class (mandatory operations)</strong></li>
+    <ul>
+      <li>GetCapabilities, GET method</li>
+      <li>DescribeTasking, POST method</li>
+      <li>Submit, POST method</li>
+      <li>DescribeResultAccess, POST method</li>
+      <li>This includes testing:</li>
+    <ul>
+  <li>All required aspects of the mandatory operations of the SPS:  GetCapabilities, DescribeTasking, Submit, and DescribeResultAccess</li>
+  <li>Valid exception reporting according to the specification</li>
+  <li>The Capabilities document lists all of the mandatory operations of the SPS specification in the OperationsMetadata section</li>
+  <li>Any non-mandatory operations listed in the OperationsMetadata section have valid SPS operation names</li>
+  <li>Valid URNs are provided where possible (as defined in the above URN documents) for values such as sensorIDs, observed properties, definitions, etc.</li>
+  <li>Important URLs (i.e. SensorDefinition, ServiceURL, etc.) actually link to something</li>
+  <li>The unique identifier in the SensorML or TML document describing a taskable sensor matches the sensorID in the SensorOffering for that sensor</li> 
+  <li>All InputDescriptor definition types are handled:
+    <ul>
+        <li>The most common commonData sub-types (including Position with location) are handled by allowing a user to enter in values for these elements directly in a user input form</li>
+        <li>More complex definition types are handled by allowing a user to enter the InputParameter XML elements directly in a user input form.</li>
+    </ul>
+  </li>
+  </ul>
+  </ul>
+</ul>
+
+<h2>What is not tested</h2>
+<ul>
+    <li>Optional operations of the SPS:  GetFeasibility, GetStatus, Update, and Cancel</li>
+    <li>SPS interaction with a Web Notification Service (WNS).  Testing the interaction with a WNS would lead to developing compliance tests for the WNS.  Since the WNS is not an approved OGC v1.0 specification, compliance tests have not been written, and writing these compliance tests would be beyond the scope of the SPS tests.  <em>NOTE:  During Submit tests, the tester is required to enter in WNS notification target information, specifically a WNS URL and a WNS user ID, since these are required parts of a Submit request.</em></li>
+    <li>Coordinate/axis ordering and the validity of coordinate values for GML objects with different coordinate reference systems (other than WGS 84)</li>
+</ul>
+
+<h2>Test data</h2>
+<p>
+N/A.  There is no test data provided for this test suite as test data in the case of an SPS would be a specific, virtual or real sensor system.  Requiring implementers to implement a specific sensor system in order to run compliance tests is unnecessary; therefore, these compliance tests were designed to be generic enough to work with any SPS implementation providing access to any sensor system.
+</p>
+
+<h2>Namespaces</h2>
+<p>
+    <ul>
+        <li>SensorML v1.0.0 - http://www.opengis.net/sensorML/1.0</li>
+        <li>SensorML v1.0.1 - http://www.opengis.net/sensorML/1.0.1</li> 
+        <li>TML - http://www.opengis.net/tml</li>
+        <li>SWE Common - http://www.opengis.net/swe/1.0</li>
+        <li>OWS Common - http://www.opengis.net/ows</li>
+        <li>SPS - http;//www.opengis.net/sps/1.0</li>
+        <li>GML - http://www.opengis.net/gml</li>
+    </ul>
+</p>
+
+<h2>Schemas</h2>
+<p>
+    All schemas used in these tests are located in the OGC schema repository:  <a href="http://schemas.opengis.net">http://schemas.opengis.net</a>.
+</p>
+
+</body>
+</html>

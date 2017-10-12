@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 	
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows/1.1" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/" 
+    xmlns:te="http://www.occamlab.com/te"
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wmts="http://www.opengis.net/wmts/1.0"
+	xmlns:ctlFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/ctlFunctions.xml"	
+	xmlns:owsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/owsFunctions.xml"	
+	xmlns:wwwFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/wwwFunctions.xml"	
+	xmlns:wmtsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/wmtsFunctions.xml"	
+	xmlns:wmtsBootstrap="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/bootstrap.xml"
+>
+
+<!-- note:  tests are grouped by operation and type by containment in group elements created by bootstrap.xml functions.
+				If you change a test type, you need to move it to its new group in the appropriate bootstrap function. -->
+
+<ctl:test name="wmts:CommonOperations.Mandatory.KVP.GET"  type="Mandatory">
+	<ctl:param name="wmts.capabilities.doc">WMTS capabilities document from bootstrap</ctl:param>
+	<ctl:param name="bootstrap">Bootstrap prerequisites test results in XML</ctl:param>
+	<ctl:param name="selected">Selected tests in XML</ctl:param>
+	<ctl:context>wmts:server.profile.kvp.get.main</ctl:context>
+	<ctl:assertion>Mandatory Common Operations Tests for KVP GET binding pass.</ctl:assertion>
+	<ctl:code>
+		<ctl:call-function name="wmtsFunctions:invokeSelectedTests">
+			<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+			<ctl:with-param name="bootstrap" select="$bootstrap"/>
+			<ctl:with-param name="selected" select="$selected"/>
+			<ctl:with-param name="testGroupElementName">CommonOperations.Mandatory.KVP.GET</ctl:with-param>
+		</ctl:call-function>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:CommonOperations.Mandatory.KVP.POST"  type="Mandatory">
+	<ctl:param name="wmts.capabilities.doc">WMTS capabilities document from bootstrap</ctl:param>
+	<ctl:param name="bootstrap">Bootstrap prerequisites test results in XML</ctl:param>
+	<ctl:param name="selected">Selected tests in XML</ctl:param>
+	<ctl:context>wmts:server.profile.kvp.get.main</ctl:context>
+	<ctl:assertion>Mandatory Common Operations Tests for KVP POST binding pass.</ctl:assertion>
+	<ctl:code>
+		<ctl:call-function name="wmtsFunctions:invokeSelectedTests">
+			<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+			<ctl:with-param name="bootstrap" select="$bootstrap"/>
+			<ctl:with-param name="selected" select="$selected"/>
+			<ctl:with-param name="testGroupElementName">CommonOperations.Mandatory.KVP.POST</ctl:with-param>
+		</ctl:call-function>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:CommonOperations.Mandatory.XML.POST"  type="Mandatory">
+	<ctl:param name="wmts.capabilities.doc">WMTS capabilities document from bootstrap</ctl:param>
+	<ctl:param name="bootstrap">Bootstrap prerequisites test results in XML</ctl:param>
+	<ctl:param name="selected">Selected tests in XML</ctl:param>
+	<ctl:context>wmts:server.profile.kvp.get.main</ctl:context>
+	<ctl:assertion>Mandatory Common Operations Tests for XML POST binding pass.</ctl:assertion>
+	<ctl:code>
+		<ctl:call-function name="wmtsFunctions:invokeSelectedTests">
+			<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+			<ctl:with-param name="bootstrap" select="$bootstrap"/>
+			<ctl:with-param name="selected" select="$selected"/>
+			<ctl:with-param name="testGroupElementName">CommonOperations.Mandatory.XML.POST</ctl:with-param>
+		</ctl:call-function>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:CommonOperations.Mandatory.SOAP.POST"  type="Mandatory">
+	<ctl:param name="wmts.capabilities.doc">WMTS capabilities document from bootstrap</ctl:param>
+	<ctl:param name="bootstrap">Bootstrap prerequisites test results in XML</ctl:param>
+	<ctl:param name="selected">Selected tests in XML</ctl:param>
+	<ctl:context>wmts:server.profile.kvp.get.main</ctl:context>
+	<ctl:assertion>Mandatory Common Operations Tests for SOAP POST binding pass.</ctl:assertion>
+	<ctl:code>
+		<ctl:call-function name="wmtsFunctions:invokeSelectedTests">
+			<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+			<ctl:with-param name="bootstrap" select="$bootstrap"/>
+			<ctl:with-param name="selected" select="$selected"/>
+			<ctl:with-param name="testGroupElementName">CommonOperations.Mandatory.SOAP.POST</ctl:with-param>
+		</ctl:call-function>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:CommonOperations.Mandatory.RESTful"  type="Mandatory">
+	<ctl:param name="wmts.capabilities.doc">WMTS capabilities document from bootstrap</ctl:param>
+	<ctl:param name="bootstrap">Bootstrap prerequisites test results in XML</ctl:param>
+	<ctl:param name="selected">Selected tests in XML</ctl:param>
+	<ctl:context>wmts:server.profile.kvp.get.main</ctl:context>
+	<ctl:assertion>Mandatory Common Operations Tests for RESTful binding pass.</ctl:assertion>
+	<ctl:code>
+		<ctl:call-function name="wmtsFunctions:invokeSelectedTests">
+			<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+			<ctl:with-param name="bootstrap" select="$bootstrap"/>
+			<ctl:with-param name="selected" select="$selected"/>
+			<ctl:with-param name="testGroupElementName">CommonOperations.Mandatory.RESTful</ctl:with-param>
+		</ctl:call-function>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.GET.HTTP.Mandatory"  type="Mandatory">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	A.  TBD: First Draft:   HTTP status code 404
+	1.  The request entity is for a non-existent service
+	2.  The HTTP status code value is set to 404, corresponding to the message "Not Found"
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server observes the rules and conventions governing the use of HTTP GET operations.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.GET.HTTP.Mandatory</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFound">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="method">get</ctl:with-param>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.GET.HTTP.Mandatory not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.GET.HTTP.Mandatory test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.GET.InvalidQueryString" type="Mandatory">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity is an invalid query string: "request~GetCapabilities!service~!'WMTS'version~'1.0.0'"
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "MissingParameterValue".
+	4.  the response entity contains a locator attribute value of "service" or "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid query string.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.GET.InvalidQueryString</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">request~GetCapabilities!service~!'WMTS'version~'1.0.0</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">get</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">MissingParameterValue,MissingParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service,request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.GET.InvalidQueryString not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.GET.InvalidQueryString test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.GET.InvalidService"  type="Mandatory">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+    1.  the request entity service parameter value is "BOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+    3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+    4.  the response entity contains a locator attribute value of "service".
+    5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid service parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.GET.InvalidService</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">service=BOGUS&amp;request=GetCapabilities</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">get</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.GET.InvalidService not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.GET.InvalidService test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.GET.InvalidRequest"  type="Mandatory">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity request parameter value is "GetBOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid request parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.GET.InvalidRequest</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">service=WMTS&amp;request=GetBOGUS</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">get</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.GET.InvalidRequest not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.GET.InvalidRequest test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.POST.HTTP.Mandatory" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	A.  TBD: First Draft:   HTTP status code 404
+	1.  The request entity is for a non-existent service
+	2.  The HTTP status code value is set to 404, corresponding to the message "Not Found"
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server observes the rules and conventions governing the use of HTTP POST operations.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.POST.HTTP.Mandatory</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFound">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="method">post</ctl:with-param>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.POST.HTTP.Mandatory not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.POST.HTTP.Mandatory test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.POST.InvalidQueryString" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity contains invalid KVP query strings:
+		a.  request~GetCapabilities!
+		b.  service~!'WMTS'!
+		c.  version~'1.0.0'!
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "MissingParameterValue".
+	4.  the response entity contains a locator attribute value of "service" or "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid query string.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.POST.InvalidQueryString</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">request~GetCapabilities!service~!'WMTS'version~'1.0.0</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">post</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">MissingParameterValue,MissingParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service,request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.POST.InvalidQueryString not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.POST.InvalidQueryString test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.POST.InvalidService" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity service parameter value is "BOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "service".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid service parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.POST.InvalidService</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">service=BOGUS&amp;request=GetCapabilities</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">post</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.POST.InvalidService not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.POST.InvalidService test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.KVP.POST.InvalidRequest" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity request parameter value is "GetBOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid request parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.KVP.POST.InvalidRequest</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="invalidQuery">service=WMTS&amp;request=GetBOGUS</xsl:variable>
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeKVPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+								<ctl:with-param name="method">post</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.KVP.POST.InvalidRequest not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.KVP.POST.InvalidRequest test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.XML.POST.HTTP.Mandatory" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	A.  TBD: First Draft:   HTTP status code 404
+	1.  The request entity is for a non-existent service
+	2.  The HTTP status code value is set to 404, corresponding to the message "Not Found"
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server observes the rules and conventions governing the use of HTTP XML POST operations.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.XML.POST.HTTP.Mandatory</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFoundXMLPOST">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.XML.POST.HTTP.Mandatory not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.XML.POST.HTTP.Mandatory test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.XML.POST.InvalidQueryString" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity is an invalid query document with mal-formed XML.
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "MissingParameterValue".
+	4.  the response entity contains a locator attribute value of "service" or "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid query document.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.XML.POST.InvalidQueryString</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeXMLException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetCapabilit1es serv1ce ="WMTS" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">MissingParameterValue,MissingParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service,request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.XML.POST.InvalidQueryString not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.XML.POST.InvalidQueryString test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.XML.POST.InvalidService" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity XML document service parameter value is "BOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "service".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid service parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.XML.POST.InvalidService</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeXMLException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetCapabilities service ="BOGUS" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.XML.POST.InvalidService not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.XML.POST.InvalidService test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.XML.POST.InvalidRequest" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity XML document request parameter value is "GetBOGUS".
+	2.  the response entity is a schema-valid ows:Exception document.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid request parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.XML.POST.InvalidRequest</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeXMLException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetBogus service ="WMTS" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.XML.POST.InvalidRequest not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.XML.POST.InvalidRequest test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.SOAP.POST.HTTP.Mandatory" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	A.  TBD: First Draft:   HTTP status code 404
+	1.  The request entity is for a non-existent service
+	2.  The HTTP status code value is set to 404, corresponding to the message "Not Found"
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server observes the rules and conventions governing the use of HTTP SOAP POST operations.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.SOAP.POST.HTTP.Mandatory</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFoundSOAPPOST">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.SOAP.POST.HTTP.Mandatory not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.SOAP.POST.HTTP.Mandatory test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.SOAP.POST.InvalidQueryString" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity is an invalid query document with mal-formed XML.
+	2.  the response entity is a SOAP 1.2 response message that contains a schema-valid ows:Exception document in the &lt;soap:Detail&gt; element.
+	3.  the response entity contains an exceptionCode attribute value of "MissingParameterValue".
+	4.  the response entity contains a locator attribute value of "service" or "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid query document.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.SOAP.POST.InvalidQueryString</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeSOAPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetCapabilit1es serv1ce ="WMTS" xmlns="http://www.opengis.net/ows/1.1" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">MissingParameterValue,MissingParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service,request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.SOAP.POST.InvalidQueryString not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.SOAP.POST.InvalidQueryString test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.SOAP.POST.InvalidService" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity XML document service parameter value is "BOGUS".
+	2.  the response entity is a a SOAP 1.2 response message that contains a schema-valid ows:Exception document in the &lt;soap:Detail&gt; element.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "service".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid service parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.SOAP.POST.InvalidService</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeSOAPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetCapabilities service ="BOGUS" xmlns="http://www.opengis.net/ows/1.1" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">service</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.SOAP.POST.InvalidService not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.SOAP.POST.InvalidService test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.SOAP.POST.InvalidRequest" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+	<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request entity XML document request parameter value is "GetBOGUS".
+	2.  the response entity is a a SOAP 1.2 response message that contains a schema-valid ows:Exception document in the &lt;soap:Detail&gt; element.
+	3.  the response entity contains an exceptionCode attribute value of "InvalidParameterValue".
+	4.  the response entity contains a locator attribute value of "request".
+	5.  the HTTP status code value is set to 400, corresponding to the message "Bad Request".</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns a valid exception report and HTTP status code in response to an invalid request parameter.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.SOAP.POST.InvalidRequest</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<xsl:variable name="testResult">
+							<ctl:call-function name="owsFunctions:provokeSOAPException">
+								<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+								<ctl:with-param name="invalidBody">
+									<wmts:GetBogus service ="WMTS" xmlns="http://www.opengis.net/ows/1.1" />
+								</ctl:with-param>
+								<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+								<ctl:with-param name="exceptionCodes">InvalidParameterValue</ctl:with-param>
+								<ctl:with-param name="locators">request</ctl:with-param>
+								<ctl:with-param name="oneOrAll">one</ctl:with-param>
+							</ctl:call-function>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$testResult = 'true' ">
+								<ctl:pass/>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:fail/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.SOAP.POST.InvalidRequest not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.SOAP.POST.InvalidRequest test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.RESTful.HTTP.Mandatory" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/wmts:ServiceMetadataURL/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	A.  TBD: First Draft:   HTTP status code 404
+	1.  The request entity is for a non-existent service
+	2.  The HTTP status code value is set to 404, corresponding to the message "Not Found"
+	</ctl:assertion>
+	<ctl:comment>Test that a WMTS server observes the rules and conventions governing the use of HTTP GET operations.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.RESTful.HTTP.Mandatory</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFound">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="method">get</ctl:with-param>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.RESTful.HTTP.Mandatory not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.RESTful.HTTP.Mandatory test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+<ctl:test name="wmts:Server.RESTful.InvalidQueryString" type="MandatoryIfImplemented">
+	<ctl:param name="metPrerequisites">Bootstrap prerequisites test result for this test - true or false</ctl:param>
+	<ctl:param name="selected">This test was selected for execution - true or false </ctl:param>
+	<ctl:param name="capabilitiesURL">/wmts:Capabilities/wmts:ServiceMetadataURL/@xlink:href</ctl:param>
+	<ctl:context>wmts:main</ctl:context>
+	<ctl:assertion>
+	1.  the request invokes a URL that consists of the ServiceMetadataURL advertised in the Service Metadata document, concatenated with "/Bogus".
+	2.  the server returns an HTTP status code of 404 (Not Found).</ctl:assertion>
+	<ctl:comment>Test that a WMTS server returns an HTTP status code of 404 (Not Found) in response to an invalid request.</ctl:comment>
+	<ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html#Server.RESTful.InvalidRequest</ctl:link>
+	<ctl:code>
+		<xsl:choose>
+			<xsl:when test="$metPrerequisites = 'true' ">
+				<xsl:choose>
+					<xsl:when test="$selected = 'true' ">
+						<ctl:call-function name="wwwFunctions:provokeNotFound">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="method">get</ctl:with-param>
+							<ctl:with-param name="bogusSuffix">/Bogus</ctl:with-param>
+						</ctl:call-function>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message>Server.RESTful.InvalidRequest not tested.</ctl:message>
+						<ctl:notTested/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<ctl:message>Server.RESTful.InvalidRequest test skipped because its prerequisites were not met.</ctl:message>
+				<ctl:skipped/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</ctl:code>
+</ctl:test>
+
+</ctl:package>

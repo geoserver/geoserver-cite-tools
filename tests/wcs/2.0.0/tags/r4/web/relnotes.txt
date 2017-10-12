@@ -1,0 +1,36 @@
+WCS 2.0 Test Suite Release Notes
+
+Changes included in latest revision:
+
+
+=== Changes included in R4 ===
+2011-08-17 summary (jyu)
+- added the missing DescribeCoverage parameter in the call-template
+- added xsds for gmlcov and updated corresponding wcs xsds
+- fixed contents in index.html and relnotes.txt
+
+=== Changes included in R3 ===
+2011-08-11 summary (jyu,kstegemoller)
+- added SOAP Tests
+- uploaded local schemas for test (not yet final)
+- updated structure of the test
+- added GetCapabilities test
+- added DescribeCoverage test
+- added test suite for RequestBase
+- added test suite for GetCoverage (only tests on req24 and 25)
+- added tests for extensions
+- added tests for the data model and the service model
+- added test for core
+
+=== Changes included in R0 ===
+2011-05-10 (jyu):
+- Added the GetKVP(OGC09-147r1) test suite
+
+=== Changes included in R1 ===
+2011-07-06 (jyu):
+- Added the PostXML(OGC09-148r1) test suite
+
+=== Changes included in R2 ===
+2011-07-011 (jyu):
+- Added Core (OGC09-110r3) test suite,completed GetCapabilities (KVP, POST), DescribeCoverage (KVP, POST), GetCoverage (KVP, POST) only for GML Coverage  (GetCoverage should be tested with a specific format encoding, therefore, will not be addressed in core unless mappings to gml are provided).
+- Update GetCoverage operations in both GetKVP(OGC09-147r1) and PostXML(OGC09-148r1) test suites, only responses in gml are supported.

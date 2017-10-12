@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc16.1 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1"
+  resultType="results">
+  <csw:Query typeNames="csw:Record">
+    <csw:ElementSetName>summary</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:Or>
+          <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\" >
+            <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:format</ogc:PropertyName>
+            <ogc:Literal>application/*xml</ogc:Literal>
+          </ogc:PropertyIsLike>
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:type</ogc:PropertyName>
+            <ogc:Literal>http://purl.org/dc/dcmitype/Image</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+        </ogc:Or>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

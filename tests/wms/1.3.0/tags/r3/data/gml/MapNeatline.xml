@@ -1,0 +1,21 @@
+<cblf:BlueLakeFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                                xmlns:cblf="http://www.opengis.net/cite/bluelake"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.opengis.net/cite/bluelake blueLakeFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:MapNeatline layer</gml:description>
+   <gml:name>cite:MapNeatline</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>-0.0042,-0.0024 0.0042,0.0024</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cblf:MapNeatlineFeature fid="BlueLake.115">
+         <cblf:neatline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>-0.0042,-0.0024 -0.0042,0.0024 0.0042,0.0024 0.0042,-0.0024 -0.0042,-0.0024</gml:coordinates>
+            </gml:LineString>
+         </cblf:neatline>
+      </cblf:MapNeatlineFeature>
+   </gml:featureMember>
+</cblf:BlueLakeFeatureCollection>

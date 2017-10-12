@@ -1,0 +1,1917 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+      <title>Abstract Test Suite for DGIWG WMS 1.3 Profile (STD-08-054-ed1.3)</title>
+      <style type="text/css" media="screen,print">
+    body {
+      color: black;
+      background: white;
+      font-family: Georgia, serif;
+    }
+    h1, h2, h3 {
+      font-family: Verdana, sans-serif;
+      color: #000099;
+      text-align: left;
+    }
+    h1 { font-size: 1.50em; margin-top: 2em;}
+    h2 { font-size: 1.25em; }
+    h3 { font-size: 1em; margin-bottom: 0.5em; }
+    li, li p, td p, td ul { margin: 0.25em; }
+    table {
+      margin-top: 0.5em;
+      margin-bottom: 1em;
+      border-collapse: collapse;
+    }
+    td, th { padding: 0.25em; }
+    caption {
+      font-family: Verdana, sans-serif;
+      font-size: 1em;
+      font-weight: bold;
+      margin-bottom: 0.5em;
+      color: #000099;
+      text-align: left;
+    }
+    dt {  margin-top: 0.5em; }
+    pre { background: AliceBlue; }
+    a:link img, a:visited img { border-style: none }
+    div.authorgroup, div.list-of-tables, div.toc { margin-bottom: 2em; }
+    div.itemizedlist ul { margin: 0.5em;}
+    p.title { margin: 0em;}
+    div.module { margin-left: 3em;}
+    div.atc th, td.rowhead {
+      font-weight: bold;
+      font-size: 0.80em;
+      font-family: verdana, sans-serif;
+      text-align: left;
+      vertical-align: top;
+      background: #eeeeee;
+      color: #000099;
+    }
+    div.revhistory th {
+      font-size: 0.80em;
+      font-family: verdana, sans-serif;
+      text-align: left;
+      background: #000099;
+      color: white;
+    }
+    </style>
+   </head>
+   <body>
+      <div class="header">
+         <img alt="OGC logo" src="http://www.opengeospatial.org/themes/ogc/logo.png"/>
+      </div>
+      <h1>Abstract Test Suite for DGIWG WMS 1.3 Profile (STD-08-054-ed1.3)</h1>
+      <div>
+         <h3>1 Test module dgiwg:profile_main</h3>
+         <div class="module">
+            <div class="atc">
+               <table frame="border">
+                  <caption>1.1 Test case dgiwg:profile_main</caption>
+                  <tbody>
+                     <tr>
+                        <th>Test case ID</th>
+                        <td>dgiwg:profile_main</td>
+                     </tr>
+                     <tr>
+                        <th>Test purpose</th>
+                        <td>Verify that this WMS Implementation supports the DGIWG Profile.</td>
+                     </tr>
+                     <tr>
+                        <th>Test method</th>
+                        <td>Pass if all the submodules and subtests (1.1.2 - 1.1.14) pass.</td>
+                     </tr>
+                     <tr>
+                        <th>Reference</th>
+                        <td/>
+                     </tr>
+                     <tr>
+                        <th>Test type</th>
+                        <td>Capability</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <h3>1.2 Test module dgiwg:test-config-complete</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.2.1 Test case dgiwg:test-config-complete</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:test-config-complete</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that complete test configuration metadata has been provided.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.2.1.2 - 1.2.1.4) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.2.2 Test case dgiwg:test-config-type-and-scale</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:test-config-type-and-scale</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each layer's type and a native scale are identified.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each layer's type and a native scale are identified.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.2.3 Test case dgiwg:test-config-vector-featureinfo</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:test-config-vector-featureinfo</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each vector layer has featureinfo data.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each vector layer has featureinfo data.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.2.4 Test case dgiwg:test-config-coverage-featureinfo</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:test-config-coverage-featureinfo</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each coverage layer has featureinfo data.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each coverage layer has featureinfo data.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.3 Test module dgiwg:limits</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.3.1 Test case dgiwg:limits</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:limits</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding the service's limits configuration are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.3.1.2 - 1.3.1.3) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.3.2 Test case dgiwg:layerlimit</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:layerlimit</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that if the service advertises a LayerLimit, its value is not less than 20.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if if the service advertises a LayerLimit, its value is not less than 20.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.1.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.3.3 Test case dgiwg:mapsize</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:mapsize</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that if the server limits the width and height of the map that can be retrieved, they are &gt;= 800</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if if the server limits the width and height of the map that can be retrieved, they are &gt;= 800</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.1.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.4 Test module dgiwg:layer-visibility</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.4.1 Test case dgiwg:layer-visibility</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:layer-visibility</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding layers' visibility configuration are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.4.1.2 - 1.4.1.3) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.2</a>; <a href="">Section 4.1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.4.2 Test case dgiwg:subsetable-and-resizable</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:subsetable-and-resizable</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that all layers published by the server are subsetable and resizable.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all layers published by the server are subsetable and resizable.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.2.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.4.3 Test case dgiwg:scales</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:scales</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each layer supports scales from at least 4x to at least 0.25x the native scale(s) or resolution(s) of the underlying datasets.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each layer supports scales from at least 4x to at least 0.25x the native scale(s) or resolution(s) of the underlying datasets.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 4.1.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.5 Test module dgiwg:layer-portrayal</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.5.1 Test case dgiwg:layer-portrayal</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:layer-portrayal</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding layers' portrayal are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.5.1.2 - 1.5.1.5) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.3</a>; <a href="">Section 4.2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <h3>1.5.2 Test module dgiwg:bathymetric-and-elevation-styles</h3>
+               <div class="module">
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.2.1 Test case dgiwg:bathymetric-and-elevation-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:bathymetric-and-elevation-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that for each named layer that portrays bathymetric or elevation data, styles named "shaded" and "hypsometric" are advertised.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if all the submodules and subtests (1.5.2.1.2 - 1.5.2.1.3) pass.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 3.3.1, Test type 1</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.2.2 Test case dgiwg:bathymetric-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:bathymetric-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the style for bathymetric data shall be "hypsometric".</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the style for bathymetric data shall be "hypsometric".</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 3.3.1, Test type 1</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.2.3 Test case dgiwg:elevation-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:elevation-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the style for elevation data shall be "shaded".</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the style for elevation data shall be "shaded".</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 3.3.1, Test type 1</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.5.3 Test case dgiwg:bathymetric-and-elevation-portrayal</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:bathymetric-and-elevation-portrayal</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that for style "shaded" on a bathymetric or elevation data layer, the map is portrayed correctly.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if for style "shaded" on a bathymetric or elevation data layer, the map is portrayed correctly.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.3.1, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.5.4 Test case dgiwg:bathymetric-and-elevation-portrayal</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:bathymetric-and-elevation-portrayal</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that for style "hypsometric" on a bathymetric or elevation data layer, the map is portrayed correctly.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if for style "hypsometric" on a bathymetric or elevation data layer, the map is portrayed correctly.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.3.1, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <h3>1.5.5 Test module dgiwg:default-bathymetric-and-elevation-styles</h3>
+               <div class="module">
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.5.1 Test case dgiwg:default-bathymetric-and-elevation-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:default-bathymetric-and-elevation-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the default style for each bathymetry layer is "hypsometric", and the default style for each elevation layer is "shaded".</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if all the submodules and subtests (1.5.5.1.2 - 1.5.5.1.3) pass.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.2.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.5.2 Test case dgiwg:default-bathymetric-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:default-bathymetric-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the default style for each bathymetry layer is "hypsometric".</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the default style for each bathymetry layer is "hypsometric".</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.2.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.5.5.3 Test case dgiwg:default-elevation-styles</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:default-elevation-styles</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the default style for each elevation layer is "shaded".</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the default style for each elevation layer is "shaded".</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.2.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+            <h3>1.6 Test module dgiwg:supported-crs</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.1 Test case dgiwg:supported-crs</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:supported-crs</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding supported Coordinate Reference Systems are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.6.1.2 - 1.6.1.8) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.2 Test case dgiwg:crs84</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:crs84</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer advertises support for CRS:84.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer advertises support for CRS:84.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.3 Test case dgiwg:epsg4326</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:epsg4326</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer advertises support for EPSG:4326.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer advertises support for EPSG:4326.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.4 Test case dgiwg:epsg3395</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:epsg3395</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer advertises support for EPSG:3395.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer advertises support for EPSG:3395.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.5 Test case dgiwg:epsg32661</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:epsg32661</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer that intersects the northern hemisphere supports the UPS north zone CRS EPSG:32661.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer that intersects the northern hemisphere supports the UPS north zone CRS EPSG:32661.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.6 Test case dgiwg:epsg32761</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:epsg32761</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer that intersects the southern hemisphere supports the UPS south zone CRS EPSG:32761.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer that intersects the southern hemisphere supports the UPS south zone CRS EPSG:32761.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.7 Test case dgiwg:utm-north</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:utm-north</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer advertises support for each of the UTM North CRSs it intersects.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer advertises support for each of the UTM North CRSs it intersects.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.6.8 Test case dgiwg:utm-south</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:utm-south</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each named layer advertises support for each of the UTM South CRSs it intersects.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each named layer advertises support for each of the UTM South CRSs it intersects.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.4.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.7 Test module dgiwg:getmap-formats</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.7.1 Test case dgiwg:getmap-formats</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:getmap-formats</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding supported GetMap output formats are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.7.1.2 - 1.7.1.5) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.5</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.7.2 Test case dgiwg:png</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:png</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the server advertises support for PNG output.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the server advertises support for PNG output.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.5.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.7.3 Test case dgiwg:jpeg</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:jpeg</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the server advertises support for JPEG output.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the server advertises support for JPEG output.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.5.3, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.7.4 Test case dgiwg:gif</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:gif</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the server advertises support for GIF output.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the server advertises support for GIF output.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.5.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.7.5 Test case dgiwg:png-properties</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:png-properties</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that pNG output does not include gamma-correction, color-balance, and colorimetric profile.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if pNG output does not include gamma-correction, color-balance, and colorimetric profile.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.5.2, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.8 Test module dgiwg:layer-transparency</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.8.1 Test case dgiwg:layer-transparency</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:layer-transparency</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding layers' transparency are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.8.1.2 - 1.8.1.5) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.6</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.8.2 Test case dgiwg:vector-layers-not-opaque</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:vector-layers-not-opaque</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that no vector named layers are advertised as opaque.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if no vector named layers are advertised as opaque.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.6.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.8.3 Test case dgiwg:vectors-support-transparency</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:vectors-support-transparency</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that for a vector layer, GetMap returns transparent pixels for pixels not covered by features.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if for a vector layer, GetMap returns transparent pixels for pixels not covered by features.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.6.1, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.8.4 Test case dgiwg:coverages-support-transparency</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:coverages-support-transparency</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that for each named layer, GetMap returns transparent pixels for pixels outside of the bounds of the data.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if for each named layer, GetMap returns transparent pixels for pixels outside of the bounds of the data.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.6.1, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.8.5 Test case dgiwg:vector-overlaying-coverage</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:vector-overlaying-coverage</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that when a vector layer overalys a raster or coverage layer, the coverage layer is visible.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if when a vector layer overalys a raster or coverage layer, the coverage layer is visible.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.6.1, Test type 3</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.9 Test module dgiwg:multidimensional-data</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.9.1 Test case dgiwg:multidimensional-data</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:multidimensional-data</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding multidimensional data are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.9.1.2) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.7</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <h3>1.9.2 Test module dgiwg:layers-with-dims</h3>
+               <div class="module">
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.9.2.1 Test case dgiwg:layers-with-dims</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:layers-with-dims</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that layers with dimensions can generate 2D still images.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if all the submodules and subtests (1.9.2.1.2) pass.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 3.7.1, Test type 1</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.9.2.2 Test case dgiwg:layer-with-dims</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:layer-with-dims</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that each named layer with a dimension can generate a 2D still image.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if each named layer with a dimension can generate a 2D still image.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 3.7.1, Test type 1</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+            <h3>1.10 Test module dgiwg:layer-structure-and-granularity</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.10.1 Test case dgiwg:layer-structure-and-granularity</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:layer-structure-and-granularity</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding structure and granularity of the layers are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.10.1.2 - 1.10.1.3) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.8</a>; <a href="">Section 4.3</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.10.2 Test case dgiwg:no-hierarchical-layers</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:no-hierarchical-layers</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that there are no hierarchical layers.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if there are no hierarchical layers.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.8.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.10.3 Test case dgiwg:vmap</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:vmap</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each VMAP layer uses the standard VMAP naming conventions.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each VMAP layer uses the standard VMAP naming conventions.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 4.3, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.11 Test module dgiwg:legend-support</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.11.1 Test case dgiwg:legend-support</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:legend-support</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding legend support are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.11.1.2) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.9</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.11.2 Test case dgiwg:legendurls</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:legendurls</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each style for each vector layer advertises at least one LegendURL in PNG, GIF, or JPEG Format</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each style for each vector layer advertises at least one LegendURL in PNG, GIF, or JPEG Format</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.9.1, Test level 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.12 Test module dgiwg:getfeatureinfo-operation</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.1 Test case dgiwg:getfeatureinfo-operation</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:getfeatureinfo-operation</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements regarding GetFeatureInfo operation are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.12.1.2 - 1.12.1.7) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10</a>; <a href="">Section 4.6</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.2 Test case dgiwg:vector-queryable</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:vector-queryable</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that all vector named layers are queryable.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all vector named layers are queryable.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.3 Test case dgiwg:coverage-queryable</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:coverage-queryable</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that all coverage named layers are queryable.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all coverage named layers are queryable.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.2, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.4 Test case dgiwg:info-formats</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:info-formats</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that getFeatureInfo supports at least one of XML, HTML, and PNG.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if getFeatureInfo supports at least one of XML, HTML, and PNG.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.3, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.5 Test case dgiwg:featureinfo-vector</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:featureinfo-vector</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the feature info for a vector layer lists attributes of the designated objects using human readable text rather than dictionary codes.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the feature info for a vector layer lists attributes of the designated objects using human readable text rather than dictionary codes.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.4, Test type 2</a>; <a href="">Section 4.6.1, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.6 Test case dgiwg:featureinfo-coverage</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:featureinfo-coverage</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the feature info for a coverage layer lists the measures at the designated location.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the feature info for a coverage layer lists the measures at the designated location.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.4, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.12.7 Test case dgiwg:feature_count</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:feature_count</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the maximum FEATURE_COUNT supported is not less than 100.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if the maximum FEATURE_COUNT supported is not less than 100.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 3.10.5, Test type 2</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <h3>1.13 Test module dgiwg:metadata-support</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.13.1 Test case dgiwg:metadata-support</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:metadata-support</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements for systems regarding metadata support are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.13.1.2 - 1.13.1.3) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 4.4</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.13.2 Test case dgiwg:metadata-layers-exist</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:metadata-layers-exist</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that each layer has at least one  that references a WMS metadata layer.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if each layer has at least one  that references a WMS metadata layer.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 4.4.1, Test type 1</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <h3>1.13.3 Test module dgiwg:metadata-layers-work</h3>
+               <div class="module">
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.13.3.1 Test case dgiwg:metadata-layers-work</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:metadata-layers-work</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the metadata layer for each layer supports GetMap and GetFeatureInfo requests.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if all the submodules and subtests (1.13.3.1.2 - 1.13.3.1.3) pass.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.4.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.13.3.2 Test case dgiwg:metadata-layers-work-get-map</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:metadata-layers-work-get-map</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the metadata layer supports GetMap requests.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the metadata layer supports GetMap requests.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.4.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.13.3.3 Test case dgiwg:metadata-layers-work-get-featureinfo</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:metadata-layers-work-get-featureinfo</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that the metadata layer supports GetFeatureInfo requests.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if the metadata layer supports GetFeatureInfo requests.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.4.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+            <h3>1.14 Test module dgiwg:getmap-responsiveness</h3>
+            <div class="module">
+               <div class="atc">
+                  <table frame="border">
+                     <caption>1.14.1 Test case dgiwg:getmap-responsiveness</caption>
+                     <tbody>
+                        <tr>
+                           <th>Test case ID</th>
+                           <td>dgiwg:getmap-responsiveness</td>
+                        </tr>
+                        <tr>
+                           <th>Test purpose</th>
+                           <td>Verify that the requirements for systems regarding GetMap request responsiveness are met.</td>
+                        </tr>
+                        <tr>
+                           <th>Test method</th>
+                           <td>Pass if all the submodules and subtests (1.14.1.2) pass.</td>
+                        </tr>
+                        <tr>
+                           <th>Reference</th>
+                           <td>
+                              <a href="">Section 4.5</a>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th>Test type</th>
+                           <td>Capability</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <h3>1.14.2 Test module dgiwg:performance</h3>
+               <div class="module">
+                  <div class="atc">
+                     <table frame="border">
+                        <caption>1.14.2.1 Test case dgiwg:performance</caption>
+                        <tbody>
+                           <tr>
+                              <th>Test case ID</th>
+                              <td>dgiwg:performance</td>
+                           </tr>
+                           <tr>
+                              <th>Test purpose</th>
+                              <td>Verify that if the WMS is local, no GetMap request takes more than 1 second per layer.</td>
+                           </tr>
+                           <tr>
+                              <th>Test method</th>
+                              <td>Pass if all the submodules and subtests (1.14.2.1.2) pass.</td>
+                           </tr>
+                           <tr>
+                              <th>Reference</th>
+                              <td>
+                                 <a href="">Section 4.5.1, Test type 2</a>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th>Test type</th>
+                              <td>Capability</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <h3>1.14.2.2 Test module dgiwg:performance-image-format</h3>
+                  <div class="module">
+                     <div class="atc">
+                        <table frame="border">
+                           <caption>1.14.2.2.1 Test case dgiwg:performance-image-format</caption>
+                           <tbody>
+                              <tr>
+                                 <th>Test case ID</th>
+                                 <td>dgiwg:performance-image-format</td>
+                              </tr>
+                              <tr>
+                                 <th>Test purpose</th>
+                                 <td>Verify that for GIF, PNG, and JPEG, no GetMap request takes more than 1 second per layer.</td>
+                              </tr>
+                              <tr>
+                                 <th>Test method</th>
+                                 <td>Pass if all the submodules and subtests (1.14.2.2.1.2) pass.</td>
+                              </tr>
+                              <tr>
+                                 <th>Reference</th>
+                                 <td>
+                                    <a href="">Section 4.5.1, Test type 2</a>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <th>Test type</th>
+                                 <td>Capability</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                     <div class="atc">
+                        <table frame="border">
+                           <caption>1.14.2.2.2 Test case dgiwg:performance-get-map</caption>
+                           <tbody>
+                              <tr>
+                                 <th>Test case ID</th>
+                                 <td>dgiwg:performance-get-map</td>
+                              </tr>
+                              <tr>
+                                 <th>Test purpose</th>
+                                 <td>Verify that getMap request for each layer takes less than 1 second.</td>
+                              </tr>
+                              <tr>
+                                 <th>Test method</th>
+                                 <td>Pass if getMap request for each layer takes less than 1 second.</td>
+                              </tr>
+                              <tr>
+                                 <th>Reference</th>
+                                 <td>
+                                    <a href="">Section 4.5.1, Test type 2</a>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <th>Test type</th>
+                                 <td>Capability</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc103.1 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1" resultType="results">
+  <csw:Query typeNames="csw:Record">
+      <csw:ElementSetName>summary</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:Overlaps>
+            <ogc:PropertyName xmlns:ows="http://www.opengis.net/ows">ows:BoundingBox</ogc:PropertyName>
+            <gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:6.11.2:4326">
+              <gml:lowerCorner>40.0 -8.0</gml:lowerCorner>
+              <gml:upperCorner>46.0 0.0</gml:upperCorner>
+            </gml:Envelope>
+          </ogc:Overlaps>
+        </ogc:Filter>
+      </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

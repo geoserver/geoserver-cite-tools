@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ctl:package
+ xmlns:context="http://www.opengis.net/context"
+ xmlns:sld="http://www.opengis.net/sld"
+ xmlns:wmc="http://cite.opengeospatial.org/context/1.1.0/ets/ctl"
+ xmlns:functions="http://cite.opengeospatial.org/context/1.1.0/ets/ctl/functions.xml"
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:ogc="http://www.opengis.net/ogc"
+ xmlns:parsers="http://www.occamlab.com/te/parsers"
+ xmlns:saxon="http://saxon.sf.net/"
+ xmlns:wms="http://www.opengis.net/wms"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+>
+
+   <ctl:suite name="wmc:compliance_suite">
+      <ctl:title>Web Map Context Documents 1.1.0</ctl:title>
+      <ctl:description>Validates that a Web Map Context 1.1.0 document is compliant.</ctl:description>
+      <ctl:link>docs/context/1.1.0/</ctl:link>
+      <ctl:starting-test>wmc:main</ctl:starting-test>
+   </ctl:suite>
+
+   <ctl:test name="wmc:main">
+      <ctl:assertion>Web Map Context 1.1.0 Tests</ctl:assertion>
+      <ctl:code>
+         <xsl:variable name="form-values">
+            <ctl:form xmlns="">
+               <h2>Web Map Context 1.1.0 Document Validation</h2>
+               <fieldset>
+                  <legend><b>Validate by URL</b></legend>
+                  <blockquote>
+                     Enter the URL for an online context document:<br/>
+                     <input name="url" size="100" type="text" value=""/>
+                  </blockquote>
+               </fieldset>
+               <br/><br/>
+               <fieldset>
+                  <legend><b>Validate by Direct Input</b></legend>
+                  <blockquote>
+                     Input the context document you would like to validate in the text area below:<br/>
+                     <textarea name="text" rows="15" cols="80"/>
+                  </blockquote>
+               </fieldset>
+               <br/><br/>
+               <fieldset>
+                  <legend><b>Follow Links Option</b></legend>
+                  <blockquote>
+                     <table border="3" padding="3">
+                        <tr>
+                           <td align="center">
+                              <input name="followlinks" type="checkbox" value="followlinks" checked="checked"/>
+                           </td>
+                           <td align="left">Check integrity of linked resources.</td>
+                        </tr>
+                     </table>
+                  </blockquote>
+               </fieldset>
+               <br/><br/>
+               <fieldset>
+                  <legend><b>Unique IDs Recommendation</b></legend>
+                  <blockquote>
+                     <table border="3" padding="3">
+                        <tr>
+                           <td align="center">
+                              <input name="uniqueids" type="checkbox" value="uniqueids" checked="checked"/>
+                           </td>
+                           <td align="left">Validate the uniqueness of the root element's id.</td>
+                        </tr>
+                     </table>
+                  </blockquote>
+               </fieldset>
+               <input type="submit" value="OK"/>
+            </ctl:form>
+         </xsl:variable>
+
+         <xsl:variable name="url" select="normalize-space($form-values/values/value[@key='url'])"/>
+         <xsl:variable name="followlinks" select="$form-values/values/value[@key='followlinks'] = 'followlinks'"/>
+         <xsl:variable name="uniqueids" select="$form-values/values/value[@key='uniqueids'] = 'uniqueids'"/>
+
+         <xsl:variable name="doc">
+            <xsl:choose>
+               <xsl:when test="$url = ''">
+                  <ctl:parse>
+                     <ctl:content>
+                        <xsl:value-of select="$form-values/values/value[@key='text']"/>
+                     </ctl:content>
+                  </ctl:parse>
+               </xsl:when>
+               <xsl:otherwise>
+                  <ctl:request>
+                     <ctl:url>
+                        <xsl:value-of select="$url"/>
+                     </ctl:url>
+                     <ctl:method>get</ctl:method>
+                  </ctl:request>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:variable>
+
+         <xsl:choose>
+            <xsl:when test="$doc/context:ViewContext">
+               <ctl:for-each select="$doc/context:ViewContext" label="The context document" label-expr="concat('Context document ', context:General/context:Title)">
+                  <ctl:call-test name="wmc:single-context">
+                     <ctl:with-param name="followlinks" select="$followlinks"/>
+                     <ctl:with-param name="uniqueids" select="$uniqueids"/>
+                  </ctl:call-test>
+               </ctl:for-each>
+            </xsl:when>
+            <xsl:when test="$doc/context:ViewContextCollection">
+               <ctl:for-each select="$doc/context:ViewContextCollection">
+                  <ctl:call-test name="wmc:context-collection">
+                     <ctl:with-param name="followlinks" select="$followlinks"/>
+                     <ctl:with-param name="uniqueids" select="$uniqueids"/>
+                  </ctl:call-test>
+               </ctl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+               <ctl:message>Error: The root element must be named ViewContext or ViewContextCollection in the &quot;http://www.opengis.net/context&quot; namespace.</ctl:message>
+               <ctl:fail/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:single-context">
+      <ctl:param name="followlinks">Follow Links option flag.</ctl:param>
+      <ctl:param name="uniqueids">Unique IDs recommendation flag.</ctl:param>
+      <ctl:context>A ViewContext element</ctl:context>
+      <ctl:assertion>{$context} is valid.</ctl:assertion>
+      <ctl:code>
+         <ctl:call-test name="wmc:schema-validation"/>
+         <ctl:call-test name="wmc:normative-schema"/>
+         <ctl:call-test name="wmc:srs"/>
+         <xsl:if test="$followlinks = 'true'">
+           <ctl:call-test name="wmc:logourl"/>
+           <ctl:call-test name="wmc:descriptionurl"/>
+           <ctl:call-test name="wmc:dataurls"/>
+           <ctl:call-test name="wmc:metadataurls"/>
+           <ctl:call-test name="wmc:legendurls"/>
+           <ctl:call-test name="wmc:sldresources"/>
+           <ctl:call-test name="wmc:check-layers"/>
+         </xsl:if>
+         <xsl:if test="$uniqueids = 'true'">
+           <ctl:call-test name="wmc:unique-ids"/>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:context-collection">
+      <ctl:param name="followlinks">Follow Links option flag.</ctl:param>
+      <ctl:param name="uniqueids">Unique IDs recommendation flag.</ctl:param>
+      <ctl:context>A ViewContextCollection element</ctl:context>
+      <ctl:assertion>Context Collection Tests</ctl:assertion>
+      <ctl:code>
+         <ctl:call-test name="wmc:collection-schema-validation"/>
+         <xsl:if test="$uniqueids = 'true'">
+            <ctl:call-test name="wmc:unique-ids"/>
+         </xsl:if>
+         <xsl:if test="$followlinks = 'true'">
+            <xsl:for-each select="context:ViewContextReference[@version='1.1.0']">
+               <xsl:variable name="title" select="context:Title"/>
+               <xsl:variable name="doc">
+                  <ctl:request>
+                     <ctl:url>
+                        <xsl:value-of select="context:ContextURL/context:OnlineResource/@xlink:href"/>
+                     </ctl:url>
+                     <ctl:method>get</ctl:method>
+                  </ctl:request>
+               </xsl:variable>
+               <xsl:if test="not($doc/context:ViewContext)">
+                  <ctl:message>Error: Could not retrieve context <xsl:value-of select="context:ContextURL/context:OnlineResource/@xlink:href"/></ctl:message>
+                  <ctl:fail/>
+               </xsl:if>
+               <ctl:for-each select="$doc/context:ViewContext" label="Each context document" label-expr="concat('Context document ', $title)">
+                  <ctl:call-test name="wmc:single-context">
+                     <ctl:with-param name="followlinks" select="$followlinks"/>
+                     <ctl:with-param name="uniqueids" select="$uniqueids"/>
+                  </ctl:call-test>
+               </ctl:for-each>
+            </xsl:for-each>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:unique-ids">
+      <ctl:context>ViewContext or ViewContextCollection element</ctl:context>
+      <ctl:assertion>The id attribute on the root element is unique within the document.</ctl:assertion>
+      <ctl:link title="Context 1.1.0, Section 6.2.2"/>
+      <ctl:link title="Context 1.1.0, Section 7.1.3"/>
+      <ctl:code>
+         <xsl:variable name="id" select="string(@id)"/>
+         <xsl:if test="count(//*[@id = $id]) &gt; 1">
+            <ctl:fail/>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:schema-validation">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The context validates against the normative schema from the schema repository referred to in Annex A.</ctl:assertion>
+      <ctl:comment>Apache Xerces is used to validate the capabilities document.</ctl:comment>
+      <ctl:link title="Context 1.1.0, Section 6.1"/>
+      <ctl:link title="Context 1.1.0, Annex A"/>
+      <ctl:code>
+         <xsl:variable name="reparsed-capabilities">
+            <ctl:parse>
+               <ctl:content>
+                  <xsl:copy-of select="."/>
+               </ctl:content>
+               <parsers:XMLValidatingParser>
+                  <parsers:schemas>
+                     <parsers:schema type="url">http://schemas.opengis.net/context/1.1.0/context.xsd</parsers:schema>
+                  </parsers:schemas>
+               </parsers:XMLValidatingParser>
+            </ctl:parse>
+         </xsl:variable>
+         <xsl:if test="not($reparsed-capabilities/*)">
+            <ctl:fail/>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:collection-schema-validation">
+      <ctl:context>ViewContextCollection element</ctl:context>
+      <ctl:assertion>The context collection validates against the normative schema from the schema repository referred to in Annex C.</ctl:assertion>
+      <ctl:comment>Apache Xerces is used to validate the capabilities document.</ctl:comment>
+      <ctl:link title="Context 1.1.0, Annex C"/>
+      <ctl:code>
+         <xsl:variable name="reparsed-capabilities">
+            <ctl:parse>
+               <ctl:content>
+                  <xsl:copy-of select="."/>
+               </ctl:content>
+               <parsers:XMLValidatingParser>
+                  <parsers:schemas>
+                     <parsers:schema type="url">http://schemas.opengis.net/context/1.1.0/collection.xsd</parsers:schema>
+                  </parsers:schemas>
+               </parsers:XMLValidatingParser>
+            </ctl:parse>
+         </xsl:variable>
+         <xsl:if test="not($reparsed-capabilities/*)">
+            <ctl:fail/>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:normative-schema">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>If there is a schemaLocation attribute for the context namespace, the normative content of the schema document it refers to is identical to the normative schema from the schema repository referred to in Annex A.</ctl:assertion>
+      <ctl:link title="Context 1.1.0, Section 6.1"/>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(contains(normalize-space(@xsi:schemaLocation), 'http://www.opengis.net/context '))">
+               <ctl:message>No schemaLocation attribute provided for the http://www.opengis.net/context namespace.</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:variable name="schema-url" select="substring-before(concat(substring-after(normalize-space(@xsi:schemaLocation), 'http://www.opengis.net/context '), ' '), ' ')"/>
+               <xsl:variable name="normalized-schema">
+                  <xsl:call-template name="wmc:normalize-schema">
+                     <xsl:with-param name="schema" select="document($schema-url)"/>
+                  </xsl:call-template>
+               </xsl:variable>
+               <xsl:variable name="normalized-normative-schema">
+                  <xsl:call-template name="wmc:normalize-schema">
+                     <xsl:with-param name="schema" select="document('http://schemas.opengis.net/context/1.1.0/context.xsd')"/>
+                  </xsl:call-template>
+               </xsl:variable>
+               <xsl:for-each select="$normalized-normative-schema/objects/*">
+                  <xsl:variable name="element" select="."/>
+                  <xsl:if test="count($normalized-schema/objects/*[saxon:deep-equal(., $element, none, 'w')]) = 0">
+                     <ctl:message>Error: The schema does not define <xsl:value-of select="concat(name($element), ' ', $element/@name)"/> correctly.</ctl:message>
+                     <ctl:fail/>
+                  </xsl:if>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:srs">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>There are no layer SRS lists that do not include the current SRS for the context.</ctl:assertion>
+      <ctl:link title="Context 1.1.0, Section 6.4.1.5"/>
+      <ctl:code>
+        <xsl:variable name="currentSRS" select="string(context:General/context:BoundingBox/@SRS)"/>
+        <xsl:for-each select="context:LayerList/context:Layer[context:SRS and not(contains(context:SRS, $currentSRS))]">
+           <ctl:message>Error: The SRS element on Layer <xsl:value-of select="context:Name"/> is invalid because it does not contain &quot;<xsl:value-of select="$currentSRS"/>&quot;</ctl:message>
+           <ctl:fail/>
+        </xsl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:logourl">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The metadata for the LogoURL resource is correct.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.3.7"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:General/context:LogoURL)">
+               <ctl:message>No LogoURL element</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:General/context:LogoURL">
+                  <xsl:variable name="response">
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="context:OnlineResource/@xlink:href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <parsers:HTTPParser>
+                           <parsers:parse>
+                              <xsl:choose>
+                                 <xsl:when test="functions:image-format(@format) and @width and @height">
+                                    <parsers:ImageParser>
+                                       <parsers:width/>
+                                       <parsers:height/>
+                                    </parsers:ImageParser>
+                                 </xsl:when>
+                                 <xsl:otherwise>
+                                    <parsers:NullParser/>
+                                 </xsl:otherwise>
+                              </xsl:choose>
+                           </parsers:parse>
+                        </parsers:HTTPParser>
+                     </ctl:request>
+                  </xsl:variable>
+                  <ctl:call-test name="wmc:resource-format">
+                     <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the LogoURL resource"/>
+                     <ctl:with-param name="advertised-format" select="@format" label="the advertised format" label-expr="@format"/>
+                     <ctl:with-param name="actual-format" select="$response/response/headers/header[functions:to-lowercase(@name) = 'content-type']"/>
+                  </ctl:call-test>
+                  <xsl:if test="functions:image-format(@format) and @width and @height">
+                     <ctl:call-test name="wmc:resource-size">
+                        <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the LogoURL resource"/>
+                        <ctl:with-param name="advertised-width" select="@width" label="the advertised width" label-expr="@width"/>
+                        <ctl:with-param name="advertised-height" select="@height" label="the advertised height" label-expr="@height"/>
+                        <ctl:with-param name="actual-width" select="$response/response/content/parsers:ImageParser/parsers:width"/>
+                        <ctl:with-param name="actual-height" select="$response/response/content/parsers:ImageParser/parsers:height"/>
+                     </ctl:call-test>
+                  </xsl:if>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:descriptionurl">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The format for the DescriptionURL resource is correct.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.3.8"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:General/context:DescriptionURL)">
+               <ctl:message>No DescriptionURL element</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:General/context:DescriptionURL">
+                  <xsl:variable name="response">
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="context:OnlineResource/@xlink:href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <parsers:HTTPParser>
+                           <parsers:parse>
+                              <parsers:NullParser/>
+                           </parsers:parse>
+                        </parsers:HTTPParser>
+                     </ctl:request>
+                  </xsl:variable>
+                  <ctl:call-test name="wmc:resource-format">
+                     <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the DescriptionURL resource"/>
+                     <ctl:with-param name="advertised-format" select="@format" label="the advertised format" label-expr="@format"/>
+                     <ctl:with-param name="actual-format" select="$response/response/headers/header[functions:to-lowercase(@name) = 'content-type']"/>
+                  </ctl:call-test>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:dataurls">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The format for each DataURL resource is correct.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.7"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:LayerList/context:Layer/context:DataURL)">
+               <ctl:message>No DataURL elements</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:LayerList/context:Layer/context:DataURL">
+                  <xsl:variable name="response">
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="context:OnlineResource/@xlink:href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <parsers:HTTPParser>
+                           <parsers:parse>
+                              <parsers:NullParser/>
+                           </parsers:parse>
+                        </parsers:HTTPParser>
+                     </ctl:request>
+                  </xsl:variable>
+                  <ctl:call-test name="wmc:resource-format">
+                     <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the DataURL resource" label-expr="concat('the DataURL for Layer ', ../context:Name)"/>
+                     <ctl:with-param name="advertised-format" select="@format" label="the advertised format" label-expr="@format"/>
+                     <ctl:with-param name="actual-format" select="$response/response/headers/header[functions:to-lowercase(@name) = 'content-type']"/>
+                  </ctl:call-test>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:metadataurls">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The format for each MetadataURL resource is correct.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.8"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:LayerList/context:Layer/context:MetadataURL)">
+               <ctl:message>No MetadataURL elements</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:LayerList/context:Layer/context:MetadataURL">
+                  <xsl:variable name="response">
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="context:OnlineResource/@xlink:href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <parsers:HTTPParser>
+                           <parsers:parse>
+                              <parsers:NullParser/>
+                           </parsers:parse>
+                        </parsers:HTTPParser>
+                     </ctl:request>
+                  </xsl:variable>
+                  <ctl:call-test name="wmc:resource-format">
+                     <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the MetadataURL resource" label-expr="concat('the MetadataURL for Layer ', ../context:Name)"/>
+                     <ctl:with-param name="advertised-format" select="@format" label="the advertised format" label-expr="@format"/>
+                     <ctl:with-param name="actual-format" select="$response/response/headers/header[functions:to-lowercase(@name) = 'content-type']"/>
+                  </ctl:call-test>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:legendurls">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The metadata for each LegendURL resource is correct.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.10.5"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:LayerList/context:Layer/context:StyleList/context:Style/context:LegendURL)">
+               <ctl:message>No LegendURL elements</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:LayerList/context:Layer/context:StyleList/context:Style/context:LegendURL">
+                  <xsl:variable name="response">
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="context:OnlineResource/@xlink:href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <parsers:HTTPParser>
+                           <parsers:parse>
+                              <xsl:choose>
+                                 <xsl:when test="functions:image-format(@format) and @width and @height">
+                                    <parsers:ImageParser>
+                                       <parsers:width/>
+                                       <parsers:height/>
+                                    </parsers:ImageParser>
+                                 </xsl:when>
+                                 <xsl:otherwise>
+                                    <parsers:NullParser/>
+                                 </xsl:otherwise>
+                              </xsl:choose>
+                           </parsers:parse>
+                        </parsers:HTTPParser>
+                     </ctl:request>
+                  </xsl:variable>
+                  <ctl:call-test name="wmc:resource-format">
+                     <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the LegendURL resource" label-expr="concat('the LegendURL for Style ', ../context:Name, ' in Layer ', ../../../context:Name)"/>
+                     <ctl:with-param name="advertised-format" select="@format" label="the advertised format" label-expr="@format"/>
+                     <ctl:with-param name="actual-format" select="$response/response/headers/header[functions:to-lowercase(@name) = 'content-type']"/>
+                  </ctl:call-test>
+                  <xsl:if test="functions:image-format(@format) and @width and @height">
+                     <ctl:call-test name="wmc:resource-size">
+                        <ctl:with-param name="resource" select="context:OnlineResource/@xlink:href" label="the LegendURL resource" label-expr="concat('the LegendURL for Style ', ../context:Name, ' in Layer ', ../../../context:Name)"/>
+                        <ctl:with-param name="advertised-width" select="@width" label="the advertised width" label-expr="@width"/>
+                        <ctl:with-param name="advertised-height" select="@height" label="the advertised height" label-expr="@height"/>
+                        <ctl:with-param name="actual-width" select="$response/response/content/parsers:ImageParser/parsers:width"/>
+                        <ctl:with-param name="actual-height" select="$response/response/content/parsers:ImageParser/parsers:height"/>
+                     </ctl:call-test>
+                  </xsl:if>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:sldresources">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>Each OnlineResource source for a Styled Layer Descriptor can be retrieved.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.3.8"></ctl:link>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="not(context:LayerList/context:Layer/context:StyleList/context:Style/context:SLD/context:OnlineResource)">
+               <ctl:message>No SLD elements that contain an OnlineResource</ctl:message>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:for-each select="context:LayerList/context:Layer/context:StyleList">
+                  <xsl:for-each select="context:Style">
+                     <xsl:if test="context:SLD/context:OnlineResource">
+                        <xsl:variable name="href" select="string(context:SLD/context:OnlineResource/@xlink:href)"/>
+                        <xsl:variable name="style-name">
+                           <xsl:text>Style </xsl:text>
+                           <xsl:choose>
+                              <xsl:when test="context:Name">
+                                 <xsl:value-of select="context:Name"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="position()"/>
+                              </xsl:otherwise>
+                           </xsl:choose>
+                           <xsl:text> in Layer </xsl:text>
+                           <xsl:value-of select="../../context:Name"/>
+                        </xsl:variable>
+                        <xsl:choose>
+                           <xsl:when test="starts-with($href, '#')">
+                              <!-- It is unclear how to check references to inline SLDs, so allow any href beginning with # -->
+<!--
+                              <xsl:if test="not(id(substring($href, 2)))">
+                                 <ctl:message>Error with <xsl:value-of select="$style-name"/>: No elements with a valid id attribute of &quot;<xsl:value-of select="substring($href, 2)"/>&quot; in the context document.</ctl:message>
+                                 <ctl:fail/>
+                              </xsl:if>
+-->
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <xsl:variable name="response">
+                                 <ctl:request>
+                                    <ctl:url>
+                                       <xsl:value-of select="$href"/>
+                                    </ctl:url>
+                                    <ctl:method>get</ctl:method>
+                                    <parsers:HTTPParser>
+                                       <parsers:parse>
+                                          <parsers:NullParser/>
+                                       </parsers:parse>
+                                    </parsers:HTTPParser>
+                                 </ctl:request>
+                              </xsl:variable>
+                              <xsl:if test="$response/response/status/@code != 200">
+                                 <ctl:message>Error retrieving online resource <xsl:value-of select="$href"/> for <xsl:value-of select="$style-name"/>: HTTP status code <xsl:value-of select="$response/response/status/@code"/></ctl:message>
+                                 <ctl:fail/>
+                              </xsl:if>
+                           </xsl:otherwise>
+                        </xsl:choose>
+                     </xsl:if>
+                  </xsl:for-each>
+               </xsl:for-each>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-layers">
+      <ctl:context>ViewContext element</ctl:context>
+      <ctl:assertion>The essential layer information from layers derived from WMS version 1.0.0, 1.1.0, 1.1.1 servers is correct.</ctl:assertion>
+      <ctl:code>
+         <!-- Make a list of unique WMS 1.0.0, 1.1.0, or 1.1.1 server's capabilities documents -->
+         <xsl:variable name="capabilities">
+            <xsl:for-each select="context:LayerList/context:Layer/context:Server[@service='OGC:WMS' and (@version='1.0.0' or @version='1.1.0' or @version='1.1.1')]">
+               <xsl:variable name="version" select="string(@version)"/>
+               <xsl:variable name="href" select="string(context:OnlineResource/@xlink:href)"/>
+               <xsl:if test="not(../preceding-sibling::context:Layer/context:Server[@service='OGC:WMS' and @version=$version and context:OnlineResource/@xlink:href=$href])">
+                  <ctl:message>Retrieving capabilities for server <xsl:value-of select="$href"/></ctl:message>
+                  <server>
+                     <xsl:copy-of select="@version"/>
+                     <xsl:attribute name="href">
+                        <xsl:value-of select="$href"/>
+                     </xsl:attribute>
+                     <ctl:request>
+                        <ctl:url>
+                           <xsl:value-of select="$href"/>
+                        </ctl:url>
+                        <ctl:method>get</ctl:method>
+                        <ctl:param name="SERVICE">WMS</ctl:param>
+                        <ctl:param name="VERSION">
+                           <xsl:value-of select="@version"/>
+                        </ctl:param>
+                        <ctl:param name="REQUEST">GetCapabilities</ctl:param>
+                     </ctl:request>
+                  </server>
+               </xsl:if>
+            </xsl:for-each>
+         </xsl:variable>
+
+         <ctl:for-each select="context:LayerList/context:Layer/context:Server[@service='OGC:WMS' and (@version='1.0.0' or @version='1.1.0' or @version='1.1.1')]/.." label="each WMS 1.0.0, 1.1.0, or 1.1.1 Layer" label-expr="concat('layer &quot;', context:Name, '&quot;')">
+            <xsl:variable name="href" select="string(context:Server/context:OnlineResource/@xlink:href)"/>
+            <xsl:variable name="version" select="string(context:Server/@version)"/>
+            <ctl:call-test name="wmc:check-layer">
+               <ctl:with-param name="capabilities" select="$capabilities/server[@version=$version and @href=$href]/*"/>
+            </ctl:call-test>
+         </ctl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-layer">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>For {$context}, there is a matching layer in its server's capabilities XML.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1"></ctl:link>
+      <ctl:link title="Context 1.1.0 section 6.4.1.2"></ctl:link>
+      <ctl:code>
+         <xsl:variable name="layer-name" select="context:Name"/>
+         <xsl:choose>
+            <xsl:when test="not($capabilities/@version = context:Server/@version)">
+               <ctl:message>Error: The server did not return valid WMS <xsl:value-of select="context:Server/@version"/> capabilities XML.</ctl:message>
+               <ctl:fail/>
+            </xsl:when>
+            <xsl:when test="not($capabilities/Capability//Layer[Name = $layer-name])">
+               <ctl:message>Error: The server does not have a layer named <xsl:value-of select="$layer-name"/>.</ctl:message>
+               <ctl:fail/>
+            </xsl:when>
+            <xsl:otherwise>
+               <ctl:call-test name="wmc:check-queryable">
+                  <ctl:with-param name="capabilities" select="$capabilities"/>
+               </ctl:call-test>
+               <ctl:call-test name="wmc:check-srs">
+                  <ctl:with-param name="capabilities" select="$capabilities"/>
+               </ctl:call-test>
+               <ctl:call-test name="wmc:check-dimensionlist">
+                  <ctl:with-param name="capabilities" select="$capabilities"/>
+               </ctl:call-test>
+               <ctl:call-test name="wmc:check-formatlist">
+                  <ctl:with-param name="capabilities" select="$capabilities"/>
+               </ctl:call-test>
+               <ctl:call-test name="wmc:check-stylelist">
+                  <ctl:with-param name="capabilities" select="$capabilities"/>
+               </ctl:call-test>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-queryable">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>If the layer is queryable, then the matching layer from the server's capabilities XML is queryable.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1"></ctl:link>
+      <ctl:code>
+         <xsl:if test="functions:boolean-as-integer(@queryable) = 1">
+            <xsl:variable name="layer-name" select="context:Name"/>
+            <xsl:if test="not($capabilities/Capability//Layer[Name = $layer-name]/ancestor-or-self::Layer[@queryable][1]/@queryable = 1)">
+               <ctl:fail/>
+            </xsl:if>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-srs">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>All the SRSs in the layer's SRS list are available in the matching layer from the server's capabilities XML.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.5"></ctl:link>
+      <ctl:code>
+         <xsl:variable name="layer-name" select="context:Name"/>
+         <xsl:variable name="srs-list" select="functions:split(normalize-space(context:SRS), ' ')"/>
+         <xsl:for-each select="$srs-list/token">
+            <xsl:variable name="srs" select="string(.)"/>
+            <xsl:if test="not($capabilities/Capability//Layer[Name = $layer-name]/ancestor-or-self::Layer[contains(concat(' ', normalize-space(SRS), ' '), concat(' ', $srs, ' '))])">
+               <ctl:message>Error: The server's matching layer does not support SRS &quot;<xsl:value-of select="$srs"/>&quot;.</ctl:message>
+               <ctl:fail/>
+            </xsl:if>
+         </xsl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-dimensionlist">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>All the Dimensions in the layer's DimensionList are available in the matching layer from the server's capabilities XML.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.6"></ctl:link>
+      <ctl:code>
+         <xsl:variable name="layer-name" select="context:Name"/>
+         <xsl:for-each select="context:DimensionList/context:Dimension">
+            <xsl:variable name="dim-name" select="string(@name)"/>
+            <xsl:variable name="dim-units" select="string(@units)"/>
+            <xsl:if test="not($capabilities/Capability//Layer[Name = $layer-name]/ancestor-or-self::Layer/Dimension[@name = $dim-name and @units = $dim-units])">
+               <ctl:message>Error: The server's matching layer does not support Dimension &quot;<xsl:value-of select="$dim-name"/>&quot;.</ctl:message>
+               <ctl:fail/>
+            </xsl:if>
+         </xsl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-formatlist">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>All the formats in the layer's FormatList are available for the GetMap request in the server's capabilities XML.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.9"></ctl:link>
+      <ctl:code>
+         <xsl:for-each select="context:FormatList/context:Format">
+            <xsl:variable name="format" select="string(.)"/>
+            <xsl:if test="not($capabilities/Capability/Request/GetMap/Format[functions:mime-match($format, .) = 'true'])">
+               <ctl:message>Error: The server does not support format &quot;<xsl:value-of select="$format"/>&quot;.</ctl:message>
+               <ctl:fail/>
+            </xsl:if>
+         </xsl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:check-stylelist">
+      <ctl:param name="capabilities">Capabilities XML for the server</ctl:param>
+      <ctl:context>The layer to check</ctl:context>
+      <ctl:assertion>All the named Styles in the layer's StyleList are available in the matching layer from the server's capabilities XML.</ctl:assertion>
+      <ctl:link title="Context 1.1.0 section 6.4.1.10"></ctl:link>
+      <ctl:code>
+         <xsl:variable name="layer-name" select="context:Name"/>
+         <xsl:for-each select="context:StyleList/context:Style/context:Name">
+            <xsl:variable name="style" select="string(.)"/>
+            <xsl:if test="not($capabilities/Capability//Layer[Name = $layer-name]/ancestor-or-self::Layer/Style[Name = $style])">
+               <ctl:message>Error: The server's matching layer does not support named style &quot;<xsl:value-of select="$style"/>&quot;.</ctl:message>
+               <ctl:fail/>
+            </xsl:if>
+         </xsl:for-each>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:resource-format">
+      <ctl:param name="resource">The URL of a resource</ctl:param>
+      <ctl:param name="advertised-format">The advertised format for the resource</ctl:param>
+      <ctl:param name="actual-format">The actual format of the resource</ctl:param>
+      <ctl:assertion>The MIME-type returned for {$resource} is {$advertised-format}.</ctl:assertion>
+      <ctl:code>
+         <xsl:if test="functions:mime-match($actual-format, $advertised-format) = 'false'">
+            <ctl:message>Error: The actual MIME-type for '<xsl:value-of select="$resource"/>' is '<xsl:value-of select="$actual-format"/>'</ctl:message>
+            <ctl:fail/>
+         </xsl:if>
+      </ctl:code>
+   </ctl:test>
+
+   <ctl:test name="wmc:resource-size">
+      <ctl:param name="resource">The URL of a resource</ctl:param>
+      <ctl:param name="advertised-width">The advertised width for the resource</ctl:param>
+      <ctl:param name="advertised-height">The advertised height for the resource</ctl:param>
+      <ctl:param name="actual-width">The actual width of the resource</ctl:param>
+      <ctl:param name="actual-height">The actual height of the resource</ctl:param>
+      <ctl:assertion>The size of {$resource} is {$advertised-width}x{$advertised-height}.</ctl:assertion>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="string($actual-width) = '' or string($actual-height) = ''">
+               <ctl:message>Error: Could not determine size of '<xsl:value-of select="$resource"/>'.</ctl:message>
+               <ctl:fail/>
+            </xsl:when>
+            <xsl:when test="not($actual-width = $advertised-width and $actual-height = $advertised-height)">
+               <ctl:message>Error: The actual size of '<xsl:value-of select="$resource"/>' is <xsl:value-of select="$actual-width"/>x<xsl:value-of select="$actual-height"/></ctl:message>
+               <ctl:fail/>
+            </xsl:when>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:test>
+
+   <xsl:template name="wmc:normalize-schema">
+      <xsl:param name="schema"/>
+      <xsl:variable name="targetNamespace" select="$schema/xsd:schema/@targetNamespace"/>
+      <objects xmlns="">
+         <xsl:for-each select="$schema/xsd:schema/*">
+            <xsl:call-template name="wmc:normalize-schema-element">
+               <xsl:with-param name="targetNamespace" select="$targetNamespace"/>
+            </xsl:call-template>
+         </xsl:for-each>
+      </objects>
+   </xsl:template>
+
+   <xsl:template name="wmc:normalize-schema-element">
+      <xsl:param name="targetNamespace"/>
+      <xsl:choose>
+         <xsl:when test="self::xsd:import">
+            <xsl:variable name="namespace" select="@namespace"/>
+            <xsl:for-each select="document(@schemaLocation)/xsd:schema/*">
+               <xsl:call-template name="wmc:normalize-schema-element">
+                  <xsl:with-param name="targetNamespace" select="$namespace"/>
+               </xsl:call-template>
+            </xsl:for-each>
+         </xsl:when>
+         <xsl:when test="self::xsd:include">
+            <xsl:for-each select="document(@schemaLocation)/xsd:schema/*">
+               <xsl:call-template name="wmc:normalize-schema-element">
+                  <xsl:with-param name="targetNamespace" select="$targetNamespace"/>
+               </xsl:call-template>
+            </xsl:for-each>
+         </xsl:when>
+         <xsl:when test="self::xsd:annotation"/>
+         <xsl:otherwise>
+            <xsl:copy>
+               <xsl:attribute name="targetNamespace">
+                  <xsl:value-of select="$targetNamespace"/>
+               </xsl:attribute>
+               <xsl:for-each select="@*">
+                  <xsl:sort select="local-name()"/>
+                  <xsl:copy/>
+               </xsl:for-each>
+               <xsl:for-each select="*|text()">
+                  <xsl:call-template name="wmc:normalize-schema-element">
+                     <xsl:with-param name="targetNamespace" select="$targetNamespace"/>
+                  </xsl:call-template>
+               </xsl:for-each>
+            </xsl:copy>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+</ctl:package>
+

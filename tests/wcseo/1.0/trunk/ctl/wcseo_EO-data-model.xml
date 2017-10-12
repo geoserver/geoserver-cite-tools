@@ -1,0 +1,387 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+
+	<ctl:test name="wcseo:EO-data-model">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Test EO data model.</ctl:assertion>
+    		<ctl:code>
+			<ctl:call-test name="wcseo:req1">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req2">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req3">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req4">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req5">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req6">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req7">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req8">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req9">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req10">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req11">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req12">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req13">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req14">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req15">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req16">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req17">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req18">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req19">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req20">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req21">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req22">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req23">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req24">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req25">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 	
+			<ctl:call-test name="wcseo:req26">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req27">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req28">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 			
+    		</ctl:code>
+  	</ctl:test>
+  	
+  	<ctl:test name="wcseo:req1">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req1:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+  	
+  	<ctl:test name="wcseo:req2">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req2:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+
+  	<ctl:test name="wcseo:req3">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req3:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+  	
+  	<ctl:test name="wcseo:req4">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req4:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+  	<ctl:test name="wcseo:req5">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req5:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+  	
+  	<ctl:test name="wcseo:req6">
+     		<ctl:param name="url"/> 	
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req6:</ctl:assertion>
+    		<ctl:code>
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req7">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req7:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req8">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req8:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req9">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req9:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req10">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req10:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req11">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req11:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req12">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req12:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req13">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req13:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req14">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req14:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req15">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req15:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req16">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req16:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req17">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req17:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req18">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req18:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req19">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req19:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req20">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req20:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req21">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req21:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req22">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req22:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req23">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req23:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req24">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req24:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+ 
+   	<ctl:test name="wcseo:req25">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req25:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req26">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req26:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+
+   	<ctl:test name="wcseo:req27">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req27:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test>
+   	
+   	<ctl:test name="wcseo:req28">
+      		<ctl:param name="url"/> 	
+     		<ctl:param name="Capabilities"/>
+     		<ctl:assertion>Req28:</ctl:assertion>
+     		<ctl:code>
+                     <ctl:message>[MESSAGE] TBD.</ctl:message>
+     		</ctl:code>
+   	</ctl:test> 
+</ctl:package>

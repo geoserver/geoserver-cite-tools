@@ -1,0 +1,7 @@
+SPS 2.0 Test Suite Release Notes
+
+----r0----
+
+2012-01-23 (rocky):
+- first revision
+

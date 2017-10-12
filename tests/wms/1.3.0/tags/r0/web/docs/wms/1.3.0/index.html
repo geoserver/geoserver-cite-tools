@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>WMS 1.3.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the following OGC specification:</p>
+<ul>
+  <li><em>Web Map Server Implementation Specification</em>, version 1.3.0 <a href="http://portal.opengeospatial.org/files/?artifact_id=14416">[OGC 06-042]</a></li>
+</ul>
+
+
+<h2>What is tested</h2>
+<ul>
+  <li><strong>All implementations</strong></li>
+    <ul>
+      <li>Dataset independent GetCapabilities, GetMap, and GetFeatureInfo requests, as derived from the capabilities.</li>
+    </ul>
+  </li>
+  <li><strong>Basic conformance class</strong></li>
+    <ul>
+      <li>Adds dataset specific GetMap requests.</li>
+    </ul>
+  </li>
+  <li><strong>Transaction conformance class</strong></li>
+    <ul>
+      <li>Adds dataset specific GetFeatureInfo requests.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>What is not tested</h2>
+<ul>
+  <li>The TIME and ELEVATION dimensions or any custom dimensions.</li>
+</ul>
+</body>
+
+<h2><a name="requirements">Test requirements</a></h2>
+<p>
+  To ensure all of the tests in the test suite produce correct results, WMS implementations must meet the following requirements:
+</p>
+<ul>
+  <li><strong>All implementations</strong></li>
+  <ul>
+    <li>If there are any Dimensions advertised in the capabilities, they must have default values.</li>
+  </ul>
+  <p/>
+  <li><strong>Basic conformance class</strong></li>
+  <ul>
+    <li>Must support image/png or image/gif for GetMap requests.</li>
+    <li>Must contain the test dataset in layers that are subsetable and resizable and support CRS:84.</li>
+    <li>The CRS:84 support must be precise up to the ten-thousandth of a degree.</li>
+    <li>The default style for the cite:Lakes layer must fill in the polygon with non-white pixels.</li>
+    <li>Servers that don't advertise a maximum image size must be able to generate maps as large as 1024x768.  All servers must be able to generate maps as small as 8x5.</li>
+  </ul>
+  <p/>
+  <li><strong>Queryable conformance class</strong></li>
+  <p>All for all of the Basic conformance class requirements, plus:</p>
+  <ul>
+    <li>GetFeatureInfo requests must be supported.</li>
+    <li>The cite:BasicPolygons layer must be queryable.</li>
+  </ul>
+</ul>
+
+<p>
+  <img src="images/warning.gif"/>Warning:
+  There are currently slight differences between the schema listed in Annex E.1 and the on-line version Annex E.1 refers to.
+  This test suite uses the on-line version.
+</p>
+
+<h2><a name="dataset">Test Dataset Description</a></h2>
+    <p>
+      The test dataset for the WMS 1.3.0 test suite is the same as the test dataset for the WMS 1.1.1 test suite.
+    </p>
+    <p>
+      <a href="../../../data/data-wms-1.3.0.zip">Download the test dataset</a>
+    </p>
+    <p>
+      The majority of the dataset is based on the
+      <a href="http://portal.opengeospatial.org/files/?artifact_id=7587&version=2">
+        Conformance Test Guidelines for OpenGIS Simple Features Specification for SQL, Revision 1.0
+      </a>.  This set of features makes up a map of a fictional location called Blue Lake.
+      The features are as described in the Simple Features Specification for SQL document,
+      except they have been converted to WGS84 coordinates and have been reoriented so the
+      area is centered at 0 degrees latitude, 0 degrees longitude.
+      Figure 1 shows an overview map of the area with the prominent features labeled.
+      Figure 2 shows the location of each of the data points.<br/>
+      <br/>
+      <table>
+        <caption align="bottom">Figure 1:  Overview of Blue Lake vicinity features</caption>
+        <tr><td><img src="images/bluelake_features.gif"/></td></tr>
+      </table>
+      <br/>
+      <table border="1">
+        <caption align="bottom">Figure 2:  Blue Lake vicinity data points</caption>
+        <tr><td><img src="images/bluelake_coordinates.gif"/></td></tr>
+      </table>
+      <br/>
+      Additional features have also been defined to test data at a larger scale.
+      These consist of a diamond and two overlapping squares, as shown in figure 3.
+      It does not matter which square appears on top.<br/>
+      <br/>
+      <table border="1">
+        <caption align="bottom">Figure 3:  Basic Polygon Features</caption>
+        <tr><td><img src="images/basic_polygons.gif"/></td></tr>
+      </table>
+      <br/>
+      The features are organized into layers as shown in table below.  The layers may be named
+      in any fashion, but must be titled exactly as shown in the table.<br/>
+      <br/>
+      <table border="1">
+        <caption align="bottom">Layer titles and features</caption>
+        <tr><td valign="top"><b>Layer Title</b></td>
+            <td><b>Features Contained</b></td></tr>
+        <tr><td valign="top">cite:BasicPolygons</td>
+            <td>Contains all the featrues shown in figure 3</td></tr>
+        <tr><td valign="top">cite:Bridges</td>
+            <td>Contains Cam Bridge</td></tr>
+        <tr><td valign="top">cite:Buildings</td>
+            <td>Contains the two buildings along Main Street</td></tr>
+        <tr><td valign="top">cite:DividedRoutes</td>
+            <td>Contains both lanes of Route 75</td></tr>
+        <tr><td valign="top">cite:Forests</td>
+            <td>Contains the State Forest polygon</td></tr>
+        <tr><td valign="top">cite:Lakes</td>
+            <td>Contains Blue Lake</td></tr>
+        <tr><td valign="top">cite:MapNeatline</td>
+            <td>Contains the border surrounding the Blue Lake vicinity</td></tr>
+        <tr><td valign="top">cite:NamedPlaces</td>
+            <td>Contains Ashton and Goose Island</td></tr>
+        <tr><td valign="top">cite:Ponds</td>
+            <td>Contains both pools of Stock Pond</td></tr>
+        <tr><td valign="top">cite:RoadSegments</td>
+            <td>Contains all the sections of Route 5, Main Street, and the dirt road</td></tr>
+        <tr><td valign="top">cite:Streams</td>
+            <td>Contains Cam Stream and the unnamed stream south of Blue Lake</td></tr>
+      </table>
+    </p>
+</body>
+</html>

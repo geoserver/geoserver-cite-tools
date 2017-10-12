@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+	<ctl:test name="wcseo:main">
+		<ctl:param name="url"/>
+		<ctl:assertion>Test the EO-WCS.</ctl:assertion>
+		<ctl:code>
+      
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>      
+      			<xsl:choose>
+        			<xsl:when test="string-length($Capabilities)!=0">
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp') or contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+							<ctl:message>[MESSAGE] Test the extensions when they are available</ctl:message>
+							<ctl:call-test name="wcseo:wcs-extensions">
+								<ctl:with-param name="url" select="$url"/>     
+								<ctl:with-param name="Capabilities" select="$Capabilities"/>						
+							</ctl:call-test>   
+							<ctl:message>[MESSAGE] Test the EO data model</ctl:message>
+							<ctl:call-test name="wcseo:EO-data-model">
+								<ctl:with-param name="url" select="$url"/>     
+								<ctl:with-param name="Capabilities" select="$Capabilities"/>						
+							</ctl:call-test>  
+							<ctl:message>[MESSAGE] Test the service model</ctl:message>
+							<ctl:call-test name="wcseo:service-model">
+								<ctl:with-param name="url" select="$url"/>     
+								<ctl:with-param name="Capabilities" select="$Capabilities"/>						
+							</ctl:call-test>  					
+						</xsl:when> 	
+						<xsl:otherwise>
+							<ctl:message>[FAILURE] Both get-kvp and soap are not supported.</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>        			 					
+      		  		</xsl:when> 	
+		        	<xsl:otherwise>
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+		        	</xsl:otherwise>
+      			</xsl:choose>
+		</ctl:code>
+	</ctl:test>   
+</ctl:package>

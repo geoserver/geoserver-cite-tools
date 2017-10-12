@@ -1,0 +1,6 @@
+<type-mappings xmlns:dc="http://purl.org/dc/elements/1.1/"> 
+  <objectType dc:type="http://purl.org/dc/dcmitype/Service">urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Service</objectType>
+  <objectType dc:type="http://purl.org/dc/dcmitype/Dataset">urn:ogc:def:ebRIM-ObjectType:OGC:Dataset</objectType>
+  <objectType dc:type="http://purl.org/dc/dcmitype/Text">urn:ogc:def:ebRIM-ObjectType:OGC:Document</objectType>
+  <objectType dc:type="http://purl.org/dc/dcmitype/Image">urn:ogc:def:ebRIM-ObjectType:OGC:Image</objectType>
+</type-mappings>

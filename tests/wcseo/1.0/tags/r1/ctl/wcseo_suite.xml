@@ -1,0 +1,47 @@
+<ctl:suite
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xhtml="http://www.w3.org/1999/xhtml"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ name="wcseo:suite"
+>
+  <ctl:title>wcseo test suite</ctl:title>
+  <ctl:description>Validates wcseo</ctl:description>
+  <ctl:link>docs/wcs/2.0/WCS_profile_earth-observation/1.0</ctl:link>
+  <ctl:starting-test>wcseo:main</ctl:starting-test>
+  <ctl:form>
+    <h1>OGC WCS 2.0 Application Profile - Earth Observation</h1>
+                  <p>The following options are only concerned with the wcseo
+Service tests</p>
+                  <p>The tests scripts are designed to test WCS
+implementations based on the OGC 10-140 specification.</p>
+                  <p>A complete list of tests in the test suite is available in the
+<a href="wcseo-ats.html" target="otherwindow">Abstract Test Suite</a> document, but note that not
+all of the tests are applicable to all servers. The number of tests
+actually executed will depend on the capabilities advertised in the
+capabilities URL supplied below as well as the other options
+selected below.</p>
+                  <h2>Preconditions</h2>
+                  <p>Conformance with OGC WCS2.0.</p>
+                  <p>requirements for the dataset, TBD</p>
+                  <br/>
+                  <p>Requirements for the offered coverages:</p>
+                  	<p>  1. The implementation provides at least one RectifiedEOCoverage, one ReferenceableEOCoverages, one and RectifiedStitchedMosaic, one ReferenceableStitchedMosaic and one DatasetSeries.</p>  
+                  	<p>  2. Do not use Id_Bogus as a ID, do not use Axis_Bogus as a axis label.</p> 
+                  <h2>Test entry</h2>
+                  <br/>
+                  <p>Enter a tes entry URL below. A typical GetCapabilities request will take this form:</p>
+                  <pre>
+    http://eoxserver.org/demo_stable/ows
+    http://ows.eox.at/cci/ows
+    http://ows.eox.at/ofc/ows
+</pre>
+                  <br/>
+    <xhtml:p>Enter the URL of the wcseo that you want to validate:</xhtml:p>
+    <xhtml:input type="text" name="url" size="100"/>
+    <xhtml:p/>    
+  
+    
+    <xhtml:input type="submit" value="OK"/>
+  </ctl:form>
+</ctl:suite>

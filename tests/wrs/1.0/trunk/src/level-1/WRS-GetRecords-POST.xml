@@ -1,0 +1,2192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package xmlns="http://www.occamlab.com/ctl" 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+  xmlns:ctl="http://www.occamlab.com/ctl" 
+  xmlns:parsers="http://www.occamlab.com/te/parsers" 
+  xmlns:p="http://teamengine.sourceforge.net/parsers" 
+  xmlns:saxon="http://saxon.sf.net/" 
+  xmlns:wrs="http://www.opengis.net/cat/wrs/1.0"
+  xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+  xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  xmlns:gml="http://www.opengis.net/gml" 
+  xmlns:ogc="http://www.opengis.net/ogc" 
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <ctl:test name="wrs:GetRecords-POST">
+    <param name="wrs.capabilities.doc"/>
+    <ctl:assertion>
+    A conforming implementation must satisfy all assertions for GetRecords XML requests using the POST method.
+    </ctl:assertion>
+    <ctl:code>
+      <xsl:variable name="wrs.GetRecords.post.url">
+        <xsl:value-of select="$wrs.capabilities.doc//ows:OperationsMetadata/ows:Operation[@name='GetRecords']/ows:DCP/ows:HTTP/ows:Post/@xlink:href"/>
+	  </xsl:variable>
+      <ctl:message>Target endpoint is <xsl:value-of select="$wrs.GetRecords.post.url"/></ctl:message>
+        
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc1.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>  
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc2.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>  
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc2.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc3.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc4.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc4.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc5.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc5.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc6.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc6.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc7.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc8.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc8.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc9.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc10.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc11.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc11.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc12.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc13.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc14.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc14.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc15.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc16.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc16.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc17.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc17.2">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc18.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc19.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc20.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc21.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc22.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc23.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc24.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc25.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  <ctl:call-test name="wrs:wrs-1.0.0-GetRecords-tc26.1">
+		<ctl:with-param name="wrs.GetRecords.post.url" select="$wrs.GetRecords.post.url"/>
+	  </ctl:call-test>
+	  
+    </ctl:code>
+  </ctl:test>
+   
+    <test name="wrs:wrs-1.0.0-GetRecords-tc1.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      A GetRecords request that omits all optional elements must produce a response containing only a summary of the result set.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element is empty.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">DefaultPhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc2.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies a "summary" view must 
+      include the corresponding record representations not exeeding the value 
+      of the default maxRecords attribute (10).
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 10 
+      rim:RegistryObject child elements.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+    <csw:ElementSetName>summary</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">TenRecordsPhase</ctl:with-param>
+	            </ctl:call-test>
+                <xsl:if test="count($response/csw:GetRecordsResponse/csw:SearchResults/rim:RegistryObject) != 10">
+                  <ctl:message>[FAILURE] 10 rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc2.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies a "brief" view must 
+      include the corresponding record representations not exeeding the value 
+      of the default maxRecords attribute (10).
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 10 
+      rim:RegistryObject child elements.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">TenRecordsPhase</ctl:with-param>
+	            </ctl:call-test>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response" />
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/wrs.sch</ctl:with-param>
+		            <ctl:with-param name="phase">BriefViewPhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc3.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies an ad hoc view must 
+      include the corresponding rim:RegistryObject representations not exeeding the value 
+      of the default maxRecords attribute (10).
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 10 
+      rim:RegistryObject child elements, each containing only the requested elements.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+    <csw:ElementName>rim:Classification</csw:ElementName>
+    <csw:ElementName>rim:VersionInfo</csw:ElementName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$response//rim:RegistryObject/*">
+                  <xsl:variable name="local-name" select="local-name(.)"/>
+                  <xsl:if test="empty(index-of(('Classification', 'VersionInfo'), $local-name))">
+                    <ctl:message>[FAILURE] Unexpected record property: <xsl:value-of select="$local-name"/> (<xsl:value-of select="../@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc4.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies sorting criteria
+      must include the corresponding record representations in the correct 
+      sort order.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 10 
+      rim:RegistryObject child elements; (3) the records are sorted by @id 
+      in ascending order.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:SortProperty>
+          <ogc:PropertyName>@id</ogc:PropertyName>
+          <ogc:SortOrder>ASC</ogc:SortOrder>
+        </ogc:SortProperty>
+      </ogc:SortBy>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">TenRecordsPhase</ctl:with-param>
+	            </ctl:call-test>
+                <xsl:if test="count($response/csw:GetRecordsResponse/csw:SearchResults/rim:RegistryObject) != 10">
+                  <ctl:message>[FAILURE] 10 rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="r1.id" select="$response//csw:SearchResults/*[1]/@id"/> 
+                <xsl:variable name="r2.id" select="$response//csw:SearchResults/*[2]/@id"/>
+                <xsl:variable name="r3.id" select="$response//csw:SearchResults/*[3]/@id"/>
+                <xsl:if test="(compare($r1.id,$r2.id) ne -1) or (compare($r2.id,$r3.id) ne -1)">
+                  <ctl:message>[FAILURE] Search results are not sorted correctly by @id in ascending order.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc4.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies an ad hoc view and 
+      sorting criteria must include the corresponding rim:RegistryObject representations 
+      in the correct sort order.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 10 
+      rim:RegistryObject child elements, each containing only the requested elements; 
+      (3) the records are sorted by rim:Slot[@name='http://purl.org/dc/terms/modified'] value 
+      in descending order.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+      typeNames="wrs:ExtrinsicObject">
+      <csw:ElementName>rim:Name</csw:ElementName>
+      <csw:ElementName>rim:Description</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+      <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:SortProperty>
+          <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+          <ogc:SortOrder>DESC</ogc:SortOrder>
+        </ogc:SortProperty>
+      </ogc:SortBy>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$response//wrs:ExtrinsicObject/*">
+                  <xsl:variable name="local-name" select="local-name(.)"/>
+                  <xsl:if test="empty(index-of(('Name', 'Description', 'Slot'), $local-name))">
+                    <ctl:message>[FAILURE] Unexpected property: <xsl:value-of select="$local-name"/> (<xsl:value-of select="../@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+                <xsl:variable name="dates" select="$response//rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()"/>
+                <xsl:if test="not(xsd:date($dates[1]) gt xsd:date($dates[2])) or not(xsd:date($dates[2]) gt xsd:date($dates[3]))">
+                  <ctl:message>[FAILURE] Search results are not sorted correctly by Slot[@name='http://purl.org/dc/terms/modified'] in descending order.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc5.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      BBOX operator must include all matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 1-10 matching 
+      rim:RegistryObject child elements.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+      typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name="http://purl.org/dc/terms/spatial"]</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:BBOX>
+            <ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/terms/spatial"]/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+            <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+              <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+              <gml:upperCorner>52.0 1.0</gml:upperCorner>
+            </gml:Envelope>
+          </ogc:BBOX>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">OneToTenRecordsPhase</ctl:with-param>
+	            </ctl:call-test>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) != count($response//csw:SearchResults/*)">
+                  <ctl:message>[FAILURE] Only rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="env">
+                  <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+                    <gml:upperCorner>52.0 1.0</gml:upperCorner>
+                  </gml:Envelope>
+                </xsl:variable>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 0">
+                    <ctl:message>[FAILURE] Envelopes do NOT intersect or @srsName value does not match 'urn:ogc:def:crs:EPSG:4326'(<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc5.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      spatial operator that does not refer to a geometry-valued property must 
+      include an exception report.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is a valid ows:ExceptionReport; (2) the reported exceptionCode is "InvalidParameterValuePhase".</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:BBOX>
+            <ogc:PropertyName>rim:Description/rim:LocalizedString/@value</ogc:PropertyName>
+            <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+              <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+              <gml:upperCorner>52.0 1.0</gml:upperCorner>
+            </gml:Envelope>
+          </ogc:BBOX>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">InvalidParameterValuePhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc6.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsEqualTo predicate (case-sensitive by default) must include all 
+      matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly one 
+      matching rim:RegistryObject instance; (3) csw:SearchResults/@nextRecord="0" </comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+   <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" 
+     typeNames="rim:RegistryObject">
+     <csw:ElementSetName>brief</csw:ElementSetName>
+     <csw:Constraint version="1.1.0">
+       <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+         <ogc:PropertyIsEqualTo>
+           <ogc:PropertyName>rim:Name/rim:LocalizedString/@value</ogc:PropertyName>
+           <ogc:Literal>Fuscé vitae ligulä</ogc:Literal>
+         </ogc:PropertyIsEqualTo>
+       </ogc:Filter>
+     </csw:Constraint>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="$response//csw:SearchResults/*[1]/@id != 'urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db'">
+                  <ctl:message>[FAILURE] Expected record is missing (urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db).</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:if test="$response//csw:SearchResults/@nextRecord != 0">
+                  <ctl:message>[FAILURE] Expected csw:SearchResults/@nextRecord = 0.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc6.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsEqualTo predicate (case-insensitive) must include all matching 
+      record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly one 
+      matching rim:RegistryObject instance.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsEqualTo matchCase="false">
+            <ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/elements/1.1/subject"]/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>pHYSIOGRAPHy</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:choose>
+                  <xsl:when test="$response/csw:GetRecordsResponse/csw:SearchResults//@id='urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a'"/>
+                  <xsl:otherwise>
+                    <ctl:message>[FAILURE] Expected record is missing (urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a).</ctl:message>
+                    <ctl:fail/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc7.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an unsupported function 
+      must include an exception report.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is a valid ows:ExceptionReport; (2) the reported exceptionCode is "InvalidParameterValue" 
+      (ogc:Function/@name).</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>rim:Name/rim:LocalizedString/@value</ogc:PropertyName>
+            <ogc:Function name="DummyFunction">
+              <ogc:Literal>input.argument</ogc:Literal>
+            </ogc:Function>
+          </ogc:PropertyIsEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">InvalidParameterValuePhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc8.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsNotEqualTo predicate (case-sensitive by default) must exclude  
+      matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element does NOT contain any 
+      records with a matching title.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="results" maxRecords="100">
+   <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+     typeNames="wrs:ExtrinsicObject">
+     <csw:ElementSetName>brief</csw:ElementSetName>
+     <csw:Constraint version="1.1.0">
+       <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+         <ogc:PropertyIsNotEqualTo>
+           <ogc:PropertyName>rim:Name/rim:LocalizedString/@value</ogc:PropertyName>
+           <ogc:Literal>Fuscé vitae ligulä</ogc:Literal>
+         </ogc:PropertyIsNotEqualTo>
+       </ogc:Filter>
+     </csw:Constraint>
+     <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
+       <ogc:SortProperty>
+         <ogc:PropertyName>@mimeType</ogc:PropertyName>
+         <ogc:SortOrder>DESC</ogc:SortOrder>
+       </ogc:SortProperty>
+     </ogc:SortBy>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="@id = 'urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db'">
+                    <ctl:message>[FAILURE] Unexpected record is included (urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db).</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc8.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsNotEqualTo predicate (case-insensitive) must exclude matching 
+      record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element does NOT contain any 
+      records with a matching subject.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results" maxRecords="20">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:PropertyIsNotEqualTo matchCase="false">
+            <ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/elements/1.1/subject"]/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>pHYSIOGRAPHy</ogc:Literal>
+          </ogc:PropertyIsNotEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="recordCount" select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="$recordCount gt 20">
+                  <ctl:message>[FAILURE] A maximum of 20 rim:RegistryObject elements expected in response (<xsl:value-of select="$recordCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="compare(upper-case(rim:Slot[@name='http://purl.org/dc/elements/1.1/subject']/rim:ValueList/rim:Value/text()),'PHYSIOGRAPHY') = 0">
+                    <ctl:message>[FAILURE] Unexpected record having rim:Slot[@name='http://purl.org/dc/elements/1.1/subject'] value matching 'pHYSIOGRAPHy' (case-insensitive) - (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc9.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsGreaterThan predicate must include matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 1-10 rim:RegistryObject 
+      child elements having rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value values occurring after 2004-01-01.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+      typeNames="wrs:ExtrinsicObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>@mimeType</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsGreaterThan>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>2004-01-01Z</ogc:Literal>
+          </ogc:PropertyIsGreaterThan>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/GetRecords.sch</ctl:with-param>
+		            <ctl:with-param name="phase">OneToTenAdHocRecordsPhase</ctl:with-param>
+	            </ctl:call-test>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) le xsd:date('2004-01-01Z')">
+                    <ctl:message>[FAILURE] Included record modified on or before 2004-01-01Z (<xsl:value-of select="rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc10.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsLessThan predicate must include matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 1-10 rim:RegistryObject 
+      child elements having rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value 
+      values occurring before 2006-05-01.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>@objectType</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsLessThan>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>2006-05-01Z</ogc:Literal>
+          </ogc:PropertyIsLessThan>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response//csw:GetRecordsResponse)">
+                  <ctl:message>[FAILURE] Expected valid csw:GetRecordsResponse in response</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) ge xsd:date('2006-05-01Z')">
+                    <ctl:message>[FAILURE] Included record modified on or after 2006-05-01Z (<xsl:value-of select="rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc11.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsLike predicate must include matching record representations.
+      </assertion>
+      <comment>Pass if the csw:SearchResults element contains only rim:RegistryObject 
+      instances having a rim:Name value starting with the string "Lorem ipsum".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>summary</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+            <ogc:PropertyName>rim:Name/rim:LocalizedString/@value</ogc:PropertyName>
+            <ogc:Literal>Lorem ipsum*</ogc:Literal>
+          </ogc:PropertyIsLike>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) lt 2">
+                  <ctl:message>[FAILURE] At least two rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="starts-with(rim:Name/rim:LocalizedString/@value,'Lorem ipsum') != true()">
+                    <ctl:message>[FAILURE] Unexpected record is included (rim:Name value does not match expression "Lorem ipsum*")</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc11.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsLike predicate must include matching record representations.
+      </assertion>
+      <comment>Pass if the csw:SearchResults element contains only rim:RegistryObject 
+      instances having a rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value value satisfying the expression 200?-10-*.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>summary</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>200?-10-*</ogc:Literal>
+          </ogc:PropertyIsLike>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) lt 1">
+                  <ctl:message>[FAILURE] AT least one rim:RegistryObject element expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="matches(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text(),'200\d-10-.*') != true()">
+                    <ctl:message>[FAILURE] Unexpected record is included (rim:Slot[@name='http://purl.org/dc/terms/modified'] value does not match expression "200?-10-*")</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc12.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsLessThanOrEqualTo predicate must include matching record 
+      representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains at least two 
+      rim:RegistryObject elements having rim:Slot[@name='http://purl.org/dc/terms/modified'] 
+      values occurring on or before 2005-10-24.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>@objectType</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsLessThanOrEqualTo>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>2005-10-24Z</ogc:Literal>
+          </ogc:PropertyIsLessThanOrEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) lt 2">
+                  <ctl:message>[FAILURE] AT least two rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) gt xsd:date('2005-10-24Z')">
+                    <ctl:message>[FAILURE] Included record modified after 2005-10-24Z (<xsl:value-of select="rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc13.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsGreaterThanOrEqualTo predicate must include matching record 
+      representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains at least two 
+      rim:RegistryObject elements having rim:Slot[@name='http://purl.org/dc/terms/modified'] 
+      values occurring on or after 2006-03-26.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>@objectType</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:PropertyIsGreaterThanOrEqualTo>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>2006-03-26Z</ogc:Literal>
+          </ogc:PropertyIsGreaterThanOrEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) lt 2">
+                  <ctl:message>[FAILURE] AT least two rim:RegistryObject elements expected in response.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) lt xsd:date('2006-03-26Z')">
+                    <ctl:message>[FAILURE] Included record modified before 2006-03-26Z (<xsl:value-of select="rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc14.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      Not logical predicate must include only matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 10-20 
+      rim:RegistryObject elements having titles that do not start with the string 
+      "Lorem ipsum".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results" maxRecords="20">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>summary</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+          <ogc:Not>
+          <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+            <ogc:PropertyName>rim:Name/rim:LocalizedString/@value</ogc:PropertyName>
+            <ogc:Literal>Lorem ipsum*</ogc:Literal>
+          </ogc:PropertyIsLike>
+          </ogc:Not>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="summaryRecCount" select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="($summaryRecCount &lt; 10) or ($summaryRecCount &gt; 20)">
+                  <ctl:message>[FAILURE] 10-20 rim:RegistryObject elements expected in response (<xsl:value-of select="$summaryRecCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="starts-with(rim:Name/rim:LocalizedString/@value,'Lorem ipsum') = true()">
+                    <ctl:message>[FAILURE] Unexpected record is included (rim:Name value starts with "Lorem ipsum*")</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc14.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      Not logical predicate must include only matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 11-20 rim:RegistryObject 
+      elements having extents that are either disjoint from the given bounding 
+      box or have no geometry-valued slot.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results" maxRecords="20">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+      typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:ElementName>rim:Slot[@name="http://purl.org/dc/terms/spatial"]</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:Not>
+           <ogc:BBOX>
+             <ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/terms/spatial"]/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+             <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+               <gml:lowerCorner>60.0 12.0</gml:lowerCorner>
+               <gml:upperCorner>70.0 20.0</gml:upperCorner>
+             </gml:Envelope>
+           </ogc:BBOX>
+         </ogc:Not>
+       </ogc:Filter>
+     </csw:Constraint>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="recordCount" select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="($recordCount lt 11) or ($recordCount gt 20)">
+                  <ctl:message>[FAILURE] 11-20 rim:RegistryObject elements expected in response (<xsl:value-of select="$recordCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="env">
+                  <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>60.0 12.0</gml:lowerCorner>
+                    <gml:upperCorner>70.0 20.0</gml:upperCorner>
+                  </gml:Envelope>
+                </xsl:variable>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']">
+                      <xsl:if test="wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 1">
+						<ctl:message>[FAILURE] Envelopes intersect (<xsl:value-of select="@id"/>)</ctl:message>
+						<ctl:fail/>
+					  </xsl:if>
+				  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc15.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an invalid filter 
+      expression must include an exception report.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is a valid ows:ExceptionReport; (2) the reported exceptionCode is "NoApplicableCode".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="hits">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/foo">
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:title</ogc:PropertyName>
+            <ogc:Literal>Maecenas enim</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+        </ogc:Filter>
+      </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">WRSInvalidRequestPhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc16.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having 
+      the Or logical predicate must include only matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 1-10 
+      rim:RegistryObject elements that have @objectType = "urn:ogc:def:ebRIM-ObjectType:OGC:Image" 
+      OR @mimeType = "application/*xml".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+   <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+     typeNames="wrs:ExtrinsicObject">
+     <csw:ElementSetName>summary</csw:ElementSetName>
+     <csw:Constraint version="1.1.0">
+       <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+         <ogc:Or>
+           <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+             <ogc:PropertyName>@mimeType</ogc:PropertyName>
+             <ogc:Literal>application/*xml</ogc:Literal>
+           </ogc:PropertyIsLike>
+           <ogc:PropertyIsEqualTo>
+             <ogc:PropertyName>@objectType</ogc:PropertyName>
+             <ogc:Literal>urn:ogc:def:ebRIM-ObjectType:OGC:Image</ogc:Literal>
+           </ogc:PropertyIsEqualTo>
+         </ogc:Or>
+       </ogc:Filter>
+     </csw:Constraint>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:for-each select="$response//wrs:ExtrinsicObject">
+                  <xsl:choose>
+                    <xsl:when test="@mimeType and @objectType">
+                      <xsl:if test="(@objectType != 'urn:ogc:def:ebRIM-ObjectType:OGC:Image') and (matches(@mimeType,'application/.*\+?xml') != true())">
+                        <ctl:message>[FAILURE] @objectType != "urn:ogc:def:ebRIM-ObjectType:OGC:Image" AND @mimeType does not match expression "application/*xml" (<xsl:value-of select="@id"/>)</ctl:message>
+                        <ctl:fail/>
+                      </xsl:if>
+                    </xsl:when>
+                    <xsl:when test="@mimeType">
+                      <xsl:if test="matches(@mimeType,'application/.*\+?xml') != true()">
+                          <ctl:message>[FAILURE] @mimeType value does not match expression "application/*xml" (<xsl:value-of select="@id"/>)</ctl:message>
+                          <ctl:fail/>
+                        </xsl:if>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:if test="@objectType != 'urn:ogc:def:ebRIM-ObjectType:OGC:Image'">
+                          <ctl:message>[FAILURE] @objectType != "urn:ogc:def:ebRIM-ObjectType:OGC:Image" (<xsl:value-of select="@id"/>)</ctl:message>
+                          <ctl:fail/>
+                        </xsl:if>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc16.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having 
+      the Or logical predicate must include only matching record representations.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains 1-10 rim:RegistryObject 
+      child elements that have a matching extent OR were modified after 2006-01-01.</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+   <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:RegistryObject">
+     <csw:ElementName>@id</csw:ElementName>
+     <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+     <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/spatial']</csw:ElementName>
+     <csw:Constraint version="1.1.0">
+       <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+         <ogc:Or>
+           <ogc:BBOX>
+             <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/spatial']/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+             <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+               <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+               <gml:upperCorner>52.0 1.0</gml:upperCorner>
+             </gml:Envelope>
+           </ogc:BBOX>
+           <ogc:PropertyIsGreaterThan>
+             <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+             <ogc:Literal>2006-01-01Z</ogc:Literal>
+           </ogc:PropertyIsGreaterThan>
+         </ogc:Or>
+       </ogc:Filter>
+     </csw:Constraint>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="env">
+                  <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+                    <gml:upperCorner>52.0 1.0</gml:upperCorner>
+                  </gml:Envelope>
+                </xsl:variable>
+                <xsl:for-each select="$response//rim:RegistryObject">
+                  <xsl:if test="not(rim:Slot[@name='http://purl.org/dc/terms/modified'] or rim:Slot[@name='http://purl.org/dc/terms/spatial'])">
+                    <ctl:message>[FAILURE] rim:RegistryObject is missing an expected property: rim:Slot[@name='http://purl.org/dc/terms/modified'] or rim:Slot[@name='http://purl.org/dc/terms/spatial'] (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                  <xsl:choose>
+                    <xsl:when test="rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value and rim:Slot[@name='http://purl.org/dc/terms/spatial']">
+                      <xsl:if test="(xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) le xsd:date('2006-01-01Z')) and (wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 0)">
+                        <ctl:message>[FAILURE] Record modified on or before 2006-01-01Z AND envelopes do not intersect (<xsl:value-of select="@id"/>)</ctl:message>
+                        <ctl:fail/>
+                      </xsl:if>
+                    </xsl:when>
+                    <xsl:when test="rim:Slot[@name='http://purl.org/dc/terms/modified']">
+                      <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) le xsd:date('2006-01-01Z')">
+                          <ctl:message>[FAILURE] Record modified on or before 2006-01-01Z (<xsl:value-of select="@id"/>)</ctl:message>
+                          <ctl:fail/>
+                        </xsl:if>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:if test="wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 0">
+                          <ctl:message>[FAILURE] envelopes do not intersect (<xsl:value-of select="@id"/>)</ctl:message>
+                          <ctl:fail/>
+                        </xsl:if>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc17.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having 
+      the And logical predicate must include only matching record representations.
+      </assertion>
+      <comment>
+      Pass if the csw:SearchResults element contains 1-10 rim:RegistryObject 
+      elements that have @mimeType="image/*" AND are related to the given record.
+      </comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="wrs:ExtrinsicObject rim:Association">
+    <csw:ElementSetName typeNames="wrs:ExtrinsicObject">full</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:And>
+          <ogc:PropertyIsLike wildCard="*" singleChar="?" escapeChar="\">
+            <ogc:PropertyName>wrs:ExtrinsicObject/@mimeType</ogc:PropertyName>
+            <ogc:Literal>image/*</ogc:Literal>
+          </ogc:PropertyIsLike>
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>rim:Association/@associationType</ogc:PropertyName>
+            <ogc:Literal>urn:oasis:names:tc:ebxml-regrep:AssociationType:RelatedTo</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>rim:Association/@targetObject</ogc:PropertyName>
+            <ogc:Literal>urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+          <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>rim:Association/@sourceObject</ogc:PropertyName>
+            <ogc:PropertyName>wrs:ExtrinsicObject/@id</ogc:PropertyName>
+          </ogc:PropertyIsEqualTo>
+        </ogc:And>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="recordCount" select="count($response//csw:SearchResults/wrs:ExtrinsicObject)"/>
+                <xsl:if test="($recordCount lt 1) or ($recordCount gt 10)">
+                  <ctl:message>[FAILURE] 1-10 wrs:ExtrinsicObject elements expected in response (<xsl:value-of select="$recordCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="matches(@mimeType,'image/.*') != true()">
+                    <ctl:message>[FAILURE] @mimeType does not match expression "image/*" (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc17.2">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having 
+      the And logical predicate must include only matching record representations.
+      </assertion>
+      <comment>
+      Pass if the csw:SearchResults element contains 1-10 rim:RegistryObject elements 
+      that have envelopes intersecting the given bounding box AND were modified 
+      after 2006-01-01.
+      </comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementName>@id</csw:ElementName>
+    <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/modified']</csw:ElementName>
+    <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/spatial']</csw:ElementName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+        <ogc:And>
+          <ogc:BBOX>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/spatial']/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+            <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+              <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+              <gml:upperCorner>52.0 1.0</gml:upperCorner>
+            </gml:Envelope>
+          </ogc:BBOX> 
+          <ogc:PropertyIsGreaterThan>
+            <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value</ogc:PropertyName>
+            <ogc:Literal>2006-01-01Z</ogc:Literal>
+          </ogc:PropertyIsGreaterThan>
+        </ogc:And>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+         
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="recordCount" select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="($recordCount &lt; 1) or ($recordCount &gt; 10)">
+                  <ctl:message>[FAILURE] 1-10 rim:RegistryObject elements expected in response (<xsl:value-of select="$recordCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="env">
+                  <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>47.0 -4.5</gml:lowerCorner>
+                    <gml:upperCorner>52.0 1.0</gml:upperCorner>
+                  </gml:Envelope>
+                </xsl:variable>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="xsd:date(rim:Slot[@name='http://purl.org/dc/terms/modified']/rim:ValueList/rim:Value/text()) le xsd:date('2006-01-01Z')">
+                    <ctl:message>[FAILURE] rim:Slot[@name='http://purl.org/dc/terms/modified'] value on or before 2006-01-01Z (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                  <xsl:if test="wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 0">
+                    <ctl:message>[FAILURE] Envelopes do NOT intersect (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc18.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having 
+      the And logical predicate must include the specified view of records that 
+      satisfy all constraints.
+      </assertion>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementName>@id</csw:ElementName>
+    <csw:ElementName>@objectType</csw:ElementName>
+    <csw:ElementName>rim:Slot[@name='http://purl.org/dc/terms/spatial']</csw:ElementName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+        <ogc:And>
+          <ogc:Not>
+            <ogc:BBOX>
+              <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/spatial']/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+              <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                <gml:lowerCorner>40.0 -9.0</gml:lowerCorner>
+                <gml:upperCorner>50.0 -5.0</gml:upperCorner>
+              </gml:Envelope>
+            </ogc:BBOX>
+          </ogc:Not>
+          <ogc:PropertyIsEqualTo matchCase="false">
+            <ogc:PropertyName>@objectType</ogc:PropertyName>
+            <ogc:Literal>URN:OGC:def:ebRIM-ObjectType:OGC:Dataset</ogc:Literal>
+          </ogc:PropertyIsEqualTo>
+        </ogc:And>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="recordCount" select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="($recordCount &lt; 1) or ($recordCount &gt; 10)">
+                  <ctl:message>[FAILURE] 1-10 rim:RegistryObject elements expected in response (<xsl:value-of select="$recordCount"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:variable name="env">
+                  <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                    <gml:lowerCorner>40.0 -9.0</gml:lowerCorner>
+                    <gml:upperCorner>50.0 -5.0</gml:upperCorner>
+                  </gml:Envelope>
+                </xsl:variable>
+                <xsl:for-each select="$response//csw:SearchResults/*">
+                  <xsl:if test="compare(lower-case(@objectType),'urn:ogc:def:ebrim-objecttype:ogc:dataset') != 0">
+                    <ctl:message>[FAILURE] Unexpected record having dc:type not matching 'URN:OGC:def:ebRIM-ObjectType:OGC:Dataset' (case-insensitive) - (<xsl:value-of select="@id"/>)</ctl:message>
+                    <ctl:fail/>
+                  </xsl:if>
+                  <xsl:if test="rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']">
+                      <xsl:if test="wrs:disjoint-envelopes($env,rim:Slot[@slotType='urn:ogc:def:dataType:ISO-19107:GM_Envelope']/wrs:ValueList/wrs:AnyValue/*) != 1">
+                        <ctl:message>[FAILURE] Envelopes intersect (<xsl:value-of select="@id"/>)</ctl:message>
+                        <ctl:fail/>
+                      </xsl:if>
+				  </xsl:if>
+                </xsl:for-each>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc19.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes an ogc:Filter having a
+      PropertyIsLike predicate must include the specified view of all matching 
+      records. If a PropertyName value is not supplied, the predicate is evaluated 
+      against all applicable record properties.
+      </assertion>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementSetName>full</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="\">
+          <ogc:PropertyName>rim:Description/rim:LocalizedString/@value</ogc:PropertyName>
+          <ogc:Literal>*lorem*</ogc:Literal>
+        </ogc:PropertyIsLike>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>  
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="count($response//csw:SearchResults/rim:RegistryObject) lt 3">
+                  <ctl:message>[FAILURE] Expected at least 3 rim:RegistryObject elements with rim:Description values matching the expression "*lorem*".</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc20.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The rim:Identifiable type cannot be queried. The response shall include 
+      an exception having @exceptionCode = "wrs:InvalidRequest".
+      </assertion>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:Identifiable">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="\">
+          <ogc:PropertyName>rim:Slot[@name="http://purl.org/dc/elements/1.1/subject"]/rim:ValueList/rim:Value</ogc:PropertyName>
+          <ogc:Literal>*lorem*</ogc:Literal>
+        </ogc:PropertyIsLike>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>  
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                  <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">WRSInvalidRequestPhase</ctl:with-param>
+	              </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc21.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The rim:Slot type cannot be queried. The response shall include an exception 
+      having @exceptionCode = "wrs:InvalidRequest".
+      </assertion>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="WRS" version="1.0.0" resultType="results">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" typeNames="rim:Slot">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                  <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">WRSInvalidRequestPhase</ctl:with-param>
+	              </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc22.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that includes the startPosition 
+      parameter must include the corresponding slice of the result set.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is schema valid; (2) the csw:SearchResults element contains exactly 5 
+      rim:RegistryObject child elements; (3) csw:SearchResults/@nextRecord = 8.</comment>
+      <link>csw-</link>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="results" 
+  startPosition="3"
+  maxRecords="5">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementSetName>summary</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="nSummaryRecord" 
+                  select="count($response//csw:SearchResults/rim:RegistryObject)"/>
+                <xsl:if test="nSummaryRecord != 5">
+                  <ctl:message>[FAILURE] 5 rim:RegistryObject elements expected (<xsl:value-of select="$nSummaryRecord"/> returned).</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:if test="$response//csw:SearchResults/@numberOfRecordsReturned != 5">
+                  <ctl:message>[FAILURE] @numberOfRecordsReturned != 5.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:if test="$response//csw:SearchResults/@nextRecord != 8">
+                  <ctl:message>[FAILURE] @nextRecord != 8.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc23.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies maxRecords="0" must 
+      not include any results.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: 
+      (1) the response is schema valid; 
+      (2) the csw:SearchResults element is empty; 
+      (3) csw:SearchResults/@numberOfRecordsMatched > 10; 
+      (4) csw:SearchResults/@nextRecord = 1
+      </comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="results" maxRecords="0">
+    <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+      typeNames="rim:RegistryObject">
+      <csw:ElementName>@id</csw:ElementName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:Not>
+           <ogc:BBOX>
+             <ogc:PropertyName>rim:Slot[@name='http://purl.org/dc/terms/spatial']/wrs:ValueList/wrs:AnyValue</ogc:PropertyName>
+             <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+               <gml:lowerCorner>60.0 12.0</gml:lowerCorner>
+               <gml:upperCorner>70.0 20.0</gml:upperCorner>
+             </gml:Envelope>
+           </ogc:BBOX>
+         </ogc:Not>
+       </ogc:Filter>
+     </csw:Constraint>
+   </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="nRecords" select="count($response//csw:SearchResults/*)"/>
+                <xsl:if test="$nRecords gt 0">
+                  <ctl:message>[FAILURE] csw:SearchResults should be empty (<xsl:value-of select="$nRecords"/> included)</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:if test="xsd:integer($response//csw:SearchResults/@numberOfRecordsMatched) le 1">
+                  <ctl:message>[FAILURE] Expected @numberOfRecordsMatched &gt; 1</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+                <xsl:if test="$response//csw:SearchResults/@nextRecord != 1">
+                  <ctl:message>[FAILURE] Expected csw:SearchResults/@nextRecord = 1.</ctl:message>
+                  <ctl:fail/>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc24.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies resultType="validate"
+      (asynchronous processing) must include an exception report with code 
+      "wrs:NotSupported".
+      </assertion>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="validate">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:wrs="http://www.opengis.net/cat/wrs/1.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementSetName>full</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+        <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="\">
+          <ogc:PropertyName>rim:Description/rim:LocalizedString/@value</ogc:PropertyName>
+          <ogc:Literal>*lorem*</ogc:Literal>
+        </ogc:PropertyIsLike>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>  
+					</body>
+					<p:XMLValidatingParser.WRS/>
+				</request>
+			</xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">WRSNotSupportedPhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc25.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies an unsupported 
+      outputFormat value must include an exception report.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is a valid ows:ExceptionReport; (2) the reported exceptionCode is 
+      "InvalidParameterValue".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="results" 
+  outputFormat="application/xhtml+xml"
+  maxRecords="5">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementSetName>summary</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">InvalidParameterValuePhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+    
+    <test name="wrs:wrs-1.0.0-GetRecords-tc26.1">
+      <param name="wrs.GetRecords.post.url"/>
+      <assertion>
+      The response to a GetRecords request that specifies an unsupported 
+      outputSchema value must include an exception report.
+      </assertion>
+      <comment>Pass if all of the following conditions are true: (1) the response 
+      is a valid ows:ExceptionReport; (2) the reported exceptionCode is 
+      "InvalidParameterValue".</comment>
+		<code>
+			<xsl:variable name="response">
+				<request>
+					<url>
+						<xsl:value-of select="$wrs.GetRecords.post.url"/>
+					</url>
+                    <method>POST</method>
+					<body>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" 
+  service="WRS" version="1.0.0" resultType="results" 
+  outputSchema="http://www.w3.org/2005/Atom"
+  maxRecords="5">
+  <csw:Query xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" 
+    typeNames="rim:RegistryObject">
+    <csw:ElementSetName>summary</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>
+					</body>
+					<p:XMLValidatingParser.OWS/>
+				</request>
+			</xsl:variable>
+			
+            <xsl:choose>
+              <xsl:when test="not($response/*)">
+                  <ctl:message>[FAILURE] Missing or invalid response entity.</ctl:message>
+                  <ctl:fail/>
+              </xsl:when>
+              <xsl:otherwise>
+                <ctl:call-test name="ctl:SchematronValidatingParser">
+		            <ctl:with-param name="doc" select="$response"/>
+		            <ctl:with-param name="schema">sch/wrs/1.0.0/ExceptionReport.sch</ctl:with-param>
+		            <ctl:with-param name="phase">InvalidParameterValuePhase</ctl:with-param>
+	            </ctl:call-test>
+              </xsl:otherwise>
+            </xsl:choose>
+		</code>
+	</test>
+	
+</ctl:package>

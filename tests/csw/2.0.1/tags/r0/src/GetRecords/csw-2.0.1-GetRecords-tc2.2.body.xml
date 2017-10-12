@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1"
+  resultType="results">
+  <csw:Query typeNames="csw:Record">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+  </csw:Query>
+</csw:GetRecords>

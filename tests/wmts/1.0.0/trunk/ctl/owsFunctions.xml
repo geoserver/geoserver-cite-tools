@@ -1,0 +1,3010 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 	
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows/1.1" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/" 
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wmts="http://www.opengis.net/wmts/1.0"
+	xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:owsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/owsFunctions.xml"	
+	xmlns:ctlFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/ctlFunctions.xml"	
+>
+
+	<ctl:function name="owsFunctions:validateVersion">
+		<ctl:param name="versionString"/>
+		<ctl:description>Validates that versionString is in x.y.z format with values less than 100</ctl:description>
+		<ctl:code>
+			<xsl:value-of select="boolean(matches($versionString,'\d\.\d\.\d') and (every $d in tokenize($versionString,'\.') satisfies round(number($d)) lt 100))"/>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:incrementVersion">
+		<ctl:param name="versionString"/>
+		<ctl:description>Increments the "y" sub-version in a versionString is in x.y.z format.  Used for version negotiation testing.</ctl:description>
+		<ctl:code>
+			<!-- <xsl:message>incrementVersion <xsl:value-of select="$versionString"/></xsl:message> -->
+			<xsl:variable name="versionNumberList" select="tokenize($versionString, '\.')"/>
+			<xsl:variable name="newVersion">
+				<xsl:value-of select="$versionNumberList[1]"/>
+				<xsl:text>.</xsl:text>
+				<xsl:variable name="verPlus" select="$versionNumberList[2] + 1"/>
+				<!-- <xsl:message><xsl:value-of select="concat('verPlus ', $verPlus)"/></xsl:message> -->
+				<xsl:value-of select="$verPlus"/>
+				<xsl:text>.</xsl:text>
+				<xsl:value-of select="$versionNumberList[3]"/>
+			</xsl:variable>
+			<xsl:value-of select="string($newVersion)"/>
+		</ctl:code>
+	</ctl:function>
+
+    <!-- Seed from SOS OWS.xml modified to handle ^ locator and multiple Exception elements.
+		   Checks an ExceptionReport for specific exceptionCode and locator values  -->
+    <ctl:function name="owsFunctions:checkExceptionReport">
+        <ctl:param name="exceptionReport">The exception report to check</ctl:param>
+        <ctl:param name="exceptionCodeToCheck">The exceptionCode to check</ctl:param>
+        <ctl:param name="locatorToCheck">The locator to check; a * can be provided to indicate that any locator value is allowed; a ^ can be provided to indicate that no locator value is allowed</ctl:param>
+        <ctl:return>| separated list of  exceptionCodeToCheck,locatorToCheck,true/false,exceptionCodeValue,locatorValue </ctl:return>
+        <ctl:description>Validates an ExceptionReport and checks for specific exceptionCode and locator values</ctl:description>
+        <ctl:code>
+			<!-- <xsl:message>checkExceptionReport exceptionReport <xsl:copy-of select="$exceptionReport"/></xsl:message> -->
+			<xsl:variable name="results">
+				<xsl:for-each  select="$exceptionReport//ows:Exception">
+					<xsl:variable name="exceptionElement" select="."/>
+					<xsl:variable name="exceptionCodeValue" select="$exceptionElement/@exceptionCode" />
+					<xsl:variable name="locatorValue" select="$exceptionElement/@locator" />
+					<!-- <ctl:message select="concat('checkExceptionReport code ', $exceptionCodeValue, ' value ', $locatorValue)"/> -->
+					<xsl:choose>
+						<xsl:when test="lower-case(string($exceptionCodeValue)) = lower-case(string($exceptionCodeToCheck))">
+						   <xsl:choose>
+								<xsl:when test="$locatorToCheck='*'">
+									<xsl:value-of select="concat($exceptionCodeToCheck, ',', $locatorToCheck, ',true,', $exceptionCodeValue, ',', $locatorValue, '|') "/>
+								</xsl:when>
+								<xsl:when test="$locatorToCheck='^'">
+									<xsl:value-of select="concat($exceptionCodeToCheck, ',', $locatorToCheck, ',', string(not($locatorValue) or $locatorValue = ''),  ',', $exceptionCodeValue, ',', $locatorValue, '|') "/>          
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($exceptionCodeToCheck, ',', $locatorToCheck, ',', string(contains(lower-case(string($locatorToCheck)), lower-case(string($locatorValue)))), ',', $exceptionCodeValue, ',', $locatorValue, '|') "/> 
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="concat($exceptionCodeToCheck, ',', $locatorToCheck, ',false,', $exceptionCodeValue, ',', $locatorValue, '|') "/>
+						</xsl:otherwise>
+					</xsl:choose>
+ 				</xsl:for-each>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$results and $results != '' ">
+					<xsl:value-of select="$results"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>NoExceptionCode,NoLocator,false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+        </ctl:code>
+    </ctl:function>	 
+
+	<ctl:function name="owsFunctions:getServiceURL">
+		<ctl:param name="operationURL"/>
+		<ctl:description>Strips trailing ? from operationURL if there is one.</ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="ends-with($operationURL,'?')">
+					<xsl:value-of select="substring-before($operationURL,'?')"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$operationURL"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:CapabilitesResponseElement">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Issue a ctl:request for GetCapabilities and check it with HTTPParser to return the Capabilties element, or ctl:fail if not obtained.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending KVP ', upper-case($method), ' GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="not($response/response/content/*[local-name() = 'Capabilities'])">
+					<xsl:choose>
+						<xsl:when  test="$code != '' ">
+							<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.  HTTP status code: ', $code)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$code != '' ">
+						<ctl:message select="concat('HTTP status code: ', $code)"/>
+					</xsl:if>
+					<xsl:variable name="capabilitiesElement" select="$response/response/content/*[local-name() = 'Capabilities']"/>
+					<xsl:copy-of select="$capabilitiesElement"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:makeXMLpostGetCapabilitiesRequest">
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="updateSequence">updateSequence value or empty if none</ctl:param>
+		<ctl:param name="versions">comma separated list of GetCapabilities request AcceptVersions versions, or empty if not applicable</ctl:param>
+		<ctl:param name="sections">comma separated list of GetCapabilities response document sections, or empty if none</ctl:param>
+		<ctl:param name="formats">comma separated list of GetCapabilities response document AcceptFormats formats</ctl:param>
+		<ctl:description>Create an XML POST wmts:GetCapabilities request document.  Execute xsl:element and xsl:attribute elements to assign them values in absence of attribute value template capability.</ctl:description>
+		<ctl:code>
+			<!--
+			<xsl:variable name="capabilitiesElementName" select="concat(lower-case($service), ':GetCapabilities')"/>
+			<xsl:element name="{$capabilitiesElementName}"> -->
+			<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" >
+				<xsl:attribute name="service">
+					<xsl:value-of select="$service"/>
+				</xsl:attribute>
+				<xsl:if test="$updateSequence != '' ">
+					<xsl:attribute name="updateSequence">
+						<xsl:value-of select="$updateSequence"/>
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$versions != '' ">
+					<xsl:variable name="versionsList" select="tokenize($versions, ',')"/>
+					<ows:AcceptVersions>
+						<xsl:for-each select="$versionsList">
+							<xsl:variable name="version" select="."/>
+							<ows:Version><xsl:value-of select="$version"/></ows:Version>
+						</xsl:for-each>
+					</ows:AcceptVersions>
+				</xsl:if>
+				<xsl:if test="$sections != '' ">
+					<xsl:variable name="sectionsList" select="tokenize($sections, ',')"/>
+					<ows:Sections>
+						<xsl:for-each select="$sectionsList">
+							<xsl:variable name="section" select="."/>
+							<ows:Section><xsl:value-of select="$section"/></ows:Section>
+						</xsl:for-each>
+					</ows:Sections>
+				</xsl:if>
+				<xsl:if test="$formats != '' ">
+					<xsl:variable name="formatsList" select="tokenize($formats, ',')"/>
+					<ows:AcceptFormats>
+						<xsl:for-each select="$formatsList">
+							<xsl:variable name="format" select="."/>
+							<ows:OutputFormat><xsl:value-of select="$format"/></ows:OutputFormat>
+						</xsl:for-each>
+					</ows:AcceptFormats>
+				</xsl:if>
+			</ows:GetCapabilities>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.CapabilitesResponseElement">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Issue an XML POST ctl:request for GetCapabilities and check it with HTTPParser to return the Capabilties element, or ctl:fail if not obtained.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="not($response/response/content/*[local-name() = 'Capabilities'])">
+					<xsl:choose>
+						<xsl:when  test="$code != '' ">
+							<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.  HTTP status code: ', $code)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$code != '' ">
+						<ctl:message select="concat('HTTP status code: ', $code)"/>
+					</xsl:if>
+					<xsl:variable name="capabilitiesElement" select="$response/response/content/*[local-name() = 'Capabilities']"/>
+					<xsl:copy-of select="$capabilitiesElement"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.CapabilitesResponseElement">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Issue a SOAP POST ctl:request for GetCapabilities and check it with HTTPParser and SOAPParser to return the Capabilties element, or ctl:fail if not obtained.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>						
+				</ctl:soap-request>
+			</xsl:variable>		
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="not($response/response/content/*[local-name() = 'Capabilities'])">
+					<xsl:choose>
+						<xsl:when  test="$code != '' ">
+							<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.  HTTP status code: ', $code)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>FAILURE: Missing or invalid response entity; should have been a well-formed Capabilities XML document.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$code != '' ">
+						<ctl:message select="concat('HTTP status code: ', $code)"/>
+					</xsl:if>
+					<xsl:variable name="capabilitiesElement" select="$response/response/content/*[local-name() = 'Capabilities']"/>
+					<xsl:copy-of select="$capabilitiesElement"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:provokeKVPException">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="invalidQuery">KVP Get query string to provoke an exception</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="exceptionCodes">Exception code, or codes separated by commas, e.g.  MissingParameterValue,InvalidParameterValue</ctl:param>
+		<ctl:param name="locators">Locator code or codes, separated by commas, e.g. service,request</ctl:param>
+		<ctl:param name="oneOrAll">"one" if only one specified exception and locator code pair must be found to pass, or "all" if all are</ctl:param>
+        <ctl:return>true/false depending on whether or not the provoked exception contains the specified exception code(s) and locator(s)</ctl:return>
+		<ctl:description>Provokes an ows:ExceptionReport by issuing an invalid KVP Get or Post query to a WMTS server.  The exceptionCodes and locators parameters must contain the same number of codes.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="invalidQueryString">
+				<xsl:choose>
+					<xsl:when test="ends-with($capabilitiesURL,'?')">
+						<xsl:value-of select="concat($capabilitiesURL, $invalidQuery)"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="concat($capabilitiesURL,'?',$invalidQuery)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<ctl:message select="concat('Invalid Query String: ', $invalidQueryString)"/>	
+			<xsl:variable name="exceptionCodeList" select="tokenize($exceptionCodes, ',')"/>
+			<xsl:variable name="locatorList" select="tokenize($locators, ',')"/>	
+			<xsl:variable name="testResult">
+				<xsl:choose>
+					<xsl:when test="count(exceptionCodeList) = count(locatorList)">
+						<xsl:variable name="response">
+							<ctl:request>
+								<ctl:url>
+									<xsl:value-of select="$invalidQueryString"/>
+								</ctl:url>
+								<ctl:method><xsl:value-of select="$method"/></ctl:method>
+								<parsers:HTTPParser>
+								   <parsers:parse>
+									   <!-- <parsers:NullParser/> don't echo response -->
+										<parsers:XSLTransformationParser resource="rewriteNonException.xsl"/> 
+								   </parsers:parse>
+								</parsers:HTTPParser>
+							</ctl:request>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="not($response/response/content/*)">
+								<ctl:message>FAILURE: Missing or invalid response entity contents; should have been an ows:ExceptionReport.</ctl:message>
+								<xsl:variable name="code" select="$response/response/status/@code"/>
+									<xsl:if test="$code != '' ">
+									<ctl:message select="concat('HTTP status code ', $code)"/>
+								</xsl:if>
+								<xsl:text>false</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:call-function name="owsFunctions:validateExceptionReport">
+									<ctl:with-param name="httpParserExceptionReport" select="$response"/>
+									<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+									<ctl:with-param name="exceptionCodes" select="$exceptionCodes"/>
+									<ctl:with-param name="locators" select="$locators"/>
+									<ctl:with-param name="oneOrAll" select="$oneOrAll"/>
+									<ctl:with-param name="httpStatusCode">400</ctl:with-param>
+								</ctl:call-function>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message><xsl:value-of select="concat('Count of exceptionCodes (', count(exceptionCodeList), ') does not match count of locators (', count(locatorList), '), test fails')"/></ctl:message>
+						<xsl:text>false</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:value-of select="$testResult"/>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:provokeXMLException">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+		<ctl:param name="invalidBody">XML POST body to provoke an exception</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="exceptionCodes">Exception code, or codes separated by commas, e.g.  MissingParameterValue,InvalidParameterValue</ctl:param>
+		<ctl:param name="locators">Locator code or codes, separated by commas, e.g. service,request</ctl:param>
+		<ctl:param name="oneOrAll">"one" if only one specified exception and locator code pair must be found to pass, or "all" if all are</ctl:param>
+        <ctl:return>true/false depending on whether or not the provoked exception contains the specified exception code(s) and locator(s)</ctl:return>
+		<ctl:description>Provokes an ows:ExceptionReport by issuing an invalid XML Post request to a WMTS server.  The exceptionCodes and locators parameters must contain the same number of codes.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<xsl:variable name="exceptionCodeList" select="tokenize($exceptionCodes, ',')"/>
+			<xsl:variable name="locatorList" select="tokenize($locators, ',')"/>	
+			<xsl:variable name="testResult">
+				<xsl:choose>
+					<xsl:when test="count(exceptionCodeList) = count(locatorList)">
+						<xsl:variable name="response">
+							<ctl:request>
+								<ctl:url>
+									<xsl:value-of select="$serviceURL"/>
+								</ctl:url>
+								<ctl:method>post</ctl:method>
+								<ctl:body><xsl:copy-of select="$invalidBody"/></ctl:body>
+								<parsers:HTTPParser>
+								   <parsers:parse>
+									   <!-- <parsers:NullParser/> don't echo response -->
+										<parsers:XSLTransformationParser resource="rewriteNonException.xsl"/> 
+								   </parsers:parse>
+								</parsers:HTTPParser>
+							</ctl:request>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="not($response/response/content/*)">
+								<ctl:message>FAILURE: Missing or invalid response entity contents; should have been an ows:ExceptionReport.</ctl:message>
+								<xsl:variable name="code" select="$response/response/status/@code"/>
+									<xsl:if test="$code != '' ">
+									<ctl:message select="concat('HTTP status code ', $code)"/>
+								</xsl:if>
+								<xsl:text>false</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:call-function name="owsFunctions:validateExceptionReport">
+									<ctl:with-param name="httpParserExceptionReport" select="$response"/>
+									<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+									<ctl:with-param name="exceptionCodes" select="$exceptionCodes"/>
+									<ctl:with-param name="locators" select="$locators"/>
+									<ctl:with-param name="oneOrAll" select="$oneOrAll"/>
+									<ctl:with-param name="httpStatusCode">400</ctl:with-param>
+								</ctl:call-function>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message><xsl:value-of select="concat('Count of exceptionCodes (', count(exceptionCodeList), ') does not match count of locators (', count(locatorList), '), test fails')"/></ctl:message>
+						<xsl:text>false</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:value-of select="$testResult"/>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:provokeSOAPException">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+		<ctl:param name="invalidBody">SOAP POST body to provoke an exception</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="exceptionCodes">Exception code, or codes separated by commas, e.g.  MissingParameterValue,InvalidParameterValue</ctl:param>
+		<ctl:param name="locators">Locator code or codes, separated by commas, e.g. service,request</ctl:param>
+		<ctl:param name="oneOrAll">"one" if only one specified exception and locator code pair must be found to pass, or "all" if all are</ctl:param>
+        <ctl:return>true/false depending on whether or not the provoked exception contains the specified exception code(s) and locator(s)</ctl:return>
+		<ctl:description>Provokes an ows:ExceptionReport by issuing an invalid SOAP Post request to a WMTS server.  The exceptionCodes and locators parameters must contain the same number of codes.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<xsl:variable name="exceptionCodeList" select="tokenize($exceptionCodes, ',')"/>
+			<xsl:variable name="locatorList" select="tokenize($locators, ',')"/>	
+			<xsl:variable name="testResult">
+				<xsl:choose>
+					<xsl:when test="count(exceptionCodeList) = count(locatorList)">
+						<xsl:variable name="response">
+							<ctl:soap-request version="1.2" charset="utf-8">
+								<ctl:url>
+									<xsl:value-of select="$serviceURL"/>
+								</ctl:url>
+								<ctl:body><xsl:copy-of select="$invalidBody"/></ctl:body>
+								<parsers:HTTPParser>
+								   <parsers:parse>
+									   <parsers:SOAPParser return="content"/>
+								   </parsers:parse>
+								</parsers:HTTPParser>
+							</ctl:soap-request>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="not($response/response/content/*)">
+								<ctl:message>FAILURE: Missing or invalid response entity contents; should have been a soap:Fault with soap:Detail containing an ows:ExceptionReport.</ctl:message>
+								<xsl:variable name="code" select="$response/response/status/@code"/>
+									<xsl:if test="$code != '' ">
+									<ctl:message select="concat('HTTP status code ', $code)"/>
+								</xsl:if>
+								<xsl:text>false</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:call-function name="owsFunctions:validateSOAPExceptionReport">
+									<ctl:with-param name="httpParserExceptionReport" select="$response"/>
+									<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+									<ctl:with-param name="exceptionCodes" select="$exceptionCodes"/>
+									<ctl:with-param name="locators" select="$locators"/>
+									<ctl:with-param name="oneOrAll" select="$oneOrAll"/>
+									<ctl:with-param name="httpStatusCode">400</ctl:with-param>
+								</ctl:call-function>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:message><xsl:value-of select="concat('Count of exceptionCodes (', count(exceptionCodeList), ') does not match count of locators (', count(locatorList), '), test fails')"/></ctl:message>
+						<xsl:text>false</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:value-of select="$testResult"/>
+		</ctl:code>
+	</ctl:function>	
+	
+	<ctl:function name="owsFunctions:validateExceptionReport">
+		<ctl:param name="httpParserExceptionReport">/response/content/* is ows:ExceptionReport returned from query</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="exceptionCodes">Exception code, or codes separated by commas, e.g.  MissingParameterValue,InvalidParameterValue</ctl:param>
+		<ctl:param name="locators">Locator code or codes, separated by commas, e.g. service,request</ctl:param>
+		<ctl:param name="oneOrAll">"one" if only one specified exception and locator code pair must be found to pass, or "all" if all are</ctl:param>
+		<ctl:param name="httpStatusCode">HTTP status code required by test to be returned by server</ctl:param>
+        <ctl:description>Validates an ExceptionReport and checks for supplied exceptionCode(s) and locator value(s)</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Validating ows:ExceptionReport against its XML Schema ', $exceptionReportSchemaPath, ' for codes ', $exceptionCodes, ' locators ', $locators)"/> 
+			<ctl:call-function name="ctl:startStopwatch">
+				<ctl:with-param name="watchName">exception.validation</ctl:with-param>
+			</ctl:call-function>
+			<!-- <xsl:message>validateExceptionReport httpParserExceptionReport  <xsl:copy-of select="$httpParserExceptionReport"/></xsl:message> -->
+			<!-- <xsl:copy-of select="$httpParserExceptionReport"/> -->
+			<xsl:variable name="exceptionReport" select="$httpParserExceptionReport/response/content/*"/>
+			<!-- <xsl:message>validateExceptionReport exceptionReport <xsl:copy-of select="$exceptionReport"/></xsl:message> -->
+			<!-- <ctl:message select="concat('validateExceptionReport schemaPath ', $exceptionReportSchemaPath)"/> -->
+			<xsl:variable name="results">
+				<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+					<ctl:with-param name="doc"><xsl:copy-of select="$exceptionReport"/></ctl:with-param>
+					<ctl:with-param name="schemaPath" select="$exceptionReportSchemaPath"/>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:variable name="exception.validation.elapsed" select="ctl:elapsedTime('exception.validation')"/>
+			<xsl:choose>
+				<xsl:when test="count($results/*) &gt; 0">
+					<ctl:message>Exception report failed schema validation; elapsedTime: [<xsl:value-of select="$exception.validation.elapsed"/>] milliseconds</ctl:message>
+					<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+					<xsl:text>false</xsl:text>
+					<xsl:variable name="returnedStatusCode" select="$httpParserExceptionReport/response/status/@code"/>
+					<xsl:choose>
+						<xsl:when test="$returnedStatusCode = $httpStatusCode">
+							<ctl:message select="concat('Required HTTP status code ', $httpStatusCode, ' was returned by server.')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Returned HTTP status code ', $returnedStatusCode, ' did not match required code ', $httpStatusCode)"/>
+						</xsl:otherwise>
+					</xsl:choose>							
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>exception.validation.elapsed [<xsl:value-of select="$exception.validation.elapsed"/>] milliseconds</ctl:message>
+					<ctl:message>Exception report is XML Schema valid, continuing...</ctl:message>
+					<xsl:variable name="exceptionCodeList" select="tokenize($exceptionCodes, ',')"/>
+					<xsl:variable name="locatorList" select="tokenize($locators, ',')"/>
+					<xsl:variable name="exceptionReportResults">
+						<xsl:for-each select="1 to count($locatorList)">
+							<xsl:variable name="pos" select="."/>
+							<xsl:variable name="exceptionCode" select="$exceptionCodeList[$pos]"/>
+							<xsl:variable name="locator" select="$locatorList[$pos]"/>
+							<!-- <ctl:message select="concat('owsFunctions:validateExceptionReport code ', $exceptionCode, ' locator ', $locator)"/> -->
+							<xsl:variable name="result">
+								<ctl:call-function name="owsFunctions:checkExceptionReport">
+									<ctl:with-param name="exceptionReport" select="$exceptionReport" />
+									<ctl:with-param name="exceptionCodeToCheck" select="$exceptionCode" />
+									<ctl:with-param name="locatorToCheck" select="$locator" />
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:variable name="toCheckTrue" select="concat($exceptionCode, ',', $locator, ',true')"/>
+							<xsl:variable name="exceptionCodeTrue" select="contains($result, $toCheckTrue)"/>		
+							<!-- <ctl:message select="concat('toCheckTrue ', $toCheckTrue, ' exceptionCodeTrue ', $exceptionCodeTrue)"/>			-->		
+							<xsl:variable name="resultList" select="tokenize($result, '\|')"/>
+							<xsl:for-each select="$resultList">
+								<xsl:variable name="oneResult" select="."/>
+								<xsl:if test="$oneResult and $oneResult != '' ">
+									<!-- <ctl:message select="concat('oneResult ', $oneResult)"/> -->
+									<xsl:variable name="codeLocatorResult" select="tokenize($oneResult, ',')"/>
+									<xsl:variable name="resultReturned" select="$codeLocatorResult[3]"/>
+									<xsl:variable name="exceptionCodeReturned" select="$codeLocatorResult[4]"/>
+									<xsl:variable name="locatorReturned" select="$codeLocatorResult[5]"/>
+									<!-- <ctl:message select="concat('exceptionCodeReturned ', $exceptionCodeReturned, ' locatorReturned ', $locatorReturned, ' resultReturned ', $resultReturned)"/> -->
+									<xsl:choose>
+										<xsl:when test="lower-case(string($exceptionCodeReturned)) = lower-case(string($exceptionCode))">
+											<xsl:choose>
+												<xsl:when  test="$resultReturned = 'true' ">
+													<ctl:message select="concat('The returned exception report contained expected exceptionCode ', $exceptionCode, ' with locator ', $locatorReturned, ' valid for specified locator ', $locator)"/>
+													<xsl:text>true|</xsl:text>
+												</xsl:when>
+												<xsl:when test="not($exceptionCodeTrue)">
+													<ctl:message select="concat('The returned exception report contained expected exceptionCode ', $exceptionCode, ' with locator ', $locatorReturned, ' not valid for specified locator ', $locator)"/>
+													<xsl:text>false|</xsl:text>
+												</xsl:when>
+											</xsl:choose>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:if test="not(contains($exceptionCodes, $exceptionCodeReturned))">
+												<ctl:message select="concat('The returned exception report contained unexpected exceptionCode ', $exceptionCodeReturned, ' with locator ', $locatorReturned)"/>
+											</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="needAll" select="lower-case($oneOrAll) = 'all' "/>
+					<xsl:variable name="notAll" select="($needAll and (not(contains($exceptionReportResults, 'true')) or contains($exceptionReportResults, 'false')))"/>
+					<xsl:variable name="notOne" select="(not($needAll) and not(contains($exceptionReportResults, 'true')))"/>
+					<xsl:choose>
+						<xsl:when test="$notOne or $notAll">
+							<ctl:message>Exception report does not contain required valid exception code(s) and locator(s)</ctl:message>
+							<xsl:text>false</xsl:text>
+							<xsl:variable name="returnedStatusCode" select="$httpParserExceptionReport/response/status/@code"/>
+							<xsl:choose>
+								<xsl:when test="$returnedStatusCode = $httpStatusCode">
+									<ctl:message select="concat('Required HTTP status code ', $httpStatusCode, ' was returned by server.')"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('Returned HTTP status code ', $returnedStatusCode, ' did not match required code ', $httpStatusCode)"/>
+								</xsl:otherwise>
+							</xsl:choose>							
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Exception report contains required valid exception code(s) and locator(s)</ctl:message>
+							<xsl:variable name="returnedStatusCode" select="$httpParserExceptionReport/response/status/@code"/>
+							<xsl:choose>
+								<xsl:when test="$returnedStatusCode = $httpStatusCode">
+									<ctl:message select="concat('Required HTTP status code ', $httpStatusCode, ' was returned by server.')"/>
+									<xsl:text>true</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('Returned HTTP status code ', $returnedStatusCode, ' did not match required code ', $httpStatusCode)"/>
+									<xsl:text>false</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>	
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:validateSOAPExceptionReport">
+		<ctl:param name="httpParserExceptionReport">/response/content/soap:Fault/soap:Detail/* is ows:ExceptionReport returned from query</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="exceptionCodes">Exception code, or codes separated by commas, e.g.  MissingParameterValue,InvalidParameterValue</ctl:param>
+		<ctl:param name="locators">Locator code or codes, separated by commas, e.g. service,request</ctl:param>
+		<ctl:param name="oneOrAll">"one" if only one specified exception and locator code pair must be found to pass, or "all" if all are</ctl:param>
+		<ctl:param name="httpStatusCode">HTTP status code required by test to be returned by server</ctl:param>
+        <ctl:description>reformats httpParserExceptionReport to non-soap verson to validate an ExceptionReport and checks for supplied exceptionCode(s) and locator value(s)</ctl:description>
+		<ctl:code>
+			<xsl:variable name="returnedStatus" select="$httpParserExceptionReport/response/status"/>
+			<xsl:variable name="nonSOAPhttpParserExceptionReport">
+				<response>
+					<xsl:copy-of select="$returnedStatus"/>
+					<content>
+						<xsl:copy-of select="$httpParserExceptionReport/response/content/soap:Fault/soap:Detail/*"/>
+					</content>
+				</response>
+			</xsl:variable>
+			<ctl:call-function name="owsFunctions:validateExceptionReport">
+				<ctl:with-param name="httpParserExceptionReport" select="$nonSOAPhttpParserExceptionReport"/>
+				<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+				<ctl:with-param name="exceptionCodes" select="$exceptionCodes"/>
+				<ctl:with-param name="locators" select="$locators"/>
+				<ctl:with-param name="oneOrAll" select="$oneOrAll"/>
+				<ctl:with-param name="httpStatusCode" select="$httpStatusCode"/>
+			</ctl:call-function>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Request.AcceptVersions.Valid">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Test that a OGC server performs version negotiation with a client correctly</ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Sending KVP GET GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+					<xsl:variable name="response">
+						<ctl:request>
+							<ctl:url>
+								<xsl:value-of select="$serviceURL"/>
+							</ctl:url>
+							<ctl:method><xsl:value-of select="$method"/></ctl:method>
+							<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+							<ctl:param name="request">GetCapabilities</ctl:param>
+							<ctl:param name="acceptversions"><xsl:value-of select="$version" /></ctl:param>
+							<parsers:XMLValidatingParser>
+								<parsers:schemas>
+									<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+									<parsers:schema>
+										<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+										<xsl:value-of select="$schemaPath" />
+									</parsers:schema>
+								</parsers:schemas>
+							</parsers:XMLValidatingParser>
+						</ctl:request>
+					</xsl:variable>	
+					<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.AcceptVersions.Valid">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="response" select="$response"/>
+						<ctl:with-param name="version" select="$version"/>
+					</ctl:call-function>	
+				</xsl:otherwise>
+			</xsl:choose>	
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Request.AcceptVersions.Valid">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Test that a OGC server performs version negotiation with a client correctly</ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="acceptVersions" select="$version"/>
+					<xsl:variable name="updateSequence"/>
+					<xsl:variable name="sections"/>
+					<xsl:variable name="acceptFormats"/>
+					<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+					<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+					<xsl:variable name="response">
+						<ctl:request>
+							<ctl:url>
+								<xsl:value-of select="$serviceURL"/>
+							</ctl:url>
+							<ctl:method>post</ctl:method>
+							<ctl:body>
+								<xsl:copy-of select="$postBody"/>
+							</ctl:body>
+							<parsers:XMLValidatingParser>
+								<parsers:schemas>
+									<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+									<parsers:schema>
+										<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+										<xsl:value-of select="$schemaPath" />
+									</parsers:schema>
+								</parsers:schemas>
+							</parsers:XMLValidatingParser>
+						</ctl:request>
+					</xsl:variable>
+					<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.AcceptVersions.Valid">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="response" select="$response"/>
+						<ctl:with-param name="version" select="$version"/>
+					</ctl:call-function>	
+				</xsl:otherwise>
+			</xsl:choose>	
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Request.AcceptVersions.Valid">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Test that a OGC server performs version negotiation with a client correctly</ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="acceptVersions" select="$version"/>
+					<xsl:variable name="updateSequence"/>
+					<xsl:variable name="sections"/>
+					<xsl:variable name="acceptFormats"/>
+					<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+					<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+					<xsl:variable name="response">
+						<ctl:soap-request version="1.2" charset="utf-8">
+							<ctl:url>
+								<xsl:value-of select="$serviceURL"/>
+							</ctl:url>
+							<ctl:body>
+								<xsl:copy-of select="$postBody"/>
+							</ctl:body>
+							<parsers:HTTPParser>
+								<parsers:parse>
+									<parsers:SOAPParser return="content"/>
+								</parsers:parse>
+							</parsers:HTTPParser>	
+						</ctl:soap-request>
+					</xsl:variable>
+					<xsl:variable name="code" select="$response/response/status/@code"/>
+					<ctl:message select="concat('HTTP status code: ', $code)"/>
+					<xsl:variable name="content" select="$response/response/content"/>
+					<xsl:variable name="capabilities.doc" select="$content/*"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<ctl:fail/> 
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+							<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.AcceptVersions.Valid">
+								<ctl:with-param name="service" select="$service"/>
+								<ctl:with-param name="response" select="$content"/>
+								<ctl:with-param name="version" select="$version"/>
+						</ctl:call-function>	
+					</xsl:otherwise>
+				</xsl:choose>	
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:check.GetCapabilities.Request.AcceptVersions.Valid">
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="response">capabilities response from XMLValidatingParser</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Check GetCapabilities version negotiation response.</ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('Test skipped: Missing or invalid response entity; should have been a ', $service, ' Capabilities document, so Accept Versions considered to not be implemented.')"/>
+					<ctl:skipped/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Response entity is a valid ', $service, ' Capabilities document.')"/>
+					<xsl:variable name="capabilitiesElement" select="$response/wmts:Capabilities"/>
+					<xsl:choose>
+						<xsl:when test="$capabilitiesElement/@version = $version">
+							<ctl:message select="concat('Test passed: Returned version ',$capabilitiesElement/@version, ' matches acceptversions parameter ', $version, '.')"/>
+							<ctl:pass/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Test skipped:  Returned version ',$capabilitiesElement/@version, ' does not match acceptversions parameter ', $version, ', , so Accept Versions considered to not be implemented.')"/>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Request.AcceptVersions.Invalid">
+		<ctl:param name="capabilitiesURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Issue GetCapabilities request containing the optional AcceptVersions parameter with a version value not supported by the server, and check response. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="newVersionOne" select="owsFunctions:incrementVersion($version)"/>
+					<xsl:variable name="newVersionTwo" select="owsFunctions:incrementVersion($newVersionOne)"/>
+					<!-- <ctl:message><xsl:value-of select="concat('newVersionOne ', $newVersionOne, ' newVersionTwo ', $newVersionTwo)"/></ctl:message> -->
+					<xsl:variable name="acceptVersions" select="concat($newVersionOne, ',', $newVersionTwo)"/>
+					<xsl:variable name="invalidQuery" select="concat('service=', $service, '&amp;request=GetCapabilities&amp;acceptversions=', $acceptVersions)"/>
+					<xsl:variable name="testResult">
+						<ctl:call-function name="owsFunctions:provokeKVPException">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+							<ctl:with-param name="method"><xsl:value-of select="$method"/></ctl:with-param>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="exceptionCodes">VersionNegotiationFailed</ctl:with-param>
+							<ctl:with-param name="locators">^</ctl:with-param>
+							<ctl:with-param name="oneOrAll">one</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<ctl:call-function name="owsFunctions:checkGetCapabilities.Request.AcceptVersions.Invalid">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="testResult" select="$testResult"/>
+						<ctl:with-param name="version" select="$version"/>
+						<ctl:with-param name="acceptVersions" select="$acceptVersions"/>
+					</ctl:call-function>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Request.AcceptVersions.Invalid">
+		<ctl:param name="capabilitiesURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Issue GetCapabilities request containing the optional AcceptVersions parameter with a version value not supported by the server, and check response. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="newVersionOne" select="owsFunctions:incrementVersion($version)"/>
+					<xsl:variable name="newVersionTwo" select="owsFunctions:incrementVersion($newVersionOne)"/>
+					<!-- <ctl:message><xsl:value-of select="concat('newVersionOne ', $newVersionOne, ' newVersionTwo ', $newVersionTwo)"/></ctl:message> -->
+					<xsl:variable name="acceptVersions" select="concat($newVersionOne, ',', $newVersionTwo)"/>
+					<xsl:variable name="updateSequence"/>
+					<xsl:variable name="sections"/>
+					<xsl:variable name="acceptFormats"/>
+					<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+					<xsl:variable name="testResult">
+						<ctl:call-function name="owsFunctions:provokeXMLException">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="invalidBody">
+								<xsl:copy-of select="$postBody"/>
+							</ctl:with-param>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="exceptionCodes">VersionNegotiationFailed</ctl:with-param>
+							<ctl:with-param name="locators">^</ctl:with-param>
+							<ctl:with-param name="oneOrAll">one</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<ctl:call-function name="owsFunctions:checkGetCapabilities.Request.AcceptVersions.Invalid">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="testResult" select="$testResult"/>
+						<ctl:with-param name="version" select="$version"/>
+						<ctl:with-param name="acceptVersions" select="$acceptVersions"/>
+					</ctl:call-function>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Request.AcceptVersions.Invalid">
+		<ctl:param name="capabilitiesURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Issue GetCapabilities request containing the optional AcceptVersions parameter with a version value not supported by the server, and check response. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="validVersion" select="owsFunctions:validateVersion($version)"/>
+			<xsl:choose>
+				<xsl:when test="not(string($validVersion) = 'true')">
+					<ctl:message><xsl:value-of select="concat($service, ' server version ',$version, ' does not contain three non-negative integers separated by decimal points, in the form x.y.z where he integers y and z do not exceed 99')"/></ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="newVersionOne" select="owsFunctions:incrementVersion($version)"/>
+					<xsl:variable name="newVersionTwo" select="owsFunctions:incrementVersion($newVersionOne)"/>
+					<!-- <ctl:message><xsl:value-of select="concat('newVersionOne ', $newVersionOne, ' newVersionTwo ', $newVersionTwo)"/></ctl:message> -->
+					<xsl:variable name="acceptVersions" select="concat($newVersionOne, ',', $newVersionTwo)"/>
+					<xsl:variable name="updateSequence"/>
+					<xsl:variable name="sections"/>
+					<xsl:variable name="acceptFormats"/>
+					<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+					<xsl:variable name="testResult">
+						<ctl:call-function name="owsFunctions:provokeSOAPException">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="invalidBody">
+								<xsl:copy-of select="$postBody"/>
+							</ctl:with-param>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="exceptionCodes">VersionNegotiationFailed</ctl:with-param>
+							<ctl:with-param name="locators">^</ctl:with-param>
+							<ctl:with-param name="oneOrAll">one</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<ctl:call-function name="owsFunctions:checkGetCapabilities.Request.AcceptVersions.Invalid">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="testResult" select="$testResult"/>
+						<ctl:with-param name="version" select="$version"/>
+						<ctl:with-param name="acceptVersions" select="$acceptVersions"/>
+					</ctl:call-function>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:checkGetCapabilities.Request.AcceptVersions.Invalid">
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="testResult">response from owsFunctions:provokeKVPException</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="acceptVersions">GetCapabilities request acceptversions parameter value</ctl:param>
+		<ctl:description>check response to GetCapabilities request containing the optional AcceptVersions parameter with a version value not supported by the server. </ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="$testResult = 'true' ">
+					<ctl:message select="concat('Test passed: ', $service, ' server version ', $version, ' returned correct ows:ExceptionReport and HTTP status in response to request with an acceptversions parameter value of ', $acceptVersions, '.')"/>
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message><xsl:value-of select="concat('Test skipped: ', $service, ' server version ', $version, ' did not return a correct ows:ExceptionReport and HTTP status in response to request with an acceptversions parameter value of ', $acceptVersions, ',so Accept Versions considered to not be implemented.')"/></ctl:message>
+					<ctl:skipped/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:GetCapabilities.Request.CaseInsensitive.KVP.Names">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:description>Test that an OWS server provides the same response no matter what upper and lower case capitalization conventions are used for KVP parameter names, and no matter what order the parameters are provided in. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="services">SERVICE,SeRvIcE,service</xsl:variable>
+			<xsl:variable name="requests">RequesT,request,REQUEST</xsl:variable>
+			<xsl:variable name="versions">version,VERSION,VeRsIoN</xsl:variable>
+			<xsl:variable name="servicesList" select="tokenize($services, ',')"/>
+			<xsl:variable name="requestsList" select="tokenize($requests, ',')"/>
+			<xsl:variable name="versionsList" select="tokenize($versions, ',')"/>
+			<xsl:variable name="testResults">
+				<xsl:for-each select="1 to 3">
+					<xsl:variable name="pos" select="."/>
+					<xsl:variable name="serviceName" select="$servicesList[$pos]"/>
+					<xsl:variable name="requestName" select="$requestsList[$pos]"/>
+					<xsl:variable name="versionName" select="$versionsList[$pos]"/>
+					<xsl:for-each select="1 to 3">
+						<xsl:variable name="queryString">
+							<xsl:choose>
+								<xsl:when test="position() = 1">
+									<xsl:value-of select="concat($serviceURL, '?', $serviceName,'=', $service, '&amp;',$requestName,'=GetCapabilities&amp;',$versionName,'=',$version)"/>
+								</xsl:when>
+								<xsl:when test="position() = 2">
+									<xsl:value-of select="concat($serviceURL, '?', $requestName,'=GetCapabilities&amp;',$versionName,'=',$version,'&amp;',$serviceName,'=', $service)"/>
+								</xsl:when>
+								<xsl:when test="position() = 3">
+									<xsl:value-of select="concat($serviceURL, '?', $versionName,'=',$version,'&amp;',$serviceName,'=', $service, '&amp;',$requestName,'=GetCapabilities')"/>
+								</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+						<ctl:message><xsl:value-of select="concat('Issuing request ', $queryString, ' and validating response.')"/></ctl:message>
+						<xsl:variable name="response">
+							<ctl:request>
+								<ctl:url>
+									<xsl:value-of select="$serviceURL"/>
+								</ctl:url>
+								<ctl:method><xsl:value-of select="$method"/></ctl:method>
+								<xsl:for-each select="1 to 3">
+									<xsl:choose>
+										<xsl:when test="position() = 1">
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$serviceName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$service"/></ctl:value>
+											</ctl:dynamicParam>																	
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$requestName"/></ctl:name>
+												<ctl:value>GetCapabilities</ctl:value>
+											</ctl:dynamicParam>																	
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$versionName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$version"/></ctl:value>
+											</ctl:dynamicParam>																	
+										</xsl:when>
+										<xsl:when test="position() = 2">
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$requestName"/></ctl:name>
+												<ctl:value>GetCapabilities</ctl:value>
+											</ctl:dynamicParam>																	
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$versionName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$version"/></ctl:value>
+											</ctl:dynamicParam>																	
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$serviceName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$service"/></ctl:value>
+											</ctl:dynamicParam>																									
+										</xsl:when>
+										<xsl:when test="position() = 3">
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$versionName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$version"/></ctl:value>
+											</ctl:dynamicParam>																	
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$serviceName"/></ctl:name>
+												<ctl:value><xsl:value-of select="$service"/></ctl:value>
+											</ctl:dynamicParam>																									
+											<ctl:dynamicParam>
+												<ctl:name><xsl:value-of select="$requestName"/></ctl:name>
+												<ctl:value>GetCapabilities</ctl:value>
+											</ctl:dynamicParam>																										
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+								<parsers:XMLValidatingParser>
+									<parsers:schemas>
+										<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+										<parsers:schema>
+											<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+											<xsl:value-of select="$schemaPath" />
+										</parsers:schema>
+									</parsers:schemas>
+								</parsers:XMLValidatingParser>
+							</ctl:request>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="not($response/*)">
+								<ctl:message>FAILURE: Missing or invalid response entity; should have been a WMTS Capabilities document.</ctl:message>
+								<xsl:text>false|</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<ctl:message>Response entity is a valid WMTS Capabilities document</ctl:message>
+								<xsl:text>true|</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>							
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="contains($testResults,'false')">
+					<ctl:message>Test failed:  One or more requests did not return a valid capabilities document.</ctl:message>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Test passed:  All results contained a valid capabiltiies document.</ctl:message>
+					<ctl:pass/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Request.Sections.All">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Test that a OGC server server returns a complete Service Metadata document in response to a KVP GET GetCapabilities request containing the optional Sections parameter with a value of All. </ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending KVP ', upper-case($method),  ' GetCapabilities request to ', $serviceURL, ' with optional parameter sections=all and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<ctl:param name="sections">all</ctl:param>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Sections.All">
+				<ctl:with-param name="service" select="$service"/>
+				<ctl:with-param name="response" select="$response"/>
+			</ctl:call-function>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Request.Sections.All">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Test that a OGC server server returns a complete Service Metadata document in response to a KVP GET GetCapabilities request containing the optional Sections parameter with a value of All. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="acceptVersions"/> 
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="sections">All</xsl:variable>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' with optional parameter sections=all and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/> 
+					</ctl:body>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Sections.All">
+				<ctl:with-param name="service" select="$service"/>
+				<ctl:with-param name="response" select="$response"/>
+			</ctl:call-function>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Request.Sections.All">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:description>Test that a OGC server server returns a complete Service Metadata document in response to a KVP GET GetCapabilities request containing the optional Sections parameter with a value of All. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="acceptVersions"/> 
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="sections">All</xsl:variable>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, ' with optional parameter sections=all and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/> 
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>	
+				</ctl:soap-request>
+			</xsl:variable>	
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<ctl:message select="concat('HTTP status code: ', $code)"/>
+			<xsl:variable name="content" select="$response/response/content"/>
+			<xsl:variable name="capabilities.doc" select="$content/*"/>
+			<ctl:call-function name="ctl:startStopwatch">
+				<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+			</ctl:call-function>
+			<xsl:variable name="results">
+				<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+					<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+					<ctl:with-param name="schemaPath" select="$schemaPath"/>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+			<xsl:choose>
+				<xsl:when test="count($results/*) &gt; 0">
+					<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+					<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+					<ctl:fail/> 
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+					<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Sections.All">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="response" select="$content"/>
+					</ctl:call-function>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:check.GetCapabilities.Request.Sections.All">
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="response">response from XMLValidatingParser</ctl:param>
+		<ctl:description>Check for a complete Service Metadata document containing all required sections.</ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Response entity is a valid ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:variable name="capabilitiesQName" select="concat(lower-case($service), ':','Capabilities')"/>
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:choose>
+						<xsl:when test="$capabilitiesElement">
+							<ctl:message select="concat('Capabilities document root element is ', $capabilitiesQName)"/>
+							<xsl:variable name="serviceIdentificationElement" select="$capabilitiesElement/ows:ServiceIdentification"/>
+							<xsl:choose>
+								<xsl:when test="$serviceIdentificationElement">
+									<ctl:message>Capabilities Document contains required ows:ServiceIdentification element.</ctl:message>
+									<xsl:variable name="serviceProviderElement" select="$capabilitiesElement/ows:ServiceProvider"/>
+									<xsl:choose>
+										<xsl:when test="$serviceProviderElement">
+											<ctl:message>Capabilities Document contains required ows:ServiceProvider element.</ctl:message>
+											<xsl:variable name="operationsMetadataElement" select="$capabilitiesElement/ows:OperationsMetadata"/>
+											<xsl:choose>
+												<xsl:when test="$operationsMetadataElement">
+													<ctl:message>Capabilities Document contains required ows:OperationsMetadata element. </ctl:message>
+													<xsl:variable name="contentsQName" select="concat(lower-case($service), ':', 'Contents')"/>
+													<xsl:variable name="contentsElement" select="$capabilitiesElement/*[local-name() = 'Contents']"/>
+													<xsl:choose>
+														<xsl:when test="$contentsElement">
+															<ctl:message select="concat('Capabilities Document contains required ', $contentsQName, ' element.')"/>
+															<ctl:message>Capabilities Document contains all required sections</ctl:message>
+															<ctl:pass/>
+														</xsl:when>
+														<xsl:otherwise>
+															<ctl:message select="concat('Capabilities Document is missing required ', $contentsQName, ' element.')"/>
+															<ctl:fail/>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:when>
+												<xsl:otherwise>
+													<ctl:message>Capabilities Document is missing required ows:OperationsMetadata element.</ctl:message>
+													<ctl:fail/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:when>
+										<xsl:otherwise>
+											<ctl:message>Capabilities Document is missing required ows:ServiceProvider element.</ctl:message>
+											<ctl:fail/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>CapabilitiesDocument is missing required ows:ServiceIdentification element.</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities document root element is not ', $capabilitiesQName)"/>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>		
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Request.Specific.Sections">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="sections">comma separated list of local-name() of capabilities document sections to require</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Test that a OGC server server returns a Capabilities document that only contains specified section(s) in response to a request with optional parameter sections=ServiceIdentification</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending KVP ', upper-case($method),  ' GetCapabilities request to ', $serviceURL, '  with optional parameter sections=', $sections, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<ctl:param name="sections"><xsl:value-of select="$sections"/></ctl:param>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Specific.Sections">
+				<ctl:with-param name="service" select="$service"/>
+				<ctl:with-param name="sections" select="$sections"/>
+				<ctl:with-param name="response" select="$response"/>				
+			</ctl:call-function>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Request.Specific.Sections">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="sections">comma separated list of local-name() of capabilities document sections to require</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Test that a OGC server server returns a Capabilities document that only contains specified section(s) in response to a request with optional parameter sections=ServiceIdentification</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, '  with optional parameter sections=', $sections, ' and validating response.' )"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Specific.Sections">
+				<ctl:with-param name="service" select="$service"/>
+				<ctl:with-param name="sections" select="$sections"/>
+				<ctl:with-param name="response" select="$response"/>				
+			</ctl:call-function>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Request.Specific.Sections">
+		<ctl:param name="serviceURL">capabilitiesURL without trailing ?</ctl:param>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="sections">comma separated list of local-name() of capabilities document sections to require</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:description>Test that a OGC server server returns a Capabilities document that only contains specified section(s) in response to a request with optional parameter sections=ServiceIdentification</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, '  with optional parameter sections=', $sections, ' and validating response.' )"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/> 
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>	
+				</ctl:soap-request>
+			</xsl:variable>	
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<ctl:message select="concat('HTTP status code: ', $code)"/>
+			<xsl:variable name="content" select="$response/response/content"/>
+			<xsl:variable name="capabilities.doc" select="$content/*"/>
+			<ctl:call-function name="ctl:startStopwatch">
+				<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+			</ctl:call-function>
+			<xsl:variable name="results">
+				<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+					<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+					<ctl:with-param name="schemaPath" select="$schemaPath"/>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+			<xsl:choose>
+				<xsl:when test="count($results/*) &gt; 0">
+					<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+					<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+					<ctl:fail/> 
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+					<ctl:call-function name="owsFunctions:check.GetCapabilities.Request.Specific.Sections">
+						<ctl:with-param name="service" select="$service"/>
+						<ctl:with-param name="sections" select="$sections"/>
+						<ctl:with-param name="response" select="$content"/>				
+					</ctl:call-function>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:check.GetCapabilities.Request.Specific.Sections">
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="sections">comma separated list of local-name() of capabilities document sections required</ctl:param>
+		<ctl:param name="response">response from XMLValidatingParser</ctl:param>
+		<ctl:description>Check for a Service Metadata document containing only the specified section(s).</ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Response entity is a valid ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:variable name="capabilitiesQName" select="concat(lower-case($service), ':','Capabilities')"/>
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:choose>
+						<xsl:when test="$capabilitiesElement">
+							<ctl:message select="concat('Capabilities document root element is ', $capabilitiesQName)"/>
+							<xsl:variable name="sectionsList" select="tokenize($sections, ',')"/>
+							<xsl:variable name="containsRequired">
+								<xsl:for-each select="$sectionsList">
+									<xsl:variable name="selectedSection" select="."/>
+									<xsl:variable name="selectedSectionElement" select="$capabilitiesElement/*[local-name() = $selectedSection]"/>
+									<xsl:choose>
+										<xsl:when test="not($selectedSectionElement)">
+											<ctl:message select="concat('Required section ', $selectedSection, ' was not returned in the ', $capabilitiesQName, ' document.')"/>
+											<xsl:text>false|</xsl:text>
+										</xsl:when>
+										<xsl:otherwise>
+											<ctl:message select="concat('Required section ', $selectedSection, ' was returned in the ', $capabilitiesQName, ' document.')"/>	
+											<xsl:text>true|</xsl:text>									
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:variable>							
+							<xsl:choose>
+								<xsl:when test="contains($containsRequired, 'true') and not(contains($containsRequired, 'false'))">
+									<ctl:message select="concat('Capabilities Document contains the requested ', $sections, ' element(s).')"/>
+									<xsl:variable name="containsOthers">
+										<xsl:for-each select="$capabilitiesElement/*[not(contains($sections, local-name()))]">
+											<xsl:variable name="otherSectionElement" select="."/>
+											<ctl:message select="concat('Capabilities Document contains ', name($otherSectionElement), ' element in addition to requested ', $sections, ' element(s).')"/>
+											<xsl:text>true|</xsl:text>
+										</xsl:for-each>
+									</xsl:variable>
+									<xsl:choose>
+										<xsl:when test="contains($containsOthers, 'true')">
+											<ctl:message select="concat('Test skipped because additional sections returned; sections=', $sections, ' option considered not implemented.')"/>
+											<ctl:skipped/>
+										</xsl:when>
+										<xsl:otherwise>
+											<ctl:pass/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('CapabilitiesDocument does not contain requested ', $sections, ' element(s).')"/>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities document root element is not ', $capabilitiesQName)"/>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.UpdateSequenceValuesEqual">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities UpdateSequence test where Operation Request and Service Metadata updateSequence values are equal.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending KVP ', $method, ' GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<ctl:param name="version"><xsl:value-of select="$version"/></ctl:param>
+					<ctl:param name="updateSequence"><xsl:value-of select="$updateSequence"/></ctl:param>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('KVP.UpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document element.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:choose>
+						<xsl:when test="count($capabilitiesElement/*) gt 0">
+							<ctl:message>KVP.UpdateSequenceValuesEqual returned capabilities document contains element content when it should not.</ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+							<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+							<xsl:choose>
+								<xsl:when test="not($versionReturned) or $versionReturned = '' or not($updateSequenceReturned) or $updateSequenceReturned = '' ">
+									<ctl:message select="concat('KVP.UpdateSequenceValuesEqual returned capabilities document without valid version ', $versionReturned, ' or update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('KVP.UpdateSequenceValuesEqual returned capabilities document with valid version ', $versionReturned, ' and update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:KVP.UpdateSequenceValueLess">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities UpdateSequence test where Operation Request update Sequence is less than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending KVP ', $method, ' GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<ctl:param name="version"><xsl:value-of select="$version"/></ctl:param>
+					<ctl:param name="updateSequence"><xsl:value-of select="$updateSequence"/></ctl:param>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('kvpUpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+					<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilitiesElement"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+							<xsl:choose>
+								<xsl:when test="not(number($updateSequenceReturned) gt number($updateSequence))">
+									<ctl:message select="concat('KVP.UpdateSequenceValueLess returned capabilities document contains request updateSequence value ', $updateSequenceReturned, ' instead of current one')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('KVP.UpdateSequenceValueLess returned capabilities document with version ', $versionReturned, ' and current updateSequence ', $updateSequenceReturned)"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.UpdateSequenceValueGreater">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities UpdateSequence test where Operation Request update Sequence is greater than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending KVP ', $method, ' GetCapabilities request to ', $capabilitiesURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="invalidQuery" select="concat('service=', $service, '&amp;request=GetCapabilities&amp;version=', $version, '&amp;updateSequence=', $updateSequence)"/>
+			<xsl:variable name="testResult">
+				<ctl:call-function name="owsFunctions:provokeKVPException">
+					<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+					<ctl:with-param name="invalidQuery" select="$invalidQuery"/>
+					<ctl:with-param name="method" select="$method"/>
+					<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+					<ctl:with-param name="exceptionCodes">InvalidUpdateSequence</ctl:with-param>
+					<ctl:with-param name="locators">^</ctl:with-param>
+					<ctl:with-param name="oneOrAll">one</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$testResult = 'true' ">
+					<ctl:message>Server returned correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value, so test passes.</ctl:message>
+					<xsl:text>true</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Server did not return a correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value.')"/></ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Request.UpdateSequence">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence">updateSequence attribute value from bootstrap capabilities document</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for generating and using the updateSequence parameter.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="updateSequenceDouble" select="number($updateSequence)"/>
+			<xsl:choose>
+				<xsl:when test="$updateSequenceDouble = 'NaN' ">
+					<ctl:message>Bootstrap updateSequence value is not a number; test capability not implemented yet; test skipped</ctl:message>
+					<ctl:skipped/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="valuesEqualResult">
+						<ctl:call-function name="owsFunctions:KVP.UpdateSequenceValuesEqual">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="method"><xsl:value-of select="$method"/></ctl:with-param>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequence"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequenceMinus" select="$updateSequence -100"/>
+					<xsl:variable name="valueLessResult">
+						<ctl:call-function name="owsFunctions:KVP.UpdateSequenceValueLess">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="method"><xsl:value-of select="$method"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequenceMinus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequencePlus" select="$updateSequence + 100"/>
+					<xsl:variable name="valueGreaterResult">
+						<ctl:call-function name="owsFunctions:KVP.UpdateSequenceValueGreater">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="method"><xsl:value-of select="$method"/></ctl:with-param>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequencePlus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="allTestsResults" select="concat($valuesEqualResult, '|', $valueLessResult, '|', $valueGreaterResult)"/>
+					<xsl:choose>
+						<xsl:when test="contains($allTestsResults, 'false')">
+							<ctl:message>Test skipped:  One or more tests of optional updateSequence parameter failed, so option considered to not be implemented. </ctl:message>
+							<ctl:skipped/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Tests of optional updateSequence parameter passed.</ctl:message>
+							<ctl:pass/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>	
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.UpdateSequenceValuesEqual">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs XML POST GetCapabilities UpdateSequence test where Operation Request and Service Metadata updateSequence values are equal.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('XML.UpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:choose>
+						<xsl:when test="count($capabilitiesElement/*) gt 0">
+							<ctl:message>XML.UpdateSequenceValuesEqual returned capabilities document contains element content when it should not.</ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+							<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+							<xsl:choose>
+								<xsl:when test="not($versionReturned) or $versionReturned = '' or not($updateSequenceReturned) or $updateSequenceReturned = '' ">
+									<ctl:message select="concat('XML.UpdateSequenceValuesEqual returned capabilities document without valid version ', $versionReturned, ' or update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('XML.UpdateSequenceValuesEqual returned capabilities document with valid version ', $versionReturned, ' and update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.UpdateSequenceValueLess">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs XML GetCapabilities UpdateSequence test where Operation Request update Sequence is less than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('XMLUpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="capabilitiesElement" select="$response/*[local-name() = 'Capabilities']"/>
+					<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+					<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilitiesElement"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+							<xsl:choose>
+								<xsl:when test="not(number($updateSequenceReturned) gt number($updateSequence))">
+									<ctl:message select="concat('XML.UpdateSequenceValueLess returned capabilities document contains request updateSequence value ', $updateSequenceReturned, ' instead of current one')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('XML.UpdateSequenceValueLess returned capabilities document with version ', $versionReturned, ' and current updateSequence ', $updateSequenceReturned)"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.UpdateSequenceValueGreater">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs XML GetCapabilities UpdateSequence test where Operation Request update Sequence is greater than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $capabilitiesURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="testResult">
+				<ctl:call-function name="owsFunctions:provokeXMLException">
+					<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+					<ctl:with-param name="invalidBody">
+						<xsl:copy-of select="$postBody"/>
+					</ctl:with-param>
+					<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+					<ctl:with-param name="exceptionCodes">InvalidUpdateSequence</ctl:with-param>
+					<ctl:with-param name="locators">^</ctl:with-param>
+					<ctl:with-param name="oneOrAll">one</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$testResult = 'true' ">
+					<ctl:message>Server returned correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value, so test passes.</ctl:message>
+					<xsl:text>true</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Server did not return a correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value.')"/></ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Request.UpdateSequence">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence">updateSequence attribute value from bootstrap capabilities document</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for generating and using the updateSequence parameter.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="updateSequenceDouble" select="number($updateSequence)"/>
+			<xsl:choose>
+				<xsl:when test="$updateSequenceDouble = 'NaN' ">
+					<ctl:message>Bootstrap updateSequence value is not a number; test capability not implemented yet; test skipped</ctl:message>
+					<ctl:skipped/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="valuesEqualResult">
+						<ctl:call-function name="owsFunctions:XML.UpdateSequenceValuesEqual">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequence"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequenceMinus" select="$updateSequence -100"/>
+					<xsl:variable name="valueLessResult">
+						<ctl:call-function name="owsFunctions:XML.UpdateSequenceValueLess">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequenceMinus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequencePlus" select="$updateSequence + 100"/>
+					<xsl:variable name="valueGreaterResult">
+						<ctl:call-function name="owsFunctions:XML.UpdateSequenceValueGreater">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequencePlus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="allTestsResults" select="concat($valuesEqualResult, '|', $valueLessResult, '|', $valueGreaterResult)"/>
+					<xsl:choose>
+						<xsl:when test="contains($allTestsResults, 'false')">
+							<ctl:message>Test skipped:  One or more tests of optional updateSequence parameter failed, so option considered to not be implemented. </ctl:message>
+							<ctl:skipped/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Tests of optional updateSequence parameter passed.</ctl:message>
+							<ctl:pass/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>	
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.UpdateSequenceValuesEqual">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs SOAP POST GetCapabilities UpdateSequence test where Operation Request and Service Metadata updateSequence values are equal.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>	
+				</ctl:soap-request>
+			</xsl:variable>	
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('SOAP.UpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document element with no children.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="code" select="$response/response/status/@code"/>
+					<ctl:message select="concat('HTTP status code: ', $code)"/>
+					<xsl:variable name="content" select="$response/response/content"/>
+					<xsl:variable name="capabilitiesElement" select="$content/*[local-name() = 'Capabilities']"/>		
+					<xsl:choose>
+						<xsl:when test="count($capabilitiesElement/*) gt 0">
+							<ctl:message>SOAP.UpdateSequenceValuesEqual returned capabilities document contains element content when it should not.</ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+							<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+							<xsl:choose>
+								<xsl:when test="not($versionReturned) or $versionReturned = '' or not($updateSequenceReturned) or $updateSequenceReturned = '' ">
+									<ctl:message select="concat('SOAP.UpdateSequenceValuesEqual returned capabilities document without valid version ', $versionReturned, ' or update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('SOAP.UpdateSequenceValuesEqual returned capabilities document with valid version ', $versionReturned, ' and update sequence ', $updateSequenceReturned, ' attributes.')"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.UpdateSequenceValueLess">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs SOAP GetCapabilities UpdateSequence test where Operation Request update Sequence is less than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $serviceURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>	
+				</ctl:soap-request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('SOAP.UpdateSequenceValuesEqual missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>		
+					<xsl:variable name="capabilitiesElement" select="$response/response/content/*[local-name() = 'Capabilities']"/>
+					<xsl:variable name="versionReturned" select="$capabilitiesElement/@version"/>
+					<xsl:variable name="updateSequenceReturned" select="$capabilitiesElement/@updateSequence"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilitiesElement"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Capabilities response is valid, continuing...')"/>
+							<xsl:choose>
+								<xsl:when test="not(number($updateSequenceReturned) gt number($updateSequence))">
+									<ctl:message select="concat('XML.UpdateSequenceValueLess returned capabilities document contains request updateSequence value ', $updateSequenceReturned, ' instead of current one')"/>
+									<xsl:text>false</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('XML.UpdateSequenceValueLess returned capabilities document with version ', $versionReturned, ' and current updateSequence ', $updateSequenceReturned)"/>
+									<xsl:text>true</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>				
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.UpdateSequenceValueGreater">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, e.g. expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence"/>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs SOAP GetCapabilities UpdateSequence test where Operation Request update Sequence is greater than that in the Service Metadata.</ctl:description>
+		<ctl:code>
+			<ctl:message select="concat('Sending SOAP POST GetCapabilities request to ', $capabilitiesURL, ' with optional parameter updateSequence = ', $updateSequence, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="testResult">
+				<ctl:call-function name="owsFunctions:provokeSOAPException">
+					<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+					<ctl:with-param name="invalidBody">
+						<xsl:copy-of select="$postBody"/>
+					</ctl:with-param>
+					<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+					<ctl:with-param name="exceptionCodes">InvalidUpdateSequence</ctl:with-param>
+					<ctl:with-param name="locators">^</ctl:with-param>
+					<ctl:with-param name="oneOrAll">one</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$testResult = 'true' ">
+					<ctl:message>Server returned correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value, so test passes.</ctl:message>
+					<xsl:text>true</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Server did not return a correct ows:ExceptionReport and HTTP status in response to kvpUpdateSequenceValueGreater request with an updateSequence parameter with an invalid value.')"/></ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Request.UpdateSequence">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="service">WS service acronym, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="exceptionReportSchemaPath">full path to owsExceptionReport.xsd</ctl:param>
+		<ctl:param name="version">version returned in the bootstrap capabilities document, expected to be 1.0.0 for wmts</ctl:param>
+		<ctl:param name="updateSequence">updateSequence attribute value from bootstrap capabilities document</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for generating and using the updateSequence parameter.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="updateSequenceDouble" select="number($updateSequence)"/>
+			<xsl:choose>
+				<xsl:when test="$updateSequenceDouble = 'NaN' ">
+					<ctl:message>Bootstrap updateSequence value is not a number; test capability not implemented yet; test skipped</ctl:message>
+					<ctl:skipped/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="valuesEqualResult">
+						<ctl:call-function name="owsFunctions:SOAP.UpdateSequenceValuesEqual">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequence"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequenceMinus" select="$updateSequence -100"/>
+					<xsl:variable name="valueLessResult">
+						<ctl:call-function name="owsFunctions:SOAP.UpdateSequenceValueLess">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequenceMinus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="updateSequencePlus" select="$updateSequence + 100"/>
+					<xsl:variable name="valueGreaterResult">
+						<ctl:call-function name="owsFunctions:SOAP.UpdateSequenceValueGreater">
+							<ctl:with-param name="capabilitiesURL" select="$capabilitiesURL"/>
+							<ctl:with-param name="service" select="$service"/>
+							<ctl:with-param name="exceptionReportSchemaPath" select="$exceptionReportSchemaPath"/>
+							<ctl:with-param name="version" select="$version"/>
+							<ctl:with-param name="updateSequence" select="$updateSequencePlus"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="allTestsResults" select="concat($valuesEqualResult, '|', $valueLessResult, '|', $valueGreaterResult)"/>
+					<xsl:choose>
+						<xsl:when test="contains($allTestsResults, 'false')">
+							<ctl:message>Test skipped:  One or more tests of optional updateSequence parameter failed, so option considered to not be implemented. </ctl:message>
+							<ctl:skipped/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Tests of optional updateSequence parameter passed.</ctl:message>
+							<ctl:pass/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>	
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.AcceptFormats">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="format">valid MIME type format from capabilities document accept formats values, or 'bogus/xml'</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities AcceptFormats test</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending KVP ', $method, ' GetCapabilities request to ', $serviceURL, ' with optional parameter acceptFormats = ', $format, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service" /></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<ctl:param name="acceptformats"><xsl:value-of select="$format"/></ctl:param>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:if test="$code != '' ">
+				<ctl:message select="concat('HTTP status code ', $code)"/>
+			</xsl:if>
+			<xsl:variable name="contentType" select="$response/response/headers/header[@name='Content-Type']"/>
+			<xsl:choose>			
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="not($response/response/content/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity contents; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="$format = 'bogus/xml' and $contentType != 'application/xml' ">
+					<ctl:message select="concat('FAILURE: Unexpected content type for response entity (Invalid Request format: ', $format, ') Response format: ', $contentType, ' Required response format: application/xml')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="$format != 'bogus/xml' and not(starts-with($contentType, $format))">
+					<ctl:message>FAILURE: Unexpected content type for response entity (Request format: <xsl:value-of select="$format"/>, Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="$format = 'bogus/xml' ">
+							<ctl:message select="concat('Invalid Request format: ', $format, ' Response format: ', $contentType, ' Required response format: application/xml')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Request: format <xsl:value-of select="$format"/> matches Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:message select="concat('Validating capabilities document against its XML Schema ', $schemaPath)"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">schema.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="capabilities.doc" select="$response/response/content/*"/>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="schema.validation.elapsed" select="ctl:elapsedTime('schema.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message select="concat(upper-case($service),  ' capabilities document failed schema validation; elapsedTime: [', $schema.validation.elapsed, '] milliseconds')"/>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>schema.validation.elapsed [<xsl:value-of select="$schema.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message select="concat(upper-case($service), ' capabilities document is XML Schema valid')"/>
+							<xsl:text>true</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.GetCapabilities.AcceptFormats">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="format">valid MIME type format from capabilities document accept formats values, or 'bogus/xml'</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities AcceptFormats test</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' with optional parameter acceptFormats = ', $format, ' and validating response.' )"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $format)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:if test="$code != '' ">
+				<ctl:message select="concat('HTTP status code ', $code)"/>
+			</xsl:if>
+			<xsl:variable name="contentType" select="$response/response/headers/header[@name='Content-Type']"/>
+			<xsl:choose>			
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity contents; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="not($response/response/content/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity contents; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="$format = 'bogus/xml' and $contentType != 'application/xml.' ">
+					<ctl:message>FAILURE: Unexpected content type for response entity (Invalid Request format: <xsl:value-of select="$format"/>, Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="not(starts-with($contentType, $format))">
+					<ctl:message>FAILURE: Unexpected content type for response entity (Request format: <xsl:value-of select="$format"/>, Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Request: format <xsl:value-of select="$format"/> matches Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<ctl:message select="concat('Validating capabilities document against its XML Schema ', $schemaPath)"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">schema.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="capabilities.doc" select="$response/response/content/*"/>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="schema.validation.elapsed" select="ctl:elapsedTime('schema.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message select="concat(upper-case($service),  ' capabilities document failed schema validation; elapsedTime: [', $schema.validation.elapsed, '] milliseconds')"/>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>schema.validation.elapsed [<xsl:value-of select="$schema.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message select="concat(upper-case($service), ' capabilities document is XML Schema valid')"/>
+							<xsl:text>true</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.AcceptFormats">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="format">valid MIME type format from capabilities document accept formats values, or 'bogus/xml'</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:return>true|false</ctl:return>
+		<ctl:description>Performs KVP GetCapabilities AcceptFormats test</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' with optional parameter acceptFormats = ', $format, ' and validating response.' )"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $format)"/>
+			<xsl:variable name="response">
+				<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:SOAPParser return="content"/>
+						</parsers:parse>
+					</parsers:HTTPParser>						
+				</ctl:soap-request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:if test="$code != '' ">
+				<ctl:message select="concat('HTTP status code ', $code)"/>
+			</xsl:if>
+			<xsl:variable name="contentType" select="$response/response/headers/header[@name='Content-Type']"/>
+			<xsl:choose>			
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity contents; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="not($response/response/content/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity contents; should have been a ', upper-case($service), '  capabilties document.')"/>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<!-- soap content type is always application/soap+xml
+				<xsl:when test="$format = 'bogus/xml' and $contentType != 'application/xml.' ">
+					<ctl:message>FAILURE: Unexpected content type for response entity (Invalid Request format: <xsl:value-of select="$format"/>, Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:when test="not(starts-with($contentType, $format))">
+					<ctl:message>FAILURE: Unexpected content type for response entity (Request format: <xsl:value-of select="$format"/>, Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				-->
+				<xsl:otherwise>
+					<ctl:message>Request: format <xsl:value-of select="$format"/> matches Response format: <xsl:value-of select="$contentType"/>).</ctl:message>
+					<ctl:message select="concat('Validating capabilities document against its XML Schema ', $schemaPath)"/>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">schema.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="capabilities.doc" select="$response/response/content/*"/>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.doc"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="schema.validation.elapsed" select="ctl:elapsedTime('schema.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message select="concat(upper-case($service),  ' capabilities document failed schema validation; elapsedTime: [', $schema.validation.elapsed, '] milliseconds')"/>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<xsl:text>false</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>schema.validation.elapsed [<xsl:value-of select="$schema.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message select="concat(upper-case($service), ' capabilities document is XML Schema valid')"/>
+							<xsl:text>true</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Response.XML.Well.Formed">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Check that a Service Metadata document is well-formed XML. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:CapabilitesResponseElement($capabilitiesURL, $method, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:message>Response entity is a well-formed XML Capabilities document</ctl:message>
+				<ctl:pass/>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.XML.Well.Formed">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Check that a Service Metadata document is well-formed XML. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:XML.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:message>Response entity is a well-formed XML Capabilities document</ctl:message>
+				<ctl:pass/>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.XML.Well.Formed">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Check that a Service Metadata document is well-formed XML. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:message>Response entity is a well-formed XML Capabilities document</ctl:message>
+				<ctl:pass/>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Response.SchemaReferenced">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemas">comma separated list of normative schemas for capabilites doc for this service (may be top level one, or subsidiary capabilities response one, or both).</ctl:param>
+		<ctl:description>Check that a Service Metadata document references a normative XML schema. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:CapabilitesResponseElement($capabilitiesURL, $method, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.SchemaReferenced">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="schemas" select="$schemas"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.SchemaReferenced">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemas">comma separated list of normative schemas for capabilites doc for this service (may be top level one, or subsidiary capabilities response one, or both).</ctl:param>
+		<ctl:description>Check that a Service Metadata document references a normative XML schema. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:XML.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.SchemaReferenced">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="schemas" select="$schemas"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.SchemaReferenced">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemas">comma separated list of normative schemas for capabilites doc for this service (may be top level one, or subsidiary capabilities response one, or both).</ctl:param>
+		<ctl:description>Check that a Service Metadata document references a normative XML schema. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.SchemaReferenced">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="schemas" select="$schemas"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:check.GetCapabilities.Response.SchemaReferenced">
+		<ctl:param name="capabilities.elt"/>
+		<ctl:param name="schemas"/>
+		<ctl:description>Check that a Service Metadata document references a normative XML schema. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="schemaLocation" select="$capabilities.elt/@xsi:schemaLocation"/>
+			<xsl:variable name="schemasList" select="tokenize($schemas, ',')"/>
+			<xsl:variable name="results">
+				<xsl:for-each select="$schemasList">
+					<xsl:variable name="schema" select="."/>
+					<xsl:if test="ends-with($schemaLocation, $schema)">
+						<ctl:message select="concat('Capabilities document references a normative schema: ', $schema)"/>
+						<xsl:text>true|</xsl:text>
+					</xsl:if>		
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="contains($results, 'true')">
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="schema" select="substring-after($schemaLocation, ' ')"/>
+					<ctl:message select="concat('Capabilities document references ', $schema, ' which is not a normative schema: ', $schemas)"/>
+					<ctl:fail/>
+				</xsl:otherwise>
+			</xsl:choose>	
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Response.SchemaValid">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Check that a Service Metadata document is schema-valid with respect to the normative XML schema.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending KVP ', upper-case($method), ' GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<ctl:param name="service"><xsl:value-of select="$service"/></ctl:param>
+					<ctl:param name="request">GetCapabilities</ctl:param>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Response entity is a valid ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:pass/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.SchemaValid">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:param name="schemaType">url | file | resource</ctl:param>
+		<ctl:description>Check that a Service Metadata document is schema-valid with respect to the normative XML schema.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<ctl:message select="concat('Sending XML POST GetCapabilities request to ', $serviceURL, ' and validating response.' )"/>
+			<xsl:variable name="acceptVersions"/>
+			<xsl:variable name="updateSequence"/>
+			<xsl:variable name="sections"/>
+			<xsl:variable name="acceptFormats"/>
+			<xsl:variable name="postBody" select="owsFunctions:makeXMLpostGetCapabilitiesRequest($service, $updateSequence, $acceptVersions, $sections, $acceptFormats)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body>
+						<xsl:copy-of select="$postBody"/>
+					</ctl:body>
+					<parsers:XMLValidatingParser>
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema>
+								<xsl:attribute name="type"><xsl:value-of select="$schemaType" /></xsl:attribute>
+								<xsl:value-of select="$schemaPath" />
+							</parsers:schema>
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</ctl:request>
+			</xsl:variable>		
+			<xsl:choose>
+				<xsl:when test="not($response/*)">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Response entity is a valid ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:pass/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.SchemaValid">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="schemaPath">full path to schema for specified service, e.g. wmts.xsd</ctl:param>
+		<ctl:description>Check that a Service Metadata document is schema-valid with respect to the normative XML schema.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>		
+			<xsl:choose>
+				<xsl:when test="not(exists($capabilities.elt))">
+					<ctl:message select="concat('FAILURE: Missing or invalid response entity; should have been a ', upper-case($service), ' Capabilities document.')"/>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+					</ctl:call-function>
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$capabilities.elt"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+					<xsl:choose>
+						<xsl:when test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<ctl:fail/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Capabilities.validation.elapsed [' , $capabilities.validation.elapsed, '] milliseconds.  Response is valid ', upper-case($service), ' Capabilities document.')"/>
+							<ctl:pass/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Response.AdvertisedFormat">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="requiredFormat">format required by service to be among advertised AcceptFormats</ctl:param>
+		<ctl:description>Verify that a service offers a particular response format for the GetCapabilties operation.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:CapabilitesResponseElement($capabilitiesURL, $method, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.AdvertisedFormat">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="requiredFormat" select="$requiredFormat"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.AdvertisedFormat">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="requiredFormat">format required by service to be among advertised AcceptFormats</ctl:param>
+		<ctl:description>Verify that a service offers a particular response format for the GetCapabilties operation.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:XML.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.AdvertisedFormat">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="requiredFormat" select="$requiredFormat"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.AdvertisedFormat">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="requiredFormat">format required by service to be among advertised AcceptFormats</ctl:param>
+		<ctl:description>Verify that a service offers a particular response format for the GetCapabilties operation.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.AdvertisedFormat">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="requiredFormat" select="$requiredFormat"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:check.GetCapabilities.Response.AdvertisedFormat">
+		<ctl:param name="capabilities.elt"/>
+		<ctl:param name="requiredFormat">format required by service to be among advertised AcceptFormats</ctl:param>
+		<ctl:description></ctl:description>
+		<ctl:code>
+			<xsl:variable name="acceptFormats">
+				<xsl:for-each select="$capabilities.elt/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:Parameter[@name='AcceptFormats']/ows:AllowedValues/ows:Value">
+					<xsl:value-of select="."/>
+					<xsl:if test="position() != last()">
+						<xsl:text>,</xsl:text>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="contains($acceptFormats, $requiredFormat)">
+					<ctl:message select="concat('Test passed: Capabilities document contains an AcceptFormats allowed value of ', $requiredFormat)"/>
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Test failed: Capabilities document AcceptFormats ', $acceptFormats, ' do not include allowed value of ', $requiredFormat)"/>
+					<ctl:fail/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:KVP.GetCapabilities.Response.OnlineResource">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Verify that each OnlineResource URL is either a URL prefix termined by "?" for HTTP Get or a URL not terminated y "?" for HTTP Post</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:CapabilitesResponseElement($capabilitiesURL, $method, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.OnlineResource">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method" select="$method"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.OnlineResource">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Verify that each OnlineResource URL is either a URL prefix termined by "?" for HTTP Get or a URL not terminated y "?" for HTTP Post</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:XML.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.OnlineResource">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method">post</ctl:with-param>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.OnlineResource">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Verify that each OnlineResource URL is either a URL prefix termined by "?" for HTTP Get or a URL not terminated y "?" for HTTP Post</ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.OnlineResource">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method">post</ctl:with-param>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:check.GetCapabilities.Response.OnlineResource">
+		<ctl:param name="capabilities.elt"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:description>Verify that each OnlineResource URL is either a URL prefix termined by "?" for HTTP Get or a URL not terminated y "?" for HTTP Post</ctl:description>
+		<ctl:code>
+			<xsl:variable name="results">
+				<xsl:choose>
+					<xsl:when test="lower-case($method) = 'get' ">
+						<xsl:for-each select="$capabilities.elt/ows:OperationsMetadata/ows:Operation/ows:DCP/ows:HTTP/ows:Get/@xlink:href">
+							<xsl:variable name="urlPrefix" select="."/>
+							<xsl:choose>
+								<xsl:when test="starts-with($urlPrefix,'http://') and ends-with($urlPrefix, '?')">
+									<xsl:text>true|</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('URL ', $urlPrefix, ' is not a valid HTTP GET URL prefix, which must begin with http:// and end with ?')"/>
+									<xsl:text>false|</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="$capabilities.elt/ows:OperationsMetadata/ows:Operation/ows:DCP/ows:HTTP/ows:Post/@xlink:href">
+							<xsl:variable name="urlPrefix" select="."/>
+							<xsl:choose>
+								<xsl:when test="starts-with($urlPrefix,'http://') and not(ends-with($urlPrefix, '?'))">
+									<xsl:text>true|</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message select="concat('URL ', $urlPrefix, ' is not a valid HTTP POST URL, which must begin with http:// and not end with ?')"/>
+									<xsl:text>false|</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>									
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="contains($results, 'false')">
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:when test="not(contains($results, 'true'))">
+					<xsl:choose>
+						<xsl:when  test="lower-case($method) = 'get' ">
+							<ctl:message>No HTTP GET operation contains a valid URL prefix.</ctl:message>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>No HTTP POST operation contains a valid URL.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:fail/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when  test="lower-case($method) = 'get' ">
+							<ctl:message>Test passed:  All HTTP GET operations contain valid URL prefixes.</ctl:message>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Test passed:  All HTTP POST operations contain valid URLs.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+					<ctl:pass/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+		
+	<ctl:function name="owsFunctions:GetCapabilities.Response.Encoding.Constraint">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:param name="encoding">HTTP encoding: KVP for GET; KVP, XML, or SOAP for POST</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for using the ows:Constraint parameter. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:CapabilitesResponseElement($capabilitiesURL, $method, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.Encoding.Constraint">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method" select="$method"/>
+					<ctl:with-param name="encoding" select="$encoding"/>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:XML.GetCapabilities.Response.Encoding.Constraint">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for using the ows:Constraint parameter. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:XML.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.Encoding.Constraint">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method">post</ctl:with-param>
+					<ctl:with-param name="encoding">XML</ctl:with-param>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:function name="owsFunctions:SOAP.GetCapabilities.Response.Encoding.Constraint">
+		<ctl:param name="capabilitiesURL"/>
+		<ctl:param name="service">OWS service type, e.g. WMTS</ctl:param>
+		<ctl:description>Verify that a server satisfies the requirements for using the ows:Constraint parameter. </ctl:description>
+		<ctl:code>
+			<xsl:variable name="capabilities.elt" select="owsFunctions:SOAP.CapabilitesResponseElement($capabilitiesURL, $service)"/>
+			<xsl:if test="exists($capabilities.elt)">
+				<ctl:call-function name="owsFunctions:check.GetCapabilities.Response.Encoding.Constraint">
+					<ctl:with-param name="capabilities.elt" select="$capabilities.elt"/>
+					<ctl:with-param name="method">post</ctl:with-param>
+					<ctl:with-param name="encoding">SOAP</ctl:with-param>
+				</ctl:call-function>
+			</xsl:if>
+		</ctl:code>
+	</ctl:function>
+	
+	<ctl:function name="owsFunctions:check.GetCapabilities.Response.Encoding.Constraint">
+		<ctl:param name="capabilities.elt"/>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="encoding"/>
+		<ctl:description>Verify that a server satisfies the requirements for using the ows:Constraint parameter. </ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="lower-case($method) = 'get' ">
+					<xsl:variable name="gcEncoding" select="$capabilities.elt/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/ows:Constraint[@name='GetEncoding']/ows:AllowedValues/ows:Value"/>
+					<xsl:choose>
+						<xsl:when test="upper-case($gcEncoding) = upper-case($encoding)">
+							<ctl:message select="concat('Test passed:  GetCapabilities GetEncoding is ', $gcEncoding)"/>
+							<ctl:pass/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Test failed:  GetCapabilities GetEncoding is not ', $encoding)"/>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="results">
+						<xsl:for-each select="$capabilities.elt/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/ows:Constraint[@name='PostEncoding']/ows:AllowedValues/ows:Value">
+							<xsl:variable name="gcEncoding" select="."/>
+								<xsl:if  test="upper-case($gcEncoding) = upper-case($encoding)">
+									<ctl:message select="concat('Test passed: GetCapabilties PostEncoding includes ', $gcEncoding)"/>
+									<xsl:text>true|</xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:choose>
+						<xsl:when test="contains($results, 'true')">
+							<ctl:pass/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message select="concat('Test failed:  GetCapabilities PostEncoding does not include ', $encoding)"/>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>	
+	</ctl:function>
+	
+</ctl:package>

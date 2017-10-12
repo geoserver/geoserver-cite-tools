@@ -1,0 +1,40 @@
+<cblf:BlueLakeFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                                xmlns:cblf="http://www.opengis.net/cite/bluelake"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.opengis.net/cite/bluelake blueLakeFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:NamedPlaces layer</gml:description>
+   <gml:name>cite:NamedPlaces</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>0.0014,-0.0011 0.0042,0.0024</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cblf:NamedPlaceFeature fid="BlueLake.117">
+         <cblf:name>Ashton</cblf:name>
+         <cblf:boundary>
+            <gml:Polygon srsName="CRS:84">
+               <gml:outerBoundaryIs>
+                  <gml:LinearRing>
+                     <gml:coordinates>0.0020,0.0024 0.0042,0.0024 0.0042,0.0006 0.0014,0.0006 0.0014,0.0010 0.0020,0.0024</gml:coordinates>
+                  </gml:LinearRing>
+               </gml:outerBoundaryIs>
+            </gml:Polygon>
+         </cblf:boundary>
+      </cblf:NamedPlaceFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:NamedPlaceFeature fid="BlueLake.118">
+         <cblf:name>Goose Island</cblf:name>
+         <cblf:boundary>
+            <gml:Polygon srsName="CRS:84">
+               <gml:outerBoundaryIs>
+                  <gml:LinearRing>
+                     <gml:coordinates>0.0017,-0.0011 0.0017,-0.0006 0.0025,-0.0006 0.0025,-0.0011 0.0017,-0.0011</gml:coordinates>
+                  </gml:LinearRing>
+               </gml:outerBoundaryIs>
+            </gml:Polygon>
+         </cblf:boundary>
+      </cblf:NamedPlaceFeature>
+   </gml:featureMember>
+</cblf:BlueLakeFeatureCollection>

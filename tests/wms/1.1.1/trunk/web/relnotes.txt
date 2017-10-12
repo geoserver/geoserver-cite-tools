@@ -1,0 +1,36 @@
+WMS 1.1.1 Test Suite Release Notes
+
+
+Changes included in this revision:
+
+=== Changes included in r2 ===
+
+2010-11-15 (kstegemoller):
+- updated release notes.
+
+2010-08-27 (kstegemoller):
+- updated "Latest" release notes
+
+2010-08-25 (aschmitz):
+- fixed documentation typo
+
+2010-07-05 (aschmitz):
+- changed transparent value to FALSE as suggested in issue #25
+
+=== Changes included in r1 ===
+
+2009-10-12 (kstegemoller):
+- Created revision tag wms-1.1.1 r1
+
+2009-10-7 (cmorris):
+- Fixed tests that did not include a Version parameter (Issue 309)
+- Added tests written for NSG that apply to the base WMS specification:
+1	When a layer is requested using escaped characters in its name, the response is a map
+2	When an exception is generated, it validates
+3	For each format a request with TRANSPARENT=TRUE does not return an exception.
+4	For each image format advertised in capabilities, When a GetMap request is made using the image format, then the Content-type entity header returned is the format requested.
+5	For each SRS in the capabilities document, when a GetMap request uses the SRS, then the response is valid.
+6	For each of the Layers in the capabilities document, when a GetMap request is made with the LAYERS parameter set to the element of the layer, then the response is valid.
+7	For each of the Styles in the capabilities document, when a GetMap request is made with the STYLES parameter set to the element of the style, then the response is valid.
+8	For each advertised GetFeatureInfo format, when a GetFeatureInfo request is made with the INFO_FORMAT parameter set to the format, then the Content-type header returned is the same.
+

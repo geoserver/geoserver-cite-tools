@@ -1,0 +1,15 @@
+SPS 1.0 Test Suite Release Notes
+
+----r1 -----------
+
+2011-12-01 (lbermudez) 
+Revision  for release prod 2.4 beta 2.5
+- Tagged r1
+- Cleaned release notes. Information about the test is available in index.html.
+- Now test read schemas from local resources
+- Removed white space in the file name that caused an error when starting TEAM Engine
+
+
+2009-10-12 (kstegemoller):
+- tag r0 - SPS 1.0.0
+

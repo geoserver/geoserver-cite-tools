@@ -1,0 +1,16 @@
+WCS 2.0 Test Suite Release Notes
+
+Changes included in latest revision:
+
+=== Changes included in R0 ===
+2011-05-10 (jyu):
+- Added the GetKVP(OGC09-147r1) test suite
+
+=== Changes included in R1 ===
+2011-07-06 (jyu):
+- Added the PostXML(OGC09-148r1) test suite
+
+=== Changes included in R2 ===
+2011-07-011 (jyu):
+- Added Core (OGC09-110r3) test suite, completed GetCapabilities (KVP, POST), DescribeCoverage (KVP, POST), GetCoverage (KVP, POST) only for GML Coverage  (GetCoverage should be tested with a specific format encoding, therefore, will not be addressed in core unless mappings to gml are provided).
+- Update GetCoverage operations in both GetKVP(OGC09-147r1) and PostXML(OGC09-148r1) test suites, only responses in gml are supported.

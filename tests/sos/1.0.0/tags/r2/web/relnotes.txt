@@ -1,0 +1,22 @@
+SOS 1.0.0 Test Suite Release Notes
+
+Changes included in latest revision:
+
+Revision r2 2012-01-23 (rocky and lbermudez)
+- User can now choose to execute a single-test or complete-tests.
+- Use a  MissingParameterValue  as a valid exception code instead of InvalidRequest. InvalidRequest is not listed in SOS or in OWS Common v 1.1 or 2.0 as a valid exception code. "InvalidRequest" is listed in SWES 2.0, but SOS 1.0 uses SWE 1.0.1 (xmlns:swe="http://www.opengis.net/swe/1.0.1").
+- In GetCapabilities the observedProperty can now be any URI (URN and URL) now. Before, the value of the observedProperty parameter was a URN. But In SOS 1.0.0 06-009r6 p29 it said that the observedProperty in GetObservation can be a URI.
+- Added further check when testing DescribeSensor operation. The script check if there is response and that the response is a correct SensorML and TML response.
+- Changed error tag "xsl:message" to "ctl:message" in test "getObservation:core-SOS.GetObservation-ResponseMatchingSRSData.1".
+- Call new function "sosFunctions:capabilitiesOfferingName" now allows to test all observed properties, not only the first one.
+- The value for Procedure is now extracted from the value of the identifier and not the value of the definition (which is optional) 
+- Improved handling of MIME types, The test now allows use the use of subtypes and additional parameters. For example text/xml; subtype="myOrg/0.6.1"
+- The sosFunctions:mimeSubtype now returns MIME type with a valid om subytpe  (text/xml; subtype="om/1.0.1") if there is no specified subtype information.
+
+2011-08-29 (rocky):
+- tag r2 
+
+2009-07-23 (kstegemoller):
+- tag r0 
+
+

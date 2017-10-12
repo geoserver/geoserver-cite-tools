@@ -1,0 +1,5 @@
+OGC WCS 2.0.0 Test Suite Release Notes
+Changes included in latest revision:
+
+2011-5-2(JinsongdiYu):
+- tag r0 - WCS 2.0.0

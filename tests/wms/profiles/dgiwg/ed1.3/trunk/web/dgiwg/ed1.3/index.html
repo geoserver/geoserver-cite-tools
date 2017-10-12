@@ -1,0 +1,89 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DGIWG WMS 1.3 Profile Test Suite</title>
+</head>
+<body>
+
+<h1>Overview</h1>
+<p>This test suite is based on the following specifications:</p>
+<ul>
+  <li>
+    <em>Web Map Server Implementation Specification</em>, version 1.3.0 [OGC 06-042] (
+    <a href="http://portal.opengeospatial.org/files/?artifact_id=14416">PDF version</a>,
+    <a href="http://cite.opengeospatial.org/OGCTestData/wms/1.3.0/spec/wms1_3.html">HTML version</a>)
+  </li>
+  <li>
+    <em>DGIWG WMS 1.3 Profile and systems requirements for interoperability for use within a military environment</em>, edition 1.3
+    [<a href="https://portal.dgiwg.org/files/?artifact_id=4199&amp;format=doc">STD-08-054-ed1.3-DGIWG_WMS1.3_Profile</a>]
+  </li>
+</ul>
+
+<h2>What is tested</h2>
+<p>In conjunction with the base WMS 1.3.0 test suite, this profile tests the requirements from these sections of the DGIWG profile:</p>
+<ul>
+  <li>Section 3 - Web Map Service specifications restrictions and extensions (with a few exceptions listed below)</li>
+  <li>Section 4 - Requirements for systems publishing data as WMS</li>
+</ul>
+
+<h2>What is not tested</h2>
+<ul>
+  <li>Clause 3.5.3 - Default quality of JPEG output</li>
+  <li>Clause 3.9.1 - Consistency between the legend and map portrayal</li>
+  <li>Section 5 - Recommendations</li>
+</ul>
+
+<h2><a name="requirements">Test requirements</a></h2>
+<p>
+  To ensure all of the tests in the test suite produce correct results, test configuration metadata must be
+  supplied for each of the layers in the WMS.  The user will be asked to upload a configuration file containing
+  data that conforms to the <a href="TestConfig.xsd">TestConfig schema</a>, summarized below:
+</p>
+<pre>
+&lt;TestConfig&gt;
+  &lt;layer name="layername" type="vector|coverage|raster" [vmap="true|false"] [elevation="true|false"] [bathymetry="true|false"]/&gt;
+    &lt;scale&gt;number&lt;/scale&gt;
+    &lt;featureinfo i="num" j="num" bbox="minx,miny,maxx,maxy" height="num" width="num" [over99="true|false"]/&gt;
+  &lt;/layer&gt;
+  &lt;-- more layers --&gt;
+&lt;/TestConfig&gt;
+</pre>
+<p>
+  A layer element must be supplied for each named layer in the WMS.
+  Layers must contain a type, raster, coverage, or vector.
+  The scale elements indicate the native scale of the data portrayed by the layer.  At least one scale must be supplied for each layer.
+  The featureinfo element identifies parameters for a GetFeatureInfo request that will return content and is required.
+  The over99 attribute should be set if there are 100 or more features at the location.
+  The default value for all of the optional boolean parameters is false.
+</p>
+<p>
+  Test configuration metadata appropriate for the WMS test dataset can be found in
+  <a href="CiteLayers.xml">CiteLayers.xml</a>.
+</p>
+<p>
+  Since the TestConfig element belongs to the wms:_ExtendedCapabilities substitution group,
+  the configuration metadata may also be published in the WMS service.
+</p>
+<pre>
+&lt;wms:WMS_Capabilities xmlns:wms="http://www.opengis.net/wms"&gt;
+  &lt;wms:Service&gt;...&lt;/wms:Service&gt;
+  &lt;wms:Capability&gt;
+    &lt;wms:Request&gt;...&lt;/wms:Request&gt;
+    &lt;wms:Exception&gt;...&lt;/wms:Exception&gt;
+    &lt;TestConfig xsi:noNamespaceSchemaLocation="http://.../TestConfig.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+      ...
+    &lt;/TestConfig&gt;
+    &lt;wms:Layer&gt;...&lt;/wms:Layer&gt;
+  &lt;/wms:Capability&gt;...&lt;/wms:Capability&gt;
+&lt;/wms:WMS_Capabilities&gt;
+</pre>
+
+<h2><a name="ats">Abstract Test Suite</a></h2>
+<p>
+  Detailed information about each of the tests can be found in the
+  <a href="dgiwg_wms_1_3_profile-ats.html">abstract test suite</a>, which follows the ISO 19105 model.
+</p>
+</body>
+</html>

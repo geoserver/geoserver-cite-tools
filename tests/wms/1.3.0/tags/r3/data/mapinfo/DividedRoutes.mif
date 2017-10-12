@@ -1,0 +1,16 @@
+VERSION 300
+Charset "WindowsLatin1"
+DELIMITER ","
+COORDSYS Earth Projection 1, 104
+COLUMNS 3
+  fid char(16)
+  name char(64)
+  num_lanes float
+DATA
+PLINE MULTIPLE 2
+  2
+ -0.0032 -0.0024
+ -0.0032 0.0024
+  2
+ -0.0026 -0.0024
+ -0.0026 0.0024

@@ -1,0 +1,4199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities 
+xmlns="http://www.opengis.net/wmts/1.0"
+xmlns:wmts="http://www.opengis.net/wmts/1.0"
+xmlns:ows="http://www.opengis.net/ows/1.1" 
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:gml="http://www.opengis.net/gml" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.opengis.net/wmts/1.0  ../wmts.xsd" 
+version="1.0.0" 
+updateSequence="1" 
+>  <!-- xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmts.xsd"  -->
+  <ows:ServiceIdentification>
+    <ows:Title>ETS WMTS</ows:Title>
+    <ows:Abstract>This Capabilities document was created by hand for a hypothetical WMTS server with comprehensive test data as specified in WMTS 1.0 ATS.html</ows:Abstract>
+    <ows:Keywords>
+      <ows:Keyword>WMTS</ows:Keyword>
+      <ows:Keyword>ATS</ows:Keyword> 
+      <ows:Keyword>ETS</ows:Keyword>
+      <ows:Keyword>Bootstrap</ows:Keyword>
+    </ows:Keywords>
+    <ows:ServiceType>OGC WMTS</ows:ServiceType>
+    <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+    <ows:Fees>None</ows:Fees>
+    <ows:AccessConstraints>None</ows:AccessConstraints>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>Image Matters LLC</ows:ProviderName>
+    <ows:ProviderSite xlink:href="http://www.imagemattersllc.com/"/>
+    <ows:ServiceContact>
+      <ows:IndividualName>Paul Daisey</ows:IndividualName>
+      <ows:PositionName>Sr. Software Architect</ows:PositionName>
+      <ows:ContactInfo>
+        <ows:Phone>
+          <ows:Voice>1.703.669.5510</ows:Voice>
+          <ows:Facsimile>703.669.5515</ows:Facsimile>
+        </ows:Phone>
+        <ows:Address>
+          <ows:DeliveryPoint>201 Loudoun St. SW</ows:DeliveryPoint>
+          <ows:City>Leesburg</ows:City>
+          <ows:AdministrativeArea>VA</ows:AdministrativeArea>
+          <ows:PostalCode>20175</ows:PostalCode>
+          <ows:Country>USA</ows:Country>
+          <ows:ElectronicMailAddress>pauld@imagemattersllc.com</ows:ElectronicMailAddress>
+        </ows:Address>
+        <ows:OnlineResource xlink:href="http://www.imagemattersllc.com/ets/wmts"/>
+       <ows:ContactInstructions>Contacts by OGC CITE SC members only, please.</ows:ContactInstructions>
+      </ows:ContactInfo>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata> 
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:8080/wmts">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>KVP</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Post xlink:href="http://localhost:8080/wmts">
+			  <ows:Constraint name="PostEncoding">
+			   <ows:AllowedValues> 
+					<ows:Value>KVP</ows:Value>
+					<ows:Value>XML</ows:Value>
+					<ows:Value>SOAP</ows:Value>
+			  </ows:AllowedValues>
+			 </ows:Constraint>
+          </ows:Post>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="Sections">
+        <ows:AllowedValues>
+          <ows:Value>ServiceIdentification</ows:Value>
+          <ows:Value>ServiceProvider</ows:Value>
+          <ows:Value>OperationsMetadata</ows:Value>
+          <ows:Value>Contents</ows:Value>
+          <ows:Value>Themes</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+      <ows:Parameter name="Versions">
+        <ows:AllowedValues>
+          <ows:Value>1.0.0</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+      <ows:Parameter name="AcceptFormats">
+			<ows:AllowedValues>
+				<ows:Value>application/xml</ows:Value>
+				<ows:Value>text/xml</ows:Value>
+				<ows:Value>text/html</ows:Value>
+			</ows:AllowedValues>
+		</ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetTile">
+      <ows:DCP>
+        <ows:HTTP>
+           <ows:Get xlink:href="http://localhost:8080/wmts/1.0.0/ws">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>KVP</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Post xlink:href="http://localhost:8080/wmts/1.0.0/ws">
+			  <ows:Constraint name="PostEncoding">
+			   <ows:AllowedValues> 
+					<ows:Value>KVP</ows:Value>
+					<ows:Value>XML</ows:Value>
+					<ows:Value>SOAP</ows:Value>
+			  </ows:AllowedValues>
+			 </ows:Constraint>
+          </ows:Post>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="Format">
+        <ows:AllowedValues>
+          <ows:Value>image/png</ows:Value>
+          <ows:Value>image/jpeg</ows:Value>
+          <ows:Value>image/jp2</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+      <ows:Parameter name="TileMatrixSet">
+        <ows:AllowedValues>
+          <ows:Value>GoogleCRS84Quad</ows:Value>
+          <ows:Value>GoogleMapsCompatible</ows:Value>
+          <ows:Value>TransparentNodata</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+    </ows:Operation>
+    <ows:Operation name="GetFeatureInfo">
+      <ows:DCP>
+        <ows:HTTP>
+           <ows:Get xlink:href="http://localhost:8080/wmts/1.0.0/ws">
+            <ows:Constraint name="GetEncoding">
+              <ows:AllowedValues>
+                <ows:Value>KVP</ows:Value>
+              </ows:AllowedValues>
+            </ows:Constraint>
+          </ows:Get>
+          <ows:Post xlink:href="http://localhost:8080/wmts/1.0.0/ws">
+			  <ows:Constraint name="PostEncoding">
+			   <ows:AllowedValues> 
+					<ows:Value>KVP</ows:Value>
+					<ows:Value>XML</ows:Value>
+					<ows:Value>SOAP</ows:Value>
+			  </ows:AllowedValues>
+			 </ows:Constraint>
+          </ows:Post>
+        </ows:HTTP>
+      </ows:DCP>
+     <ows:Parameter name="InfoFormat">
+			<ows:AllowedValues>
+				<ows:Value>application/gml+xml; version=3.1</ows:Value>
+				<ows:Value>application/gml+xml; version=3.2.1</ows:Value>
+			</ows:AllowedValues>
+		</ows:Parameter>
+	</ows:Operation>
+  </ows:OperationsMetadata>
+  <Contents>
+    <Layer>
+      <ows:Title>Site Polygon with no Style Legends and One Tile Matrix Set</ows:Title>
+      <ows:Abstract>Mission site polygon.test data cases: 
+      One or more Layers with one or more Styles with no Legends; 
+      One or more Layers with one TileMatrixSet with two or more TileMatrices;
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and no InfoFormats and no sample Dimensions;
+	  Two or more Layers with tiles from the same TileMatrixSet that overlay each other, at least one of which has a transparent background and opaque foreground data      
+	  Two or more Layers with tiles from the same TileMatrixSet that overlay each other, at least one of which has a transparent background and NODATA foreground data
+	  Two or more Layers with tiles from different TileMatrixSets that overlay each other, at least one of which has a transparent background and opaque foreground data
+	  Two or more Layers with tiles from different TileMatrixSets that overlay each other, at least one of which has a transparent background and NODATA foreground data
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.401367184849 24.454331933228</ows:LowerCorner>
+        <ows:UpperCorner>67.851562497291 25.380937762084</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>FirstWasL49</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="http://localhost:8080/wmts/1.0.0/rest/FirstWasL49/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Site Polygon with Style Legends and Two Tile Matrix Sets</ows:Title>
+      <ows:Abstract>Mission site polygon. Test data cases: 
+      One or more Layers with one or more Styles with one or more Legends; 
+      One or more Layers with two or more TileMatrixSets with two or more TileMatrices.
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.401367184849 24.454331933228</ows:LowerCorner>
+        <ows:UpperCorner>67.851562497291 25.380937762084</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>SecondWasL49</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+        <LegendURL xlink:href="http://localhost:8080/teamengine/images/pass.png" format="image/png" height="16" width="16" minScaleDenominator="559082264.0287178" maxScaleDenominator="559082264.0287178"/>
+        <LegendURL xlink:href="http://localhost:8080/teamengine/images/bestPractice.png" format="image/png" height="16" width="16" minScaleDenominator="2132.729583849784" maxScaleDenominator="279541132.0143589"/>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="http://localhost:8080/wmts/1.0.0/rest/SecondWasL49/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+      <ResourceURL format="image/jp2" resourceType="tile" template="http://localhost:8080/wmts/1.0.0/rest/SecondWasL49/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+      <ResourceURL format="image/jpeg" resourceType="tile" template="http://localhost:8080/wmts/1.0.0/rest/SecondWasL49/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format with Multiple Sample Dimensions</ows:Title>
+      <ows:Abstract>Layer with one image format and multiple sample dimensions.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and no InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.8752296680231 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirdWasL47</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirdWasL47/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format with Default Sample Dimension</ows:Title>
+      <ows:Abstract>Layer with one image format and a sample dimension with a default.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and no InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.625284312148 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.7505613204582 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>FourthWasL46</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+     <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FourthWasL46/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format with Current Sample Dimension</ows:Title>
+      <ows:Abstract>Layer with one image format and a sample dimension with a current value.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and no InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.500002434643 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.6253037893867 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>FifthWasL45</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+     <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FifthWasL45/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+     </Layer>
+    <Layer>
+      <ows:Title>One Image Format with two or more InfoFormats and no sample Dimensions</ows:Title>
+      <ows:Abstract>Layer with one image format, two or more InfoFormats, and no sample dimensions.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and two or more InfoFormats and no sample Dimensions;
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.374730295527 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.5000073038373 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>SixthWasL44</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixthWasL44/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixthWasL44/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixthWasL44/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats,  Three Sample Dimensions, No Default or Current</ows:Title>
+      <ows:Abstract>Layer with one Image Format, Two Info Formats,  Three Sample Dimensions, No Default or Currentf.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and two or more InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.249448418023 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.3747449034801 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>SeventhWasL43</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventhWasL43/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventhWasL43/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventhWasL43/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats,  One Sample Dimension with a default</ows:Title>
+      <ows:Abstract>Layer with one Image Format, Two Info Formats,  One Sample Dimension with a default value.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and two or more InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>EighthWasL42</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighthWasL42/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighthWasL42/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighthWasL42/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats, One Sample Dimension with current values</ows:Title>
+      <ows:Abstract>Layer with one Image Format, Two Info Formats, One Sample Dimension with current values.  Test data cases:
+      One or more Layers with one (Image) Format and no TileMatrixSetLimits and two or more InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 25.3749158308019</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.500381383871</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>NinethWasL41</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NinethWasL41/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NinethWasL41/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NinethWasL41/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with one image format and tile matrix set limits.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and no sample Dimensions
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.749933182566 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.8752296680231 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TenthWasL40</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+      	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TenthWasL40/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+     </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Tile Matrix Set Limits, Sample Dimensions</ows:Title>
+      <ows:Abstract>Layer with one image format, tile matrix set lilmits, and sample dimensions.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+     Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.625284312148 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.7505613204582 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>EleventhWasL39</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+	   </TileMatrixSetLink>
+	   <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EleventhWasL39/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+     </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Tile Matrix Set Limits, Sample Dimension with default value</ows:Title>
+      <ows:Abstract>Layer with one image format, tile matrix set llimits, sample dimension with default value.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.500002434643 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.6253037893867 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwelvethWasL38</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	   <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwelvethWasL38/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Tile Matrix Set Limits, Sample Dimension with current values.</ows:Title>
+      <ows:Abstract>Layer with one image format, tile matrix set limits, sample dimension with current values.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.374730295527 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.5000073038373 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirteenthWasL37</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+       <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	   <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirteenthWasL37/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats, Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with one image format, two info formats, tile matrix set limits.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and no sample Dimensions
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.249448418023 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.3747449034801 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>FourteenthWasL36</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FourteenthWasL36/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FourteenthWasL36/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FourteenthWasL36/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/> 
+     </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats, Tile Matrix Set Limits, Three sample dimensions.</ows:Title>
+      <ows:Abstract>Layer with one image fomat, two info formats, tile matrix set limits, and three sample dimensions.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>FifteenthWasL35</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+       <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>      
+		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FifteenthWasL35/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FifteenthWasL35/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/FifteenthWasL35/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats, Tile Matrix Set Limits, Sample Dimension with default value.</ows:Title>
+      <ows:Abstract>Layer with one image fomrat, two info formats, tile matrix set limits, sample dimension with default value.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 25.2494817476125</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.374929317945</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>SixteenthWasL34</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+	  <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixteenthWasL34/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixteenthWasL34/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SixteenthWasL34/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>One Image Format, Two Info Formats, Tile Matrix Set Limits, Sample Dimension with current values.</ows:Title>
+      <ows:Abstract>Layer with one image fomrat, two info formats, tile matrix set limits, sample dimension with current values.  Test data cases:
+      One or more Layers with one (Image) Format and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.749933182566 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.8752296680231 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>SeventeenthWasL33</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>	  
+	  <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventeenthWasL33/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventeenthWasL33/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/SeventeenthWasL33/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats</ows:Title>
+      <ows:Abstract>Layer with three image formats.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and no InfoFormats and no sample Dimensions
+	  Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.625284312148 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.7505613204582 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>EighteenthWasL32</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighteenthWasL32/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighteenthWasL32/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/EighteenthWasL32/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats and Three Sample Dimensions</ows:Title>
+      <ows:Abstract>Layer with three image formats and three sample dimensions. Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and no InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.500002434643 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.6253037893867 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>NineteenthWasL31</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>      
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NineteenthWasL31/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NineteenthWasL31/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/NineteenthWasL31/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats and Sample Dimension with default value</ows:Title>
+      <ows:Abstract>Layer with three image formats and sample dimension with default value.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and no InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.374730295527 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.5000073038373 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentythWasL30</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentythWasL30/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentythWasL30/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentythWasL30/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats and Sample Dimension with current values.</ows:Title>
+      <ows:Abstract>Layer with three image formats and sample dimension with current values.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and no InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.249448418023 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.3747449034801 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyFirstWasL29</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>	  
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFirstWasL29/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFirstWasL29/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFirstWasL29/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats and two Info Formats</ows:Title>
+      <ows:Abstract>Layer with three image formats and two info formats.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and two or more InfoFormats and no sample Dimensions
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentySecondWasL28</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySecondWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySecondWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySecondWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySecondWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySecondWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, Three Sample Dimensions</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats and three sample dimensions.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and two or more InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyThirdWasL27</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>      
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyThirdWasL27/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyThirdWasL27/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyThirdWasL27/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyThirdWasL27/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyThirdWasL27/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, One Sample Dimension with default value</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats, one sample dimension with default value.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and two or more InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.749933182566 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.8752296680231 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyFourthWasL26</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFourthWasL26/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFourthWasL26/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFourthWasL26/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFourthWasL26/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFourthWasL26/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, One Sample Dimension with current values</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats, one sample dimension with current values.  Test data cases:
+      One or more Layers with two or more (Image) Formats and no TileMatrixSetLimits and two or more InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.625284312148 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.7505613204582 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyFifthWasL25</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>	  
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFifthWasL25/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFifthWasL25/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFifthWasL25/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFifthWasL25/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyFifthWasL25/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats and Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with three image formats and tile matrix set lilmts.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and no sample Dimensions
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.500002434643 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.6253037893867 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentySixthWasL24</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+	  <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySixthWasL24/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySixthWasL24/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySixthWasL24/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Tile Matrix Set Limits, and three sample dimensions</ows:Title>
+      <ows:Abstract>Layer with three image formats, tile matrix set limits, and three sample dimensions.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.374730295527 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.5000073038373 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentySeventhWasL23</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+     <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>      	  
+		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySeventhWasL23/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySeventhWasL23/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentySeventhWasL23/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Tile Matrix Set Limits, and one sample dimension with a default value.</ows:Title>
+      <ows:Abstract>Layer with three image formats, tile matrix set limits and one sample dimension with a default value.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.249448418023 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.3747449034801 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyEighthWasL22</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyEighthWasL22/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyEighthWasL22/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyEighthWasL22/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Tile Matrix Set Limits, and one sample dimension with current values</ows:Title>
+      <ows:Abstract>Layer with three image formats, tile matrix set limits and one sample dimension with current value.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and no InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>TwentyNinethWasL21</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>	  
+	  <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyNinethWasL21/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyNinethWasL21/Default_style/{time}/TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TwentyNinethWasL21/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats and Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats and tile matrix set limits.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and no sample Dimensions
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with no sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtythWasL20</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+ 		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtythWasL20/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtythWasL20/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtythWasL20/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtythWasL20/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtythWasL20/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, Three Sample Dimensions and Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats, three sample dimensions and tile matrix set limits.  Test data cases:
+      One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and three or more sample Dimensions with three or more Values with no default or current Value
+      Two or more contiguous tiles from the same Layer and TileMatrixSet with three or more sample dimensions
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtyFirstWasL20</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+    <Dimension>
+			<ows:Identifier>band</ows:Identifier>
+			<Value>red</Value>
+			<Value>green</Value>
+			<Value>blue</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>
+      <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+		</Dimension>      	  
+		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFirstWasL20/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFirstWasL20/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFirstWasL20/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFirstWasL20/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFirstWasL20/Default_style/{band}/{elevation}/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+    <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, One Sample Dimension with a default value and Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats, one sample dimension with a default value and tile matrix set limits.  Test data cases:
+     One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and one sample Dimension with a default Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtySecondWasL20</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <Dimension>
+			<ows:Identifier>elevation</ows:Identifier>
+			<Default>surface</Default>
+			<Value>treetop</Value>
+			<Value>surface</Value>
+			<Value>subsoil</Value>
+		</Dimension>		<TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtySecondWasL20/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtySecondWasL20/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtySecondWasL20/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtySecondWasL20/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtySecondWasL20/Default_style/{elevation}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+   <Layer>
+      <ows:Title>Three Image Formats, Two Info Formats, One Sample Dimension with current values and Tile Matrix Set Limits</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats, one sample dimension with current values and tile matrix set limits.  Test data cases:
+    One or more Layers with two or more (Image) Formats and TileMatrixSetLimits for a subset of the TileMatrixSet and two or more InfoFormats and one sample Dimension with a current Value
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>66.9995176701 24.9997419977717</ows:LowerCorner>
+        <ows:UpperCorner>67.1248190248438 25.124901844319</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtyThirdWasL20</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+       <Dimension>
+			<ows:Identifier>time</ows:Identifier>
+			<Current>true</Current>
+			<Value>winter</Value>
+			<Value>spring</Value>
+			<Value>summer</Value>
+			<Value>fall</Value>
+	  </Dimension>	  
+	 <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+        <TileMatrixSetLimits>
+			<TileMatrixLimits>
+				<TileMatrix>0</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>0</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>0</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>1</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>2</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>3</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>3</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>3</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>4</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>7</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>7</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>5</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>15</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>15</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>6</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>31</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>31</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>7</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>63</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>63</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>8</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>127</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>127</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>9</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>255</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>255</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>10</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>511</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>511</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>11</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>1023</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>1023</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>12</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>2047</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>2047</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>13</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>4095</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>4095</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>14</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>8191</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>8191</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>15</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>16383</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>16383</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>16</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>32767</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>32767</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>17</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>65535</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>65535</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>18</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>131071</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>131071</MaxTileCol>
+			</TileMatrixLimits>
+			<TileMatrixLimits>
+				<TileMatrix>19</TileMatrix>
+				<MinTileRow>0</MinTileRow>
+				<MaxTileRow>262143</MaxTileRow>
+				<MinTileCol>0</MinTileCol>
+				<MaxTileCol>262143</MaxTileCol>
+			</TileMatrixLimits>
+		</TileMatrixSetLimits>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyThirdWasL20/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyThirdWasL20/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyThirdWasL20/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyThirdWasL20/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyThirdWasL20/Default_style/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>
+   <Layer>
+      <ows:Title>Three Image Formats, two Info Formats, tiles with transparent background and opaque foreground data</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats and tiles with transparent background and opaque foreground data.  Test data cases:
+      Two or more Layers with tiles from the same TileMatrixSet that overlay each other, at least one of which has a transparent background and opaque foreground data
+      Two or more Layers with tiles from different TileMatrixSets that overlay each other, at least one of which has a transparent background and opaque foreground data
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtyFourthWasL28</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFourthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFourthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFourthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFourthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFourthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>       
+    <Layer>
+      <ows:Title>Three Image Formats, two Info Formats, tiles with transparent background and NODATA foreground data</ows:Title>
+      <ows:Abstract>Layer with three image formats, two info formats and tiles with transparent background and NODATA foreground data.  Test data cases:
+      Two or more Layers with tiles from the same TileMatrixSet that overlay each other, at least one of which has a transparent background and NODATA foreground data
+      Two or more Layers with tiles from different TileMatrixSets that overlay each other, at least one of which has a transparent background and NODATA foreground data
+      </ows:Abstract>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>67.124799547605 25.1248883571773</ows:LowerCorner>
+        <ows:UpperCorner>67.2500765559152 25.250061690777</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <ows:Identifier>ThirtyFifthWasL28</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>
+      <Format>image/jp2</Format>
+      <Format>image/jpeg</Format>
+      <InfoFormat>application/gml+xml; version=3.1</InfoFormat>
+      <InfoFormat>application/gml+xml; version=3.2.1</InfoFormat>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleCRS84Quad</TileMatrixSet>
+      </TileMatrixSetLink>
+      <TileMatrixSetLink>
+        <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFifthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+	  <ResourceURL format="image/jp2" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFifthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jp2"/>
+	  <ResourceURL format="image/jpeg" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFifthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg"/>
+	  <ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFifthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+	  <ResourceURL format="application/gml+xml; version=3.2.1" resourceType="FeatureInfo"
+		   template="http://localhost:8080/wmts/1.0.0/rest/ThirtyFifthWasL28/Default_style/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.gml"/>
+    </Layer>   
+    <Layer>
+		<ows:Title>TransparentNodata</ows:Title>
+		<ows:Abstract>Layer with one TileMatrixSet with one TileMatrix with one.png tile to support WMTS transparency test.</ows:Abstract>
+		<ows:WGS84BoundingBox>
+			<ows:LowerCorner>67.124799547605 25.1248883571773</ows:LowerCorner>
+			<ows:UpperCorner>67.2500765559152 25.250061690777</ows:UpperCorner>
+		</ows:WGS84BoundingBox>
+      <ows:Identifier>TransparentNodata</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>    
+     <TileMatrixSetLink>
+        <TileMatrixSet>TransparentNodata</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="http://localhost:8080/wmts/1.0.0/rest/TransparentNodata/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <TileMatrixSet>
+      <ows:Identifier>GoogleCRS84Quad</ows:Identifier>
+      <ows:BoundingBox crs="urn:ogc:def:crs:OGC:1.3:CRS84">
+        <ows:LowerCorner>-180 -90</ows:LowerCorner>
+        <ows:UpperCorner>180 90</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+      <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleCRS84Quad</WellKnownScaleSet>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.0287178</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>1</ows:Identifier>
+        <ScaleDenominator>279541132.0143589</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>2</ows:Identifier>
+        <ScaleDenominator>139770566.0071794</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4</MatrixWidth>
+        <MatrixHeight>4</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>3</ows:Identifier>
+        <ScaleDenominator>69885283.00358972</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8</MatrixWidth>
+        <MatrixHeight>8</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>4</ows:Identifier>
+        <ScaleDenominator>34942641.50179486</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16</MatrixWidth>
+        <MatrixHeight>16</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>5</ows:Identifier>
+        <ScaleDenominator>17471320.75089743</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32</MatrixWidth>
+        <MatrixHeight>32</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>6</ows:Identifier>
+        <ScaleDenominator>8735660.375448715</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>64</MatrixWidth>
+        <MatrixHeight>64</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>7</ows:Identifier>
+        <ScaleDenominator>4367830.187724357</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>128</MatrixWidth>
+        <MatrixHeight>128</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>8</ows:Identifier>
+        <ScaleDenominator>2183915.093862179</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>256</MatrixWidth>
+        <MatrixHeight>256</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>9</ows:Identifier>
+        <ScaleDenominator>1091957.546931089</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>512</MatrixWidth>
+        <MatrixHeight>512</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>10</ows:Identifier>
+        <ScaleDenominator>545978.7734655447</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1024</MatrixWidth>
+        <MatrixHeight>1024</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>11</ows:Identifier>
+        <ScaleDenominator>272989.3867327723</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2048</MatrixWidth>
+        <MatrixHeight>2048</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>12</ows:Identifier>
+        <ScaleDenominator>136494.6933663862</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4096</MatrixWidth>
+        <MatrixHeight>4096</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>13</ows:Identifier>
+        <ScaleDenominator>68247.34668319309</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8192</MatrixWidth>
+        <MatrixHeight>8192</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>14</ows:Identifier>
+        <ScaleDenominator>34123.67334159654</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16384</MatrixWidth>
+        <MatrixHeight>16384</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>15</ows:Identifier>
+        <ScaleDenominator>17061.83667079827</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32768</MatrixWidth>
+        <MatrixHeight>32768</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>16</ows:Identifier>
+        <ScaleDenominator>8530.918335399136</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>65536</MatrixWidth>
+        <MatrixHeight>65536</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>17</ows:Identifier>
+        <ScaleDenominator>4265.459167699568</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>131072</MatrixWidth>
+        <MatrixHeight>131072</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>18</ows:Identifier>
+        <ScaleDenominator>2132.729583849784</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>262144</MatrixWidth>
+        <MatrixHeight>262144</MatrixHeight>
+      </TileMatrix>
+<!--      <TileMatrix>
+        <ows:Identifier>19</ows:Identifier>
+        <ScaleDenominator>1066.36479192489</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>524288</MatrixWidth>
+        <MatrixHeight>524288</MatrixHeight>
+      </TileMatrix> -->
+    </TileMatrixSet>
+    <TileMatrixSet>
+      <ows:Identifier>GoogleMapsCompatible</ows:Identifier>
+      <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18:3:3857">
+        <ows:LowerCorner>-20037508.34 -20037508.34</ows:LowerCorner>
+        <ows:UpperCorner>20037508.34 20037508.34</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
+      <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.0287178</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>1</ows:Identifier>
+        <ScaleDenominator>279541132.0143589</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2</MatrixWidth>
+        <MatrixHeight>2</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>2</ows:Identifier>
+        <ScaleDenominator>139770566.0071794</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4</MatrixWidth>
+        <MatrixHeight>4</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>3</ows:Identifier>
+        <ScaleDenominator>69885283.00358972</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8</MatrixWidth>
+        <MatrixHeight>8</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>4</ows:Identifier>
+        <ScaleDenominator>34942641.50179486</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16</MatrixWidth>
+        <MatrixHeight>16</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>5</ows:Identifier>
+        <ScaleDenominator>17471320.75089743</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32</MatrixWidth>
+        <MatrixHeight>32</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>6</ows:Identifier>
+        <ScaleDenominator>8735660.375448715</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>64</MatrixWidth>
+        <MatrixHeight>64</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>7</ows:Identifier>
+        <ScaleDenominator>4367830.187724357</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>128</MatrixWidth>
+        <MatrixHeight>128</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>8</ows:Identifier>
+        <ScaleDenominator>2183915.093862179</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>256</MatrixWidth>
+        <MatrixHeight>256</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>9</ows:Identifier>
+        <ScaleDenominator>1091957.546931089</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>512</MatrixWidth>
+        <MatrixHeight>512</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>10</ows:Identifier>
+        <ScaleDenominator>545978.7734655447</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1024</MatrixWidth>
+        <MatrixHeight>1024</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>11</ows:Identifier>
+        <ScaleDenominator>272989.3867327723</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2048</MatrixWidth>
+        <MatrixHeight>2048</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>12</ows:Identifier>
+        <ScaleDenominator>136494.6933663862</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>4096</MatrixWidth>
+        <MatrixHeight>4096</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>13</ows:Identifier>
+        <ScaleDenominator>68247.34668319309</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>8192</MatrixWidth>
+        <MatrixHeight>8192</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>14</ows:Identifier>
+        <ScaleDenominator>34123.67334159654</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>16384</MatrixWidth>
+        <MatrixHeight>16384</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>15</ows:Identifier>
+        <ScaleDenominator>17061.83667079827</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>32768</MatrixWidth>
+        <MatrixHeight>32768</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>16</ows:Identifier>
+        <ScaleDenominator>8530.918335399136</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>65536</MatrixWidth>
+        <MatrixHeight>65536</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>17</ows:Identifier>
+        <ScaleDenominator>4265.459167699568</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>131072</MatrixWidth>
+        <MatrixHeight>131072</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>18</ows:Identifier>
+        <ScaleDenominator>2132.729583849784</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>262144</MatrixWidth>
+        <MatrixHeight>262144</MatrixHeight>
+      </TileMatrix>
+ <!--     <TileMatrix>
+        <ows:Identifier>19</ows:Identifier>
+        <ScaleDenominator>1066.36479192489</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>524288</MatrixWidth>
+        <MatrixHeight>524288</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>20</ows:Identifier>
+        <ScaleDenominator>533.182395962446</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1048576</MatrixWidth>
+        <MatrixHeight>1048576</MatrixHeight>
+      </TileMatrix>
+      <TileMatrix>
+        <ows:Identifier>21</ows:Identifier>
+        <ScaleDenominator>266.591197981223</ScaleDenominator>
+        <TopLeftCorner>-20037508.34 20037508.34</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>2097152</MatrixWidth>
+        <MatrixHeight>2097152</MatrixHeight>
+      </TileMatrix>
+-->
+    </TileMatrixSet>
+    <TileMatrixSet>
+      <ows:Identifier>TransparentNodata</ows:Identifier>
+     <ows:BoundingBox crs="urn:ogc:def:crs:OGC:1.3:CRS84">
+        <ows:LowerCorner>-180 -90</ows:LowerCorner>
+        <ows:UpperCorner>180 90</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.0287178</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>
+  </Contents>
+  <Themes>
+	  <Theme>
+			<ows:Identifier>WMTS.ETS</ows:Identifier>
+			<LayerRef>FirstWasL49</LayerRef>
+			<LayerRef>SecondWasL49</LayerRef>
+			<LayerRef>ThirdWasL47</LayerRef>
+			<LayerRef>FourthWasL46</LayerRef>
+			<LayerRef>FifthWasL45</LayerRef>
+			<LayerRef>SixthWasL44</LayerRef>
+			<LayerRef>SeventhWasL43</LayerRef>
+			<LayerRef>EighthWasL42</LayerRef>
+			<LayerRef>NinethWasL41</LayerRef>
+			<LayerRef>TenthWasL40</LayerRef>
+			<LayerRef>EleventhWasL39</LayerRef>
+			<LayerRef>TwelvethWasL38</LayerRef>
+			<LayerRef>ThirteenthWasL37</LayerRef>
+			<LayerRef>FourteenthWasL36</LayerRef>
+			<LayerRef>FifteenthWasL35</LayerRef>
+			<LayerRef>SixteenthWasL34</LayerRef>
+			<LayerRef>SeventeenthWasL33</LayerRef>
+			<LayerRef>EighteenthWasL32</LayerRef>
+			<LayerRef>NineteenthWasL31</LayerRef>
+			<LayerRef>TwentythWasL30</LayerRef>
+			<LayerRef>TwentyFirstWasL29</LayerRef>
+			<LayerRef>TwentySecondWasL28</LayerRef>
+			<LayerRef>TwentyThirdWasL27</LayerRef>
+			<LayerRef>TwentyFourthWasL26</LayerRef>
+			<LayerRef>TwentyFifthWasL25</LayerRef>
+			<LayerRef>TwentySixthWasL24</LayerRef>
+			<LayerRef>TwentySeventhWasL23</LayerRef>
+			<LayerRef>TwentyEighthWasL22</LayerRef>
+			<LayerRef>TwentyNinethWasL21</LayerRef>
+			<LayerRef>ThirtythWasL20</LayerRef>
+			<LayerRef>ThirtyFirstWasL20</LayerRef>
+			<LayerRef>ThirtySecondWasL20</LayerRef>
+			<LayerRef>ThirtyThirdWasL20</LayerRef>
+			<LayerRef>ThirtyFourthWasL28</LayerRef>
+			<LayerRef>ThirtyFifthWasL28</LayerRef>
+		</Theme>
+  </Themes>
+  <WSDL xlink:href="http://localhost:8080/wmts/1.0.0/wsdl"/>
+  <ServiceMetadataURL xlink:href="http://localhost:8080/teamengine/data/WMTScapabilitiesETS.xml"/>
+</Capabilities>

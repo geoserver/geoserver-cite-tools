@@ -1,0 +1,23 @@
+<config>
+	<organization>
+		<name>OGC</name>
+	</organization>
+	<standard>
+		<name>WRS</name>
+	</standard>
+	<version>
+		<name>1.0</name>
+	</version>
+	<revision>
+		<name>r0</name>
+	</revision>
+	<suite>
+		<namespace-uri>http://www.opengis.net/cat/wrs/1.0</namespace-uri>
+		<prefix>wrs</prefix>
+		<local-name>wrs-1.0-conformance</local-name>
+	</suite>
+	<source>ctl/all.xml</source>
+	<resources>resources</resources>
+	<web>web</web>
+</config>
+

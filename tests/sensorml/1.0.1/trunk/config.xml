@@ -1,0 +1,22 @@
+<config>
+	<organization>
+		<name>OGC</name>
+	</organization>
+	<standard>
+		<name>SensorML</name>
+	</standard>
+	<version>
+		<name>1.0.1</name>
+	</version>
+	<revision>
+		<name>r0</name>
+	</revision>
+	<suite>
+		<namespace-uri>http://www.opengis.net/sensorML/1.0.1</namespace-uri>
+		<prefix>sml</prefix>
+		<local-name>suite</local-name>
+	</suite>
+	<source>ctl</source>
+	<web>web</web>
+</config>
+

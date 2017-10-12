@@ -1,0 +1,32 @@
+<cblf:BlueLakeFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                                xmlns:cblf="http://www.opengis.net/cite/bluelake"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.opengis.net/cite/bluelake blueLakeFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:DividedRoutes layer</gml:description>
+   <gml:name>cite:DividedRoutes</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>-0.0032,-0.0024 -0.0026,0.0024</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cblf:DividedRouteFeature fid="BlueLake.119">
+         <cblf:name>Route 75</cblf:name>
+         <cblf:num_lanes>4</cblf:num_lanes>
+         <cblf:centerlines>
+            <gml:MultiLineString srsName="CRS:84">
+               <gml:lineStringMember>
+                  <gml:LineString>
+                     <gml:coordinates>-0.0032,-0.0024 -0.0032,0.0024</gml:coordinates>
+                  </gml:LineString>
+               </gml:lineStringMember>
+               <gml:lineStringMember>
+                  <gml:LineString>
+                     <gml:coordinates>-0.0026,-0.0024 -0.0026,0.0024</gml:coordinates>
+                  </gml:LineString>
+               </gml:lineStringMember>
+            </gml:MultiLineString>
+         </cblf:centerlines>
+      </cblf:DividedRouteFeature>
+   </gml:featureMember>
+</cblf:BlueLakeFeatureCollection>

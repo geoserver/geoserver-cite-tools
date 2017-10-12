@@ -1,0 +1,59 @@
+<TestConfig>
+  <layer name="cite:Autos" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="50" j="160" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>
+  <layer name="cite:BasicPolygons" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="100" j="100" bbox="-1,-1,1,1" height="200" width="200"/>
+  </layer>
+  <layer name="cite:Bridges" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="220" j="85" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:Buildings" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="260" j="90" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:BuildingCenters" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="260" j="90" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:DividedRoutes" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="50" j="100" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:Forests" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="400" j="50" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:Lakes" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="250" j="200" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:MapNeatline" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="0" j="0" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:NamedPlaces" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="400" j="50" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:Ponds" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="115" j="30" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>  
+  <layer name="cite:RoadSegments" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="350" j="50" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>
+  <layer name="cite:Streams" type="vector">
+    <scale>1000</scale>
+    <featureinfo i="220" j="35" bbox="-0.0042,-0.0024,0.0042,0.0024" height="240" width="420"/>
+  </layer>
+  <layer name="cite:Terrain" type="coverage" elevation="true">
+    <scale>1000</scale>
+    <featureinfo i="100" j="100" bbox="-0.25,-0.25,0.25,0.25" height="400" width="400"/>
+  </layer>
+</TestConfig>
+

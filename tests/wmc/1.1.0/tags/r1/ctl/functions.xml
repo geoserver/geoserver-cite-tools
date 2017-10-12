@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ctl:package
+ xmlns:functions="http://cite.opengeospatial.org/context/1.1.0/ets/ctl/functions.xml"
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+>
+
+   <ctl:function name="functions:split">
+      <ctl:param name="s">String to split</ctl:param>
+      <ctl:param name="match">String that divides tokens</ctl:param>
+      <ctl:description>Splits a string into tokens.</ctl:description>
+      <ctl:code>
+         <xsl:if test="$s != ''">
+            <token><xsl:value-of select="substring-before(concat($s, $match), $match)"/></token>
+            <xsl:if test="contains($s, $match)">
+               <xsl:copy-of select="functions:split(substring-after($s, $match), $match)"/>
+            </xsl:if>
+         </xsl:if>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:remove-mime-comment">
+      <ctl:param name="mime">MIME from which to remove comments</ctl:param>
+      <ctl:description>Removes comments (enclosed in parenthesis) from a MIME string</ctl:description>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="contains($mime, '(')">
+               <xsl:variable name="before" select="substring-before($mime, '(')"/>
+               <xsl:variable name="after" select="substring-after(substring-after($mime, '('), ')')"/>
+               <xsl:value-of select="concat($before, functions:remove-mime-comment($after))"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="$mime"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:mime-match">
+      <ctl:param name="test-mime">MIME type to test.</ctl:param>
+      <ctl:param name="match-mime">MIME type to match.</ctl:param>
+      <ctl:return></ctl:return>
+      <ctl:description>Determines whether a MIME type matches a normalized MIME type.</ctl:description>
+      <ctl:code>
+         <xsl:variable name="test-string" select="concat(functions:remove-mime-comment($test-mime), ';')"/>
+         <xsl:variable name="match-string" select="concat(functions:remove-mime-comment($match-mime), ';')"/>
+         <xsl:variable name="base-test-mime" select="normalize-space(substring-before($test-string, ';'))"/>
+         <xsl:variable name="base-match-mime" select="normalize-space(substring-before($match-string, ';'))"/>
+         <xsl:choose>
+            <xsl:when test="functions:to-lowercase($base-test-mime) = functions:to-lowercase($base-match-mime)">true</xsl:when>
+            <xsl:otherwise>false</xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:boolean-as-integer">
+      <ctl:param name="boolean-or-int">'true', 'false', or integer value</ctl:param>
+      <ctl:code>
+         <xsl:choose>
+            <xsl:when test="$boolean-or-int = 1">1</xsl:when>
+            <xsl:when test="$boolean-or-int = 'true'">1</xsl:when>
+            <xsl:otherwise>0</xsl:otherwise>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:to-lowercase">
+      <ctl:param name="string">string value</ctl:param>
+      <ctl:code>
+         <xsl:value-of select="translate($string, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:correct-url-prefix">
+      <ctl:param name="url-prefix">URL Prefix Value</ctl:param>
+      <ctl:code>
+         <xsl:value-of select="$url-prefix"/>
+         <xsl:choose>
+            <xsl:when test="not(contains($url-prefix, '?'))">?</xsl:when>
+            <xsl:when test="not(substring($url-prefix, string-length($url-prefix)) = '&amp;')">&amp;</xsl:when>
+         </xsl:choose>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:image-format">
+      <ctl:param name="format">A format</ctl:param>
+      <ctl:code>
+         <xsl:value-of select="boolean(functions:mime-match($format, 'image/png') = 'true' or functions:mime-match($format, 'image/gif') = 'true' or functions:mime-match($format, 'image/jpeg') = 'true')"/>
+      </ctl:code>
+   </ctl:function>
+
+   <ctl:function name="functions:encode">
+      <ctl:param name="s">String to encode</ctl:param>
+      <ctl:java class="java.net.URLEncoder" method="encode"/>
+   </ctl:function>
+
+   <ctl:function name="functions:encode">
+      <ctl:param name="s">String to encode</ctl:param>
+      <ctl:param name="encoding">Encoding scheme.  UTF-8 is recommended.</ctl:param>
+      <ctl:java class="java.net.URLEncoder" method="encode"/>
+   </ctl:function>
+</ctl:package>

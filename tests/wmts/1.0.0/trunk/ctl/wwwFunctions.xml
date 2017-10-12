@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 	
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows/1.1" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/" 
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wmts="http://www.opengis.net/wmts/1.0"
+	xmlns:foobar="http://www.fu.op.ob/beyond/all/recovery/1.0"
+	xmlns:owsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/owsFunctions.xml"	
+	xmlns:wwwFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/wwwFunctions.xml"	
+>
+
+	<ctl:function name="wwwFunctions:isRESTfulURL">
+		<ctl:param name="url">http://some/path</ctl:param>
+		<ctl:description>Returns true if there is no query string, false otherwise.</ctl:description>
+		<ctl:code>
+		<xsl:choose>
+			<xsl:when test="contains($url,'?')">
+				<xsl:text>false</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>true</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>		
+		</ctl:code>
+	</ctl:function>
+			
+	<!-- from SOS functions.xml -->
+	 <ctl:function name="wwwFunctions:isValidDate">
+        <ctl:param name="dateString">The date to be tested</ctl:param>
+		<ctl:description>Check whether a date is a valid ISO 8601 date with at least a day included, or one of the valid constants.</ctl:description>
+        <ctl:code>	
+			<xsl:variable name="isoDateFormatRegex" select="'^([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?(Z|(([-+])([0-9]{2})(:([0-9]{2}))?))?)?))$'"/>
+			<xsl:variable name="validDateRegex" select="'^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$'"/>
+			<xsl:variable name="datePortion" select="substring($dateString, 1, 10)"/>						
+			<xsl:value-of select="(matches($dateString, $isoDateFormatRegex) 
+								and matches($datePortion, $validDateRegex))"/>
+        </ctl:code>
+    </ctl:function>
+	
+	<!-- from WMS functions.xml -->
+   <ctl:function name="wwwFunctions:to-lowercase">
+      <ctl:param name="string">string value</ctl:param>
+      <ctl:code>
+         <xsl:value-of select="translate($string, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+      </ctl:code>
+   </ctl:function>
+		
+	<!-- from WMS functions.xml -->
+	<ctl:function name="wwwFunctions:remove-mime-comment">
+		  <ctl:param name="mime">MIME from which to remove comments</ctl:param>
+		  <ctl:description>Removes comments (enclosed in parenthesis) from a MIME string</ctl:description>
+		  <ctl:code>
+			 <xsl:choose>
+				<xsl:when test="contains($mime, '(')">
+				   <xsl:variable name="before" select="substring-before($mime, '(')"/>
+				   <xsl:variable name="after" select="substring-after(substring-after($mime, '('), ')')"/>
+				   <xsl:value-of select="concat($before, wwwFunctions:remove-mime-comment($after))"/>
+				</xsl:when>
+				<xsl:otherwise>
+				   <xsl:value-of select="$mime"/>
+				</xsl:otherwise>
+			 </xsl:choose>
+		  </ctl:code>
+   </ctl:function>
+   
+	<!-- from WMS functions.xml, modified for debug -->
+   <ctl:function name="wwwFunctions:mime-match">
+      <ctl:param name="test-mime">MIME type to test.</ctl:param>
+      <ctl:param name="match-mime">MIME type to match.</ctl:param>
+      <ctl:return></ctl:return>
+      <ctl:description>Determines whether a MIME type matches a normalized MIME type.</ctl:description>
+      <ctl:code>
+		 <xsl:variable name="test-string" select="concat(wwwFunctions:remove-mime-comment($test-mime), ';')"/>
+         <xsl:variable name="match-string" select="concat(wwwFunctions:remove-mime-comment($match-mime), ';')"/>
+         <xsl:variable name="base-test-mime" select="normalize-space(substring-before($test-string, ';'))"/>
+         <xsl:variable name="base-match-mime" select="normalize-space(substring-before($match-string, ';'))"/>
+         <xsl:variable name="lower-test-mime" select="wwwFunctions:to-lowercase($base-test-mime)"/>
+         <xsl:variable name="lower-match-mime" select="wwwFunctions:to-lowercase($base-match-mime)"/>
+         <!-- <ctl:message select="concat('lower-test-mime: ', $lower-test-mime, ' lower-match-mime: ', $lower-match-mime)"/> -->
+         <xsl:variable name="failures">
+           <xsl:choose>
+               <xsl:when test="$lower-test-mime = $lower-match-mime">
+<!--
+MIME parameters don't have to match anymore - see issue 24, MIME type test too strict
+                  <xsl:variable name="test-params">
+                     <xsl:copy-of select="functions:split(substring-after($test-string, ';'), ';')"/>
+                  </xsl:variable>
+                  <xsl:variable name="match-params">
+                     <xsl:copy-of select="functions:split(substring-after($match-string, ';'), ';')"/>
+                  </xsl:variable>
+                  <xsl:for-each select="$match-params/token[normalize-space(.) != '']">
+                     <xsl:variable name="param" select="functions:to-lowercase(normalize-space(.))"/>
+                     <xsl:if test="not($test-params/token[functions:to-lowercase(normalize-space(.)) = $param])">
+                        <fail/>
+                     </xsl:if>
+                  </xsl:for-each>
+-->
+               </xsl:when>
+               <xsl:otherwise>
+                  <fail/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:variable>
+         <xsl:value-of select="not($failures/fail)"/>
+      </ctl:code>
+   </ctl:function>
+
+<!-- from WMS functions.xml, extended to include JPEG2000 (image/jp2)  -->
+	<ctl:function name="wwwFunctions:image-format">
+		  <ctl:param name="format">A format</ctl:param>
+		  <ctl:description>Determines whether MIME type format is an image format.</ctl:description>
+		  <ctl:code>
+				 <xsl:value-of select="boolean(wwwFunctions:mime-match($format, 'image/png') = 'true' or wwwFunctions:mime-match($format, 'image/gif') = 'true' or wwwFunctions:mime-match($format, 'image/jpeg') = 'true' or wwwFunctions:mime-match($format, 'image/jp2') = 'true' ) "/>
+		  </ctl:code>
+   </ctl:function>
+
+	<ctl:function name="wwwFunctions:provokeNotFound">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:description>Provoke an HTTP 404 error and test whether the server returns that status code.</ctl:description>
+		<ctl:code>
+			<xsl:value-of select="wwwFunctions:provokeNotFound($capabilitiesURL, $method, '/nonesuch')"/>
+		</ctl:code>
+	</ctl:function>	
+	
+	<ctl:function name="wwwFunctions:provokeNotFound">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href</ctl:param>
+		<ctl:param name="method">get|post</ctl:param>
+		<ctl:param name="bogusSuffix"/>
+		<ctl:description>Provoke an HTTP 404 error and test whether the server returns that status code.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="invalidQueryString">
+				<xsl:choose>
+					<xsl:when test="ends-with($capabilitiesURL,'?')">
+						<xsl:value-of select="concat(substring-before($capabilitiesURL, '?'),  $bogusSuffix)"/>
+					</xsl:when>
+					<xsl:when test="ends-with($capabilitiesURL,'.xml')">
+						<xsl:choose>
+							<xsl:when test="starts-with($bogusSuffix, '/')">
+								<xsl:value-of select="concat(substring-before($capabilitiesURL, '.xml'), substring-after($bogusSuffix,'/'), '.xml')"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="concat(substring-before($capabilitiesURL, '.xml'), $bogusSuffix, '.xml')"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="concat($capabilitiesURL, $bogusSuffix)"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<ctl:message select="concat('Sending KVP GET request: ', $invalidQueryString)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$invalidQueryString"/>
+					</ctl:url>
+					<ctl:method><xsl:value-of select="$method"/></ctl:method>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="$code = '404' ">
+					<ctl:message select="concat('Pass:  Server returned expected HTTP status code 404 in response to request ', $invalidQueryString)"/>
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Fail:  Server returned ', $code, ' instead of expected HTTP status code 404 in response to request ', $invalidQueryString)"/>
+					<ctl:fail/>
+				</xsl:otherwise>
+			</xsl:choose>		
+		</ctl:code>
+	</ctl:function>	
+	
+	<ctl:function name="wwwFunctions:provokeNotFoundXMLPOST">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+		<ctl:description>Provoke an HTTP 404 error and test whether the server returns that status code.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:body><foobar:Nonesuch/></ctl:body>
+					<parsers:HTTPParser/>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="$code = '404' ">
+					<ctl:message>Pass:  Server returned expected HTTP status code 404 in response to XML POST body &lt;wmts:Nonesuch&gt;</ctl:message>
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Fail:  Server returned ', $code, ' instead of expected HTTP status code 404 in response to XML POST body &lt;wmts:Nonesuch&gt;')"/>
+					<ctl:fail/>
+				</xsl:otherwise>
+			</xsl:choose>		
+		</ctl:code>
+	</ctl:function>	
+	
+	<ctl:function name="wwwFunctions:provokeNotFoundSOAPPOST">
+		<ctl:param name="capabilitiesURL">/wmts:Capabilities/ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Post/@xlink:href</ctl:param>
+		<ctl:description>Provoke an HTTP 404 error and test whether the server returns that status code.</ctl:description>
+		<ctl:code>
+			<xsl:variable name="serviceURL" select="owsFunctions:getServiceURL($capabilitiesURL)"/>
+			<xsl:variable name="response">
+					<ctl:soap-request version="1.2" charset="utf-8">
+					<ctl:url>
+						<xsl:value-of select="$serviceURL"/>
+					</ctl:url>
+					<ctl:body><foobar:Nonesuch/></ctl:body>
+					<parsers:HTTPParser/>
+				</ctl:soap-request>
+			</xsl:variable>
+			<xsl:variable name="code" select="$response/response/status/@code"/>
+			<xsl:choose>
+				<xsl:when test="$code = '404' ">
+					<ctl:message>Pass:  Server returned expected HTTP status code 404 in response to SOAP POST body &lt;wmts:Nonesuch&gt;</ctl:message>
+					<ctl:pass/>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message select="concat('Fail:  Server returned ', $code, ' instead of expected HTTP status code 404 in response to SOAP POST body &lt;wmts:Nonesuch&gt;')"/>
+					<ctl:fail/>
+				</xsl:otherwise>
+			</xsl:choose>		
+		</ctl:code>
+	</ctl:function>	
+
+	<ctl:function name="wwwFunctions:describeNode">
+		<ctl:param name="node">The XML node to be described.</ctl:param>
+		<ctl:description>Describes an XML node by the name of the first element and the name of the first child element if any, or by the general xs:anyAtomicType name of item()s that are not node(s).  It should be called with a node parameter value of a variable name without XPath qualification to avoid not a node() type XPath expression evaluation errors, e.g. select="wwwFunctions:describeNode($var)", not ($var/*). </ctl:description>
+		<ctl:code>
+			<xsl:choose>
+				<xsl:when test="$node instance of element()">
+					<xsl:value-of select="concat('element with name ', name($node))"/>
+					<xsl:variable name="firstChild" select="$node/*[1]"/>
+					<xsl:if test="exists($firstChild)">
+						<xsl:value-of select="concat(' and first child ', name($firstChild))"/>
+					</xsl:if>
+				</xsl:when>
+				<xsl:when test="$node instance of text()">
+					<xsl:text>text</xsl:text>
+				</xsl:when>
+				<xsl:when test="$node instance of node()">
+					<xsl:variable name="firstChild" select="$node/*[1]"/>
+					<xsl:choose>
+						<xsl:when test="exists($firstChild)">
+							<xsl:text>node contains </xsl:text>
+							<xsl:value-of select="wwwFunctions:describeNode($firstChild)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="data" select="data($node)"/>
+							<xsl:text>node is </xsl:text>
+							<xsl:value-of select="wwwFunctions:describeNode($data)"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$node instance of xs:anyAtomicType">
+					<xsl:text>anyAtomicType</xsl:text>
+				</xsl:when>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:function>
+</ctl:package>

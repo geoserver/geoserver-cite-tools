@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-DescribeRecord-tc5.1 -->
+<csw:DescribeRecord xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW"
+  version="2.0.1"
+  schemaLanguage="http://www.w3.org/XML/Schema"
+  outputFormat="text/sgml">
+  <csw:TypeName targetNamespace="http://www.opengis.net/cat/csw">SummaryRecord</csw:TypeName>
+</csw:DescribeRecord>

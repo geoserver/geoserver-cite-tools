@@ -1,0 +1,724 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+
+
+	<ctl:test name="wcs2:req1-8">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:param name="url"/>
+    		<ctl:assertion>Req1-8:For all coverages offered by the server under test, test coverage structure, service parameters, and service metatada via GetCapabilities, DescribeCoverage and GetCoverage operations. Verify the responses contain the required information.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_get-kvp/1.0')">
+				<ctl:call-test name="wcs2:get-kvp-core-req1-8">
+					<ctl:with-param name="url" select="$url"/>      
+            				<ctl:with-param name="Capabilities" select="$Capabilities"/>
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_post-xml/1.0')">
+				<ctl:call-test name="wcs2:post-xml-core-req1-8">
+					<ctl:with-param name="url" select="$url"/>      
+            				<ctl:with-param name="Capabilities" select="$Capabilities"/>					
+				</ctl:call-test>             
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_soap/1.0')">
+				<ctl:call-test name="wcs2:soap-core-req1-8">
+					<ctl:with-param name="url" select="$url"/>    
+            				<ctl:with-param name="Capabilities" select="$Capabilities"/>					
+				</ctl:call-test>              
+			</xsl:if>       
+   		 </ctl:code>
+	</ctl:test>
+   
+
+
+<ctl:test name="wcs2:post-xml-core-req1-8">
+    	<ctl:param name="Capabilities"/>
+    	<ctl:param name="url"/>
+    	<ctl:assertion>Req1-8:For all coverages offered by the server under test, test coverage structure, service parameters, and service metatada via PostXML GetCapabilities, DescribeCoverage and GetCoverage operations. Verify the responses contain the required information.</ctl:assertion>
+    	<ctl:code>
+     
+     		<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary']/*[local-name()='CoverageId'])">
+           		<ctl:message>[FAILURE] CoverageId is not available</ctl:message>
+        		<ctl:fail/>
+      		</xsl:if>
+      		<xsl:for-each select="$Capabilities//*[local-name()='CoverageSummary']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[MESSAGE]test ',/*[local-name()='CoverageId'])"/>
+        		<xsl:variable name="DescribeCoverage">
+            			<ctl:request>
+               				<ctl:url>
+                  				<xsl:value-of select="$url"/>
+               				</ctl:url>
+               				<ctl:method>post</ctl:method>
+               				<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+	      				<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+							<wcs:DescribeCoverage  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    								xmlns:wcs='http://www.opengis.net/wcs/2.0'
+    								xmlns:gml='http://www.opengis.net/gml/3.2'
+    								xsi:schemaLocation='http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd'
+    								service="WCS" version="2.0.0">
+    								<wcs:CoverageId>]]><xsl:value-of select="./*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:DescribeCoverage>]]>
+    					</ctl:body>	       				
+
+           				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>	      
+            			</ctl:request>
+        		</xsl:variable>
+    			<xsl:choose>
+  				<xsl:when test="string-length($DescribeCoverage)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   		<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   		<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+      			</xsl:choose>        
+			<xsl:choose>
+				<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+					<xsl:variable name="GetCoverage">
+						<ctl:request>
+							<ctl:url>
+								<xsl:value-of select="$url"/>
+							</ctl:url>
+							<ctl:method>post</ctl:method>
+							<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+							<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:GetCoverage xmlns:wcs="http://www.opengis.net/wcs/2.0"
+									xmlns:gml="http://www.opengis.net/gml/3.2"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+									xsi:schemaLocation="http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd"
+									service="WCS" version="2.0.0">
+									<wcs:CoverageId>]]><xsl:value-of select="./*[local-name()='CoverageId"/><![CDATA[</wcs:CoverageId></wcs:GetCoverage>]]>
+							</ctl:body>
+
+							<ctlp:XMLValidatingParser>
+								<ctlp:schemas>
+									<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+								</ctlp:schemas>
+							</ctlp:XMLValidatingParser>
+
+						</ctl:request>
+					</xsl:variable>        
+					<xsl:if test="not(count($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and count($GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and deep-equal($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'], $GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope']))">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req1 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@srsName)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName=$GetCoverage//*[local-name()='boundedBy']//@srsName)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req2 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@axisLabels)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels=$GetCoverage//*[local-name()='boundedBy']//@axisLabels)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req3 test')" />
+						<ctl:fail/>
+					</xsl:if>        
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+							<xsl:if test="not(count(./*[local-name()='CoverageSubtype'])=1 and count($GetCoverage//*[local-name()='boundedBy']/parent::*)=1 and ./*[local-name()='CoverageSubtype']=name($GetCoverage//*[local-name()='boundedBy']/parent::*))">
+								<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req4 test')" />
+								<ctl:fail/>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>[MESSAGE] The server does not allow to extract the coverage type.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>    
+					<xsl:if test="count(./*[local-name()='CoverageSubtype'])=1 and  count(index-of(('MultiPointCoverage','MultiCurveCoverage','MultiSurfaceCoverage','MultiSolidCoverage','GridCoverage','RectifiedGridCoverage','ReferenceableGridCoverage'),./*[local-name()='CoverageSubtype']))=1">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req5 test')" />
+						<ctl:fail/>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>[MESSAGE] The server does not support the gml coverage.</ctl:message>
+				</xsl:otherwise>
+			</xsl:choose> 					
+      		</xsl:for-each>
+      		<xsl:for-each select="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[MESSAGE] test ',.)" />
+        		<xsl:choose>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCapabilities'">
+            				<xsl:variable name="Capabilities">
+              					<ctl:request>
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+                					<ctl:method>post</ctl:method>
+                					<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+							<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:GetCapabilities  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+											xmlns:ows="http://www.opengis.net/ows/1.1"
+											xmlns:wcs="http://www.opengis.net/wcs/2.0"
+											service="WCS" version="2.0.0">
+									<ows:AcceptVersions>
+										<ows:Version>2.0.0</ows:Version>
+									</ows:AcceptVersions>
+								</wcs:GetCapabilities>]]>
+							</ctl:body>
+           						<ctlp:XMLValidatingParser>
+	        						<ctlp:schemas>
+                        						<ctlp:schema type="resource">wcs/2.0/wcsGetCapabilities.xsd</ctlp:schema>
+	        						</ctlp:schemas>
+           						</ctlp:XMLValidatingParser>               
+              					</ctl:request>
+            				</xsl:variable>
+      					<xsl:choose>
+  						<xsl:when test="string-length($Capabilities)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="empty($Capabilities//wcs:Capabilities)">
+        					   		<ctl:message>[FAILURE] The result should contain a wcs:Capabilities.</ctl:message>
+        					   		<ctl:fail/>
+        						</xsl:if>
+  						</xsl:otherwise>
+      					</xsl:choose> 
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='DescribeCoverage'">
+            				<xsl:variable name="DescribeCoverage">
+              					<ctl:request>
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+                					<ctl:method>post</ctl:method>
+                					<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+	      						<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:DescribeCoverage  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    									xmlns:wcs='http://www.opengis.net/wcs/2.0'
+    									xmlns:gml='http://www.opengis.net/gml/3.2'
+    									xsi:schemaLocation='http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd'
+    									service="WCS" version="2.0.0">
+    									<wcs:CoverageId>]]><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:DescribeCoverage>]]>
+    							</ctl:body>
+
+           						<ctlp:XMLValidatingParser>
+	        						<ctlp:schemas>
+                        						<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+	        						</ctlp:schemas>
+             						</ctlp:XMLValidatingParser>               
+              					</ctl:request>
+            				</xsl:variable>
+    					<xsl:choose>
+  						<xsl:when test="string-length($DescribeCoverage)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   				<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   				<ctl:fail/>
+        						</xsl:if> 
+  						</xsl:otherwise>
+      					</xsl:choose>
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCoverage'">
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+												
+							<xsl:variable name="GetCoverage">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of select=".//@xlink:href"/>
+									</ctl:url>
+									<ctl:method>post</ctl:method>
+									<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+									<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+										<wcs:GetCoverage xmlns:wcs="http://www.opengis.net/wcs/2.0"
+											xmlns:gml="http://www.opengis.net/gml/3.2"
+											xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+											xsi:schemaLocation="http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd"
+											service="WCS" version="2.0.0">
+											<wcs:CoverageId>]]><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:GetCoverage>]]>
+									</ctl:body>
+
+									<ctlp:XMLValidatingParser>
+										<ctlp:schemas>
+											<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+										</ctlp:schemas>
+									</ctlp:XMLValidatingParser>               
+								</ctl:request>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="string-length($GetCoverage)=0">
+									<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+									<ctl:fail/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="not(empty($GetCoverage//ows:ExceptionReport))">
+										<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+										<ctl:fail/>
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose> 
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message> the server does not support the gml coverage.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose> 							
+	 			</xsl:when>	  
+	  			<xsl:otherwise>
+	    				<ctl:message> [MESSAGE] The server support a operation other than GetCapabilities, DescribeCoverage and GetCoverage.</ctl:message>
+	  			</xsl:otherwise>
+        		</xsl:choose>           
+      		</xsl:for-each>      
+    	</ctl:code>
+ </ctl:test>
+  
+
+<ctl:test name="wcs2:get-kvp-core-req1-8">
+    	<ctl:param name="Capabilities"/>
+    	<ctl:param name="url"/>
+    	<ctl:assertion>Req1-8:For all coverages offered by the server under test, test coverage structure, service parameters, and service metatada via GetKVP GetCapabilities, DescribeCoverage and GetCoverage operations. Verify the responses contain the required information.</ctl:assertion>
+    	<ctl:code>
+     
+     		<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary']/*[local-name()='CoverageId'])">
+        		<ctl:message>[FAILURE] CoverageId is not available</ctl:message>
+        		<ctl:fail/>
+      		</xsl:if>
+      		<xsl:for-each select="$Capabilities//*[local-name()='CoverageSummary']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('test ',./*[local-name()='CoverageId'])"/>
+        		<xsl:variable name="DescribeCoverage">
+            			<ctl:request>
+               				<ctl:url>
+                  				<xsl:value-of select="$url"/>
+               				</ctl:url>
+               				<ctl:method>get</ctl:method>
+           				<ctl:param name="service">WCS</ctl:param>
+           				<ctl:param name="VERSION">2.0.0</ctl:param>           
+           				<ctl:param name="request">DescribeCoverage</ctl:param>  
+            				<ctl:param name="CoverageId"><xsl:value-of select="./*[local-name()='CoverageId']"/></ctl:param>             				
+ 
+           				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>	      
+            			</ctl:request>
+        		</xsl:variable>
+    			<xsl:choose>
+  				<xsl:when test="string-length($DescribeCoverage)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   		<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   		<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+      			</xsl:choose>   
+ 			<xsl:choose>
+				<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+     			
+					<xsl:variable name="GetCoverage">
+						<ctl:request>
+							<ctl:url>
+								<xsl:value-of select="$url"/>
+							</ctl:url>
+							<ctl:method>get</ctl:method>
+							<ctl:param name="service">WCS</ctl:param>
+							<ctl:param name="VERSION">2.0.0</ctl:param>           
+							<ctl:param name="request">GetCoverage</ctl:param>  
+							<ctl:param name="CoverageId"><xsl:value-of select="./*[local-name()='CoverageId']"/></ctl:param>             				
+
+							<ctlp:XMLValidatingParser>
+								<ctlp:schemas>
+									<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+								</ctlp:schemas>
+							</ctlp:XMLValidatingParser>
+
+						</ctl:request>
+					</xsl:variable>        
+					<xsl:if test="not(count($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and count($GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and deep-equal($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'], $GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope']))">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE]', ./*[local-name()='CoverageId'],'fails in req1 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@srsName)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName=$GetCoverage//*[local-name()='boundedBy']//@srsName)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE]', ./*[local-name()='CoverageId'],'fails in req2 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@axisLabels)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels=$GetCoverage//*[local-name()='boundedBy']//@axisLabels)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE]', ./*[local-name()='CoverageId'],'fails in req3 test')" />
+						<ctl:fail/>
+					</xsl:if>        
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+							<xsl:if test="not(count(./*[local-name()='CoverageSubtype'])=1 and count($GetCoverage//*[local-name()='boundedBy']/parent::*)=1 and ./*[local-name()='CoverageSubtype']=name($GetCoverage//*[local-name()='boundedBy']/parent::*))">
+								<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE]', ./*[local-name()='CoverageId'],'fails in req4 test')" />
+								<ctl:fail/>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message> [MESSAGE] The server does not allow to extract the coverage type.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>    
+					<xsl:if test="count(./*[local-name()='CoverageSubtype'])=1 and  count(index-of(('MultiPointCoverage','MultiCurveCoverage','MultiSurfaceCoverage','MultiSolidCoverage','GridCoverage','RectifiedGridCoverage','ReferenceableGridCoverage'),./*[local-name()='CoverageSubtype']))=1">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE]', ./*[local-name()='CoverageId'],'fails in req5 test')" />
+						<ctl:fail/>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message> [MESSAGE] The server does not support the gml coverage.</ctl:message>
+				</xsl:otherwise>
+			</xsl:choose> 					
+      		</xsl:for-each>
+      		<xsl:for-each select="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[MESSAGE] test ',.)" />
+        		<xsl:choose>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCapabilities'">
+            				<xsl:variable name="Capabilities">
+              					<ctl:request>
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+          						<ctl:method>get</ctl:method>
+          						<ctl:param name="SERVICE">WCS</ctl:param>
+          						<ctl:param name="VERSION">2.0.0</ctl:param>
+          						<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           						<ctlp:XMLValidatingParser>
+	        						<ctlp:schemas>
+                        						<ctlp:schema type="resource">wcs/2.0/wcsGetCapabilities.xsd</ctlp:schema>
+	        						</ctlp:schemas>
+           						</ctlp:XMLValidatingParser>               
+              					</ctl:request>
+            				</xsl:variable>
+      					<xsl:choose>
+  						<xsl:when test="string-length($Capabilities)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="empty($Capabilities//wcs:Capabilities)">
+        					   		<ctl:message>[FAILURE] The result should contain a wcs:Capabilities.</ctl:message>
+        					   		<ctl:fail/>
+        						</xsl:if>
+  						</xsl:otherwise>
+      					</xsl:choose> 
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='DescribeCoverage'">
+            				<xsl:variable name="DescribeCoverage">
+              					<ctl:request>
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+               						<ctl:method>get</ctl:method>
+           						<ctl:param name="service">WCS</ctl:param>
+           						<ctl:param name="VERSION">2.0.0</ctl:param>           
+           						<ctl:param name="request">DescribeCoverage</ctl:param>  
+            						<ctl:param name="CoverageId"><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/></ctl:param>             				
+                 				
+           						<ctlp:XMLValidatingParser>
+	        						<ctlp:schemas>
+                        						<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+	        						</ctlp:schemas>
+             						</ctlp:XMLValidatingParser>               
+              					</ctl:request>
+            				</xsl:variable>
+    					<xsl:choose>
+  						<xsl:when test="string-length($DescribeCoverage)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   				<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   				<ctl:fail/>
+        						</xsl:if> 
+  						</xsl:otherwise>
+      					</xsl:choose>
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCoverage'">
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+	            				
+							<xsl:variable name="GetCoverage">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of select=".//@xlink:href"/>
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="service">WCS</ctl:param>
+									<ctl:param name="VERSION">2.0.0</ctl:param>           
+									<ctl:param name="request">GetCoverage</ctl:param>  
+									<ctl:param name="CoverageId"><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/></ctl:param>             				
+
+									<ctlp:XMLValidatingParser>
+										<ctlp:schemas>
+											<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+										</ctlp:schemas>
+									</ctlp:XMLValidatingParser>               
+								</ctl:request>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="string-length($GetCoverage)=0">
+									<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+									<ctl:fail/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="not(empty($GetCoverage//ows:ExceptionReport))">
+										<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+										<ctl:fail/>
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose> 
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>[MESSAGE] The server does not support the gml coverage.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose> 							
+	 			</xsl:when>	  
+	  			<xsl:otherwise>
+	    				<ctl:message>[MESSAGE] The server support a operation other than GetCapabilities, DescribeCoverage and GetCoverage.</ctl:message>
+	  			</xsl:otherwise>
+        		</xsl:choose>           
+      		</xsl:for-each>      
+    	</ctl:code>
+ </ctl:test>
+  
+ <ctl:test name="wcs2:soap-core-req1-8">
+    	<ctl:param name="Capabilities"/>
+    	<ctl:param name="url"/>
+    	<ctl:assertion>Req1-8:For all coverages offered by the server under test, test coverage structure, service parameters, and service metatada via SOAP GetCapabilities, DescribeCoverage and GetCoverage operations. Verify the responses contain the required information.</ctl:assertion>
+    	<ctl:code>
+     		<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary']/*[local-name()='CoverageId'])">
+           		<ctl:message>[FAILURE] CoverageId is not available</ctl:message>
+        		<ctl:fail/>
+      		</xsl:if>
+      		<xsl:for-each select="$Capabilities//*[local-name()='CoverageSummary']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[MESSAGE]test ',/*[local-name()='CoverageId'])"/>
+        		<xsl:variable name="DescribeCoverage">
+            			<ctl:soap-request version="1.2" charset="UTF-8">
+               				<ctl:url>
+                  				<xsl:value-of select="$url"/>
+               				</ctl:url>
+               				<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+							<wcs:DescribeCoverage  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    								xmlns:wcs='http://www.opengis.net/wcs/2.0'
+    								xmlns:gml='http://www.opengis.net/gml/3.2'
+    								xsi:schemaLocation='http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd'
+    								service="WCS" version="2.0.0">
+    								<wcs:CoverageId>]]><xsl:value-of select="./*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:DescribeCoverage>]]>
+    					</ctl:body>	       				
+					<ctlp:SOAPParser return="content">
+						<ctlp:XMLValidatingParser>
+							<ctlp:schemas>
+								<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+							</ctlp:schemas>
+						</ctlp:XMLValidatingParser>	
+					</ctlp:SOAPParser> 						
+            			</ctl:soap-request>
+        		</xsl:variable>
+    			<xsl:choose>
+  				<xsl:when test="string-length($DescribeCoverage)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   		<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   		<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+      			</xsl:choose>        
+			<xsl:choose>
+				<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+					<xsl:variable name="GetCoverage">
+						<ctl:soap-request version="1.2" charset="UTF-8">
+							<ctl:url>
+								<xsl:value-of select="$url"/>
+							</ctl:url>
+							<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:GetCoverage xmlns:wcs="http://www.opengis.net/wcs/2.0"
+									xmlns:gml="http://www.opengis.net/gml/3.2"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+									xsi:schemaLocation="http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd"
+									service="WCS" version="2.0.0">
+									<wcs:CoverageId>]]><xsl:value-of select="./*[local-name()='CoverageId"/><![CDATA[</wcs:CoverageId></wcs:GetCoverage>]]>
+							</ctl:body>
+							<ctlp:SOAPParser return="content">
+								<ctlp:XMLValidatingParser>
+									<ctlp:schemas>
+										<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+									</ctlp:schemas>
+								</ctlp:XMLValidatingParser>
+							</ctlp:SOAPParser> 
+						</ctl:soap-request>
+					</xsl:variable>        
+					<xsl:if test="not(count($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and count($GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'])=1 and deep-equal($DescribeCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope'], $GetCoverage//*[local-name()='boundedBy']/*[local-name()='Envelope']))">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req1 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@srsName)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@srsName=$GetCoverage//*[local-name()='boundedBy']//@srsName)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req2 test')" />
+						<ctl:fail/>
+					</xsl:if>
+					<xsl:if test="not((count($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels)=1) and (count($GetCoverage//*[local-name()='boundedBy']//@axisLabels)=1) and ($DescribeCoverage/*[local-name()='CoverageDescriptions']/*[local-name()='CoverageDescription']/*[local-name()='boundedBy']//@axisLabels=$GetCoverage//*[local-name()='boundedBy']//@axisLabels)) ">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req3 test')" />
+						<ctl:fail/>
+					</xsl:if>        
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+							<xsl:if test="not(count(./*[local-name()='CoverageSubtype'])=1 and count($GetCoverage//*[local-name()='boundedBy']/parent::*)=1 and ./*[local-name()='CoverageSubtype']=name($GetCoverage//*[local-name()='boundedBy']/parent::*))">
+								<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req4 test')" />
+								<ctl:fail/>
+							</xsl:if>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>[MESSAGE] The server does not allow to extract the coverage type.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose>    
+					<xsl:if test="count(./*[local-name()='CoverageSubtype'])=1 and  count(index-of(('MultiPointCoverage','MultiCurveCoverage','MultiSurfaceCoverage','MultiSolidCoverage','GridCoverage','RectifiedGridCoverage','ReferenceableGridCoverage'),./*[local-name()='CoverageSubtype']))=1">
+						<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[FAILURE] ',./*[local-name()='CoverageId'],'fails in req5 test')" />
+						<ctl:fail/>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>[MESSAGE] The server does not support the gml coverage.</ctl:message>
+				</xsl:otherwise>
+			</xsl:choose> 					
+      		</xsl:for-each>
+      		<xsl:for-each select="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']">
+        		<ctl:message xmlns:ctl="http://www.occamlab.com/ctl" select="concat('[MESSAGE] test ',.)" />
+        		<xsl:choose>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCapabilities'">
+            				<xsl:variable name="Capabilities">
+              					<ctl:soap-request version="1.2" charset="UTF-8">
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+                					<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:GetCapabilities  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+											xmlns:ows="http://www.opengis.net/ows/1.1"
+											xmlns:wcs="http://www.opengis.net/wcs/2.0"
+											service="WCS" version="2.0.0">
+									<ows:AcceptVersions>
+										<ows:Version>2.0.0</ows:Version>
+									</ows:AcceptVersions>
+								</wcs:GetCapabilities>]]>
+							</ctl:body>
+							<ctlp:SOAPParser return="content">							
+								<ctlp:XMLValidatingParser>
+									<ctlp:schemas>
+										<ctlp:schema type="resource">wcs/2.0/wcsGetCapabilities.xsd</ctlp:schema>
+									</ctlp:schemas>
+								</ctlp:XMLValidatingParser>     
+							</ctlp:SOAPParser>
+              					</ctl:soap-request>
+            				</xsl:variable>
+      					<xsl:choose>
+  						<xsl:when test="string-length($Capabilities)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="empty($Capabilities//wcs:Capabilities)">
+        					   		<ctl:message>[FAILURE] The result should contain a wcs:Capabilities.</ctl:message>
+        					   		<ctl:fail/>
+        						</xsl:if>
+  						</xsl:otherwise>
+      					</xsl:choose> 
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='DescribeCoverage'">
+            				<xsl:variable name="DescribeCoverage">
+              					<ctl:soap-request version="1.2" charset="UTF-8">
+                					<ctl:url>
+                  						<xsl:value-of select=".//@xlink:href"/>
+                					</ctl:url>
+                					<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+								<wcs:DescribeCoverage  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    									xmlns:wcs='http://www.opengis.net/wcs/2.0'
+    									xmlns:gml='http://www.opengis.net/gml/3.2'
+    									xsi:schemaLocation='http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd'
+    									service="WCS" version="2.0.0">
+    									<wcs:CoverageId>]]><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:DescribeCoverage>]]>
+    							</ctl:body>
+							<ctlp:SOAPParser return="content">
+								<ctlp:XMLValidatingParser>
+									<ctlp:schemas>
+										<ctlp:schema type="resource">wcs/2.0/wcsDescribeCoverage.xsd</ctlp:schema>
+									</ctlp:schemas>
+								</ctlp:XMLValidatingParser>  
+							</ctlp:SOAPParser> 							
+              					</ctl:soap-request>
+            				</xsl:variable>
+    					<xsl:choose>
+  						<xsl:when test="string-length($DescribeCoverage)=0">
+							<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+							<ctl:fail/>
+  						</xsl:when>
+  						<xsl:otherwise>
+        						<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+        			   				<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+        			   				<ctl:fail/>
+        						</xsl:if> 
+  						</xsl:otherwise>
+      					</xsl:choose>
+	  			</xsl:when>
+	  			<xsl:when test="$Capabilities//*[local-name()='OperationsMetadata']/*[local-name()='Operation']//@xlink:href/parent::*/parent::*/parent::*/parent::*//@name='GetCoverage'">
+					<xsl:choose>
+						<xsl:when test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/GMLCOV/1.0/conf/gml-coverage')">
+												
+							<xsl:variable name="GetCoverage">
+								<ctl:soap-request version="1.2" charset="UTF-8">
+									<ctl:url>
+										<xsl:value-of select=".//@xlink:href"/>
+									</ctl:url>
+									<ctl:method>post</ctl:method>
+									<ctl:header name="Content-type">application/x-www-form-urlencoded</ctl:header>
+									<ctl:body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+										<wcs:GetCoverage xmlns:wcs="http://www.opengis.net/wcs/2.0"
+											xmlns:gml="http://www.opengis.net/gml/3.2"
+											xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+											xsi:schemaLocation="http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd"
+											service="WCS" version="2.0.0">
+											<wcs:CoverageId>]]><xsl:value-of select="$Capabilities//*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId']"/><![CDATA[</wcs:CoverageId></wcs:GetCoverage>]]>
+									</ctl:body>
+									<ctlp:SOAPParser return="content">
+										<ctlp:XMLValidatingParser>
+											<ctlp:schemas>
+												<ctlp:schema type="resource">wcs/2.0/wcsGetCoverage.xsd</ctlp:schema>
+											</ctlp:schemas>
+										</ctlp:XMLValidatingParser>    
+									</ctlp:SOAPParser>	
+								</ctl:soap-request>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="string-length($GetCoverage)=0">
+									<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+									<ctl:fail/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="not(empty($GetCoverage//ows:ExceptionReport))">
+										<ctl:message>[FAILURE] The result should not be an ows:ExceptionReport.</ctl:message>
+										<ctl:fail/>
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose> 
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message> the server does not support the gml coverage.</ctl:message>
+						</xsl:otherwise>
+					</xsl:choose> 							
+	 			</xsl:when>	  
+	  			<xsl:otherwise>
+	    				<ctl:message> [MESSAGE] The server support a operation other than GetCapabilities, DescribeCoverage and GetCoverage.</ctl:message>
+	  			</xsl:otherwise>
+        		</xsl:choose>           
+      		</xsl:for-each>   
+    	</ctl:code>
+ </ctl:test>
+ 
+</ctl:package>

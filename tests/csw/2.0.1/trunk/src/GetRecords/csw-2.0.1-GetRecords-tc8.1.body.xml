@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc8.1 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1"
+  resultType="results">
+  <csw:Query typeNames="csw:Record">
+    <csw:ElementSetName>brief</csw:ElementSetName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"
+        xmlns:gml="http://www.opengis.net/gml">
+        <ogc:PropertyIsNotEqualTo>
+          <ogc:PropertyName xmlns:dc="http://purl.org/dc/elements/1.1/">dc:title</ogc:PropertyName>
+          <ogc:Literal>Fuscé vitae ligulä</ogc:Literal>
+        </ogc:PropertyIsNotEqualTo>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

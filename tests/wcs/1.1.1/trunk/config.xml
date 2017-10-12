@@ -1,0 +1,24 @@
+<config>
+	<organization>
+		<name>OGC</name>
+	</organization>
+	<standard>
+		<name>WCS</name>
+	</standard>
+	<version>
+		<name>1.1.1</name>
+	</version>
+	<revision>
+		<name>r0</name>
+	</revision>
+	
+	<suite>
+		<namespace-uri>http://schemas.opengis.net/wcs/1.1.1</namespace-uri>
+		<prefix>wcs</prefix>
+		<local-name>suite</local-name>
+	</suite>
+	<source>ctl</source>
+	<resources>resources</resources>
+	<web>web</web>
+</config>
+

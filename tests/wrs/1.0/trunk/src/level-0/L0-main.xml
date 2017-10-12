@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:parsers="http://www.occamlab.com/te/parsers"
+ xmlns:tep="http://teamengine.sourceforge.net/parsers"
+ xmlns:saxon="http://saxon.sf.net/"
+ xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+ xmlns:ows="http://www.opengis.net/ows"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xi="http://www.w3.org/2001/XInclude">
+
+   <!-- include CSW test packages -->
+   <xi:include href="CSW-GetCapabilities-GET.xml"/>
+   <xi:include href="CSW-DescribeRecord-POST.xml"/>
+   <xi:include href="CSW-GetRecordById-GET.xml"/>
+   <xi:include href="CSW-GetRecords-POST.xml"/>
+
+   <ctl:test name="wrs:Level-0">
+      <ctl:param name="wrs.capabilities.doc"/>
+      <ctl:assertion>The implementation under test provides all mandatory CSW capabilities.</ctl:assertion>
+      <ctl:code>
+          <ctl:call-test name="csw:GetCapabilities-GET">
+            <ctl:with-param name="csw.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="csw:DescribeRecord-POST">
+            <ctl:with-param name="csw.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="csw:GetRecordById-GET">
+            <ctl:with-param name="csw.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="csw:GetRecords-POST">
+            <ctl:with-param name="csw.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+      </ctl:code>
+   </ctl:test>
+</ctl:package>

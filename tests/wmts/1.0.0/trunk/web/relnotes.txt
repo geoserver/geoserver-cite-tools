@@ -1,0 +1,64 @@
+WMTS 1.0.0  Test Suite Release Notes
+
+=== Changes included in R0 ===
+
+To support the *{binding}.GetTile.Valid.Tile.Transparency tests, the configuration of the server under test must be modified 
+so that so that noDataSquare.png is returned in response to a GetTile request for layer TransparentNodata style Default_style 
+format image/png tileMatrixSet TransparentNodata tileMatrix 0 row 0 col 0.
+
+The GetCapabilities Response Document must include the following additional elements:
+
+<!-- GetCapabilities Response Document required contents for *{binding}.GetTile.Valid.Tile.Transparency tests
+	...
+  <ows:OperationsMetadata> 
+	...
+    <ows:Operation name="GetTile">
+		...
+      <ows:Parameter name="TileMatrixSet">
+       <ows:AllowedValues>
+          <ows:Value>TransparentNodata</ows:Value>
+			...
+        </ows:AllowedValues>
+      </ows:Parameter>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <Contents>
+	...
+   <Layer>
+		<ows:Title>TransparentNodata</ows:Title>
+		<ows:Abstract>Layer with one TileMatrixSet with one TileMatrix with one.png tile to support WMTS transparency test.</ows:Abstract>
+		<ows:WGS84BoundingBox>
+			<ows:LowerCorner>67.124799547605 25.1248883571773</ows:LowerCorner>
+			<ows:UpperCorner>67.2500765559152 25.250061690777</ows:UpperCorner>
+		</ows:WGS84BoundingBox>
+      <ows:Identifier>TransparentNodata</ows:Identifier>
+      <Style isDefault="true">
+        <ows:Title>Default</ows:Title>
+        <ows:Identifier>Default_style</ows:Identifier>
+      </Style>
+      <Format>image/png</Format>    
+     <TileMatrixSetLink>
+        <TileMatrixSet>TransparentNodata</TileMatrixSet>
+      </TileMatrixSetLink>
+	  <ResourceURL format="image/png" resourceType="tile"
+		   template="{your server RESTful URL prefix}/TransparentNodata/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <TileMatrixSet>
+      <ows:Identifier>TransparentNodata</ows:Identifier>
+     <ows:BoundingBox crs="urn:ogc:def:crs:OGC:1.3:CRS84">
+        <ows:LowerCorner>-180 -90</ows:LowerCorner>
+        <ows:UpperCorner>180 90</ows:UpperCorner>
+      </ows:BoundingBox>
+      <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+      <TileMatrix>
+        <ows:Identifier>0</ows:Identifier>
+        <ScaleDenominator>559082264.0287178</ScaleDenominator>
+        <TopLeftCorner>-180 90</TopLeftCorner>
+        <TileWidth>256</TileWidth>
+        <TileHeight>256</TileHeight>
+        <MatrixWidth>1</MatrixWidth>
+        <MatrixHeight>1</MatrixHeight>
+      </TileMatrix>
+    </TileMatrixSet>
+  </Contents>
+	......	-->

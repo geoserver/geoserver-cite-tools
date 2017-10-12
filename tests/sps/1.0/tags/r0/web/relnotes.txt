@@ -1,0 +1,5 @@
+SPS 1.0 Test Suite Release Notes
+
+2009-10-12 (kstegemoller):
+- tag r0 - SPS 1.0.0
+

@@ -1,0 +1,10 @@
+EO-WCS 1.0 Test Suite Release Notes
+
+Changes included in latest revision:
+
+=== Changes included in R0 ===
+2011-07-14 (jyu):
+- Created
+- add GetCapabilities (KVP) test
+- add DescribeCoverage (KVP) test
+- add DescribeEOCoverageSet (KVP) test

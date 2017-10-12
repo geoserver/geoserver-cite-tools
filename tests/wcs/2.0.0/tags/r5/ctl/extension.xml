@@ -1,0 +1,43 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+
+
+  	<ctl:test name="wcs2:req40">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req40:If a WCS implementation offers coverages of type GMLCOV::GridCoverage , GMLCOV::RectifiedGridCoverage, or GMLCOV::ReferenceableGridCoverage then it shall support the extension for indexed subsetting, which has URI identifier http://www.opengis.net/spec/WCS_service-model_index-subsetting/1.0.</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD. This will be addressed in the corrigenda</ctl:message> 
+    		</ctl:code>
+  	</ctl:test>
+  	<ctl:test name="wcs2:req41">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req41:For the transmission of all operation requests and responses, WCS imple-mentations shall support at least one WCS protocol extension, that is: an extension whose URI starts with http://www.opengis.net/spec/WCS_protocol-binding_.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_'))">
+				<ctl:message>[FAILURE] For the transmission of all operation requests and responses, WCS imple-mentations shall support at least one WCS protocol extension, that is: an extension whose URI starts with http://www.opengis.net/spec/WCS_protocol-binding_.</ctl:message>
+				<ctl:fail/>
+			</xsl:if>   		
+		</ctl:code>
+  	</ctl:test>  
+	<ctl:test name="wcs2:req42">
+		<ctl:param name="Capabilities"/>
+		<ctl:assertion>Req42: Check that the coverage-encoding conformance class is listed in the GetCapabilities response.</ctl:assertion>
+		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_coverage-encoding_'))">
+				<ctl:message>[FAILURE] Check that the coverage-encoding conformance class is listed in the GetCapabilities response.</ctl:message>
+				<ctl:fail/>
+			</xsl:if> 		
+		</ctl:code>
+	</ctl:test>     
+  
+</ctl:package>

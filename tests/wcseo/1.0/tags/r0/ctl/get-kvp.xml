@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+	<ctl:test name="wcseo:get-kvp">
+    		<ctl:param name="url"/>
+   		<ctl:assertion>Test EO-WCS get kvp extension.</ctl:assertion>
+    		<ctl:code>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+      			<xsl:choose>
+        			<xsl:when test="string-length($Capabilities)!=0">
+	  				<ctl:call-test name="wcseo:get-kvp-req1">
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>
+	  				<ctl:call-test name="wcseo:get-kvp-req2">
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	
+	  				<ctl:call-test name="wcseo:get-kvp-req3">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>
+	  				<ctl:call-test name="wcseo:get-kvp-req4">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	  
+	  				<ctl:call-test name="wcseo:get-kvp-req5">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>
+	  				<ctl:call-test name="wcseo:get-kvp-req6">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	  				
+        			</xsl:when>
+        			<xsl:otherwise>
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+        			</xsl:otherwise>
+      			</xsl:choose>
+    		</ctl:code>
+  	</ctl:test>
+
+<!--req1-->  
+    
+	<ctl:test name="wcseo:get-kvp-req1">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req1:Implementations of this Earth Observation Application Profile which sup-port the ap_eo_get-kvp conformance class shall support the WCS 2.0 pro-tocol extension GET/KVP.</ctl:assertion>
+    		<ctl:code>        
+        		<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_get-kvp/1.0/conf/get-kvp') )">
+	        		<ctl:fail/>
+        		</xsl:if>
+    		</ctl:code>
+  	</ctl:test> 
+
+<!--req2--> 
+	<ctl:test name="wcseo:get-kvp-req2">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req2:Implementations of this Earth Observation Application Profile which sup-port the ap_eo_get-kvp conformance class shall include the following URI in a Profile element in the ServiceIdentification in a GetCapabilities response:http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp.</ctl:assertion>
+    		<ctl:code>        
+        		<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp') )">
+	        		<ctl:fail/>
+        		</xsl:if>
+    		</ctl:code>
+  	</ctl:test> 
+  
+<!--req3--> 
+	<ctl:test name="wcseo:get-kvp-req3">
+    		<ctl:param name="Capabilities"/>
+     		<ctl:param name="url"/>   		
+    		<ctl:assertion>Req3:The request parameter in the DescribeEOCoverageSet request parameter of a DescribeEOCoverageSet request shall be indicated as follows:request=DescribeEOCoverageSet.</ctl:assertion>
+    		<ctl:code>        
+      			<xsl:variable name="DescribeEOCoverageSet">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="service">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+           				<ctl:param name="EOID"><xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId'][1]"/></ctl:param>             				
+             				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($DescribeEOCoverageSet//*[local-name()='EOCoverageSetDescription')">
+           					<ctl:message>[FAILURE] Send a valid EOCoverageSetDescription request, and the result should contain a wcseo:EOCoverageSetDescription.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>  
+    		</ctl:code>
+  	</ctl:test> 
+<!--req4--> 
+	<ctl:test name="wcseo:get-kvp-req4">
+    		<ctl:param name="Capabilities"/>
+     		<ctl:param name="url"/>     		
+    		<ctl:assertion>Req4:The eoId parameter in the DescribeEOCoverageSet request parameter of a DescribeEOCoverageSet request shall be indicated as follows, for parameter values v1, ... vn:  eoid= v1,...,vn.</ctl:assertion>
+    		<ctl:code>        
+      			<xsl:variable name="DescribeEOCoverageSet">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="service">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+           				<ctl:param name="EOID"><xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='CoverageSummary'][1]/*[local-name()='CoverageId'][1]"/>,<xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='DatasetSeriesId'][1]"/></ctl:param>             				
+             				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeEOCoverageSet//*[local-name()='ExceptionReport']))">
+           					<ctl:message>[FAILURE] Send a valid EOCoverageSetDescription request, and the result should not contain an ows:ExceptionReport.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>  
+    		</ctl:code>
+  	</ctl:test> 
+<!--req5--> 
+	<ctl:test name="wcseo:get-kvp-req5">
+    		<ctl:param name="Capabilities"/>
+      		<ctl:param name="url"/>    		
+    		<ctl:assertion>Req5:The containment parameter in the DescribeEOCoverageSet request parameter of a DescribeEOCoverageSet request shall be indicated as follows: containment=OVERLAPS or	containment=CONTAINS</ctl:assertion>
+    		<ctl:code>        
+      			<xsl:variable name="DescribeEOCoverageSet">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="service">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+           				<ctl:param name="EOID"><xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='DatasetSeriesId'][1]"/></ctl:param>             				
+             				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+             				<ctl:param name="subset">Long,urn:ogc:def:crs:OGC:2:84(<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='LowerCorner']),' ')[1])"/>,<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='UpperCorner']),' ')[1])"/>)</ctl:param>              			
+             				<ctl:param name="subset">Lat,urn:ogc:def:crs:OGC:2:84(<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='LowerCorner']),' ')[2])"/>,<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='UpperCorner']),' ')[2])"/>)</ctl:param>              			
+             				<ctl:param name="containment">CONTAINS</ctl:param>
+             				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeEOCoverageSet//*[local-name()='ExceptionReport']))">
+           					<ctl:message>[FAILURE] Send a valid EOCoverageSetDescription request with parameter containment=CONTAINS, and the result should not contain an ows:ExceptionReport.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+      			<xsl:variable name="DescribeEOCoverageSet">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="service">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+           				<ctl:param name="EOID"><xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='DatasetSeriesId'][1]"/></ctl:param>             				
+             				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+             				<ctl:param name="subset">phenomenonTime,http://www.opengis.net/def/trs/ISO-8601/0/Gregorian+UTC("<xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='TimePeriod']/*[local-name()='endPosition']"/>")</ctl:param>              			
+            				<ctl:param name="containment">OVERLAPS</ctl:param>
+             				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeEOCoverageSet//*[local-name()='ExceptionReport']))">
+           					<ctl:message>[FAILURE] Send a valid EOCoverageSetDescription request with parameter containment=OVERLAPS, and the result should not contain an ows:ExceptionReport.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>			
+    		</ctl:code>
+  	</ctl:test>   
+  	
+ <!--req6--> 
+	<ctl:test name="wcseo:get-kvp-req6">
+    		<ctl:param name="Capabilities"/>
+      		<ctl:param name="url"/>    		
+    		<ctl:assertion>Req6:The trim parameters in the DescribeEOCoverageSet request parameter of a DescribeEOCoverageSet request shall be indicated through a possibly empty set of subset specifications, each one with key subset and value specification given by a SubsetSpec adhering to the metioned EBNF syntax and the resp. XML definitions. </ctl:assertion>
+    		<ctl:code>        
+      			<xsl:variable name="DescribeEOCoverageSet">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="service">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+           				<ctl:param name="EOID"><xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='DatasetSeriesId'][1]"/></ctl:param>             				
+             				<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+             				<ctl:param name="subset">Long,urn:ogc:def:crs:OGC:2:84(<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='LowerCorner']),' ')[1])"/>,<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='UpperCorner']),' ')[1])"/>)</ctl:param>              			
+             				<ctl:param name="subset">Lat,urn:ogc:def:crs:OGC:2:84(<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='LowerCorner']),' ')[2])"/>,<xsl:value-of select="number(tokenize(normalize-space($Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='WGS84BoundingBox']/*[local-name()='UpperCorner']),' ')[2])"/>)</ctl:param>              			
+             				<ctl:param name="subset">phenomenonTime,http://www.opengis.net/def/trs/ISO-8601/0/Gregorian+UTC("<xsl:value-of select="$Capabilities//*[local-name()='Contents'][1]/*[local-name()='DatasetSeriesSummary'][1]/*[local-name()='TimePeriod']/*[local-name()='beginPosition']"/>")</ctl:param>              			             				
+             				<ctlp:XMLValidatingParser>
+	        				<ctlp:schemas>
+                        				<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+	        				</ctlp:schemas>
+             				</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(empty($DescribeEOCoverageSet//*[local-name()='ExceptionReport']))">
+           					<ctl:message>[FAILURE] Send a valid EOCoverageSetDescription subset request, and the result should not contain an ows:ExceptionReport.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+    		</ctl:code>
+  	</ctl:test>   	
+</ctl:package>

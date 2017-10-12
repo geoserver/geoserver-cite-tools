@@ -1,0 +1,623 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Executive Summary WFS 1.0.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+
+
+<div class="article" lang="en">
+	<div class="titlepage">
+		<div>
+			<div>
+				<h2 class="title">
+					<a id="N10001" />Web Feature Service 1.0.0 Conformance Tests -
+					Executive Summary
+				</h2>
+			</div>
+		</div>
+		<hr />
+	</div>
+	<div class="toc" xmlns="http://www.w3.org/1999/xhtml">
+		<p>
+			<b>Table of Contents</b>
+		</p>
+		<dl>
+			<dt>
+				1. <a href="#N10005">Scope</a>
+			</dt>
+			<dt>
+				2. <a href="#N1001A">Test overview</a>
+			</dt>
+			<dt>
+				3. <a href="#N10054">Test schemas and data</a>
+			</dt>
+			<dt>
+				A. <a href="#conformanceReport">WFS 1.0.0 Conformance Test
+					Report</a>
+			</dt>
+			<dd>
+				<dl>
+					<dt>
+						A.1. <a href="#N1005D">Product information</a>
+					</dt>
+					<dt>
+						A.2. <a href="#N10079">Specification class results</a>
+					</dt>
+					<dt>
+						A.3. <a href="#N100B5">Detailed test results</a>
+					</dt>
+				</dl>
+			</dd>
+		</dl>
+	</div>
+	<div class="section" lang="en">
+		<div class="titlepage">
+			<div>
+				<div>
+					<h2 class="title" style="clear: both">
+						<a id="N10005"></a>1. Scope
+					</h2>
+				</div>
+			</div>
+		</div>
+		<p>The purpose of this document is to provide a summary of the
+			conformance test suite for the OGC Web Feature Service 1.0.0
+			specification. This information is intended to assist WFS
+			implementors running the tests against their products and WFS users
+			in undestanding the conformance test report for WFS implementations
+			and the capabilities they offer.</p>
+		<p>The conformance tests are performed using the OGC conformance
+			test engine with a suite of test scripts and data for each
+			specification. For each version of the specification a new test suite
+			will be developed to add additional tests for new functionality. The
+			WFS implementors use the test engine to run the test scripts against
+			a test server and the test engine records the results of each test.</p>
+		<p>
+			This document describes the test suite for the Web Feature Service
+			1.0.0 specification (<a href="" target="_top">http://www.opengis.org/techno/specs/02-058.pdf</a>)
+			with filters defined using OGC Filter Encoding 1.0.0 specification (<a
+				href="" target="_top">http://www.opengis.org/techno/specs/02-059.pdf</a>)
+			and features defined using Geography Markup Language 2.1.2
+			specification (<a href="" target="_top">http://www.opengis.net/gml/02-069/GML2-12.pdf</a>).
+		</p>
+	</div>
+	<div class="section" lang="en">
+		<div class="titlepage">
+			<div>
+				<div>
+					<h2 class="title" style="clear: both">
+						<a id="N1001A"></a>2. Test overview
+					</h2>
+				</div>
+			</div>
+		</div>
+		<p>The WFS specification defines two classes of implementations
+			Basic and Transactional, with locking being optional for a
+			Transactional WFS. The test suite is divided into three classes of
+			tests Basic, Transactional and Locking, the requests tested in each
+			of these classes are listed below..</p>
+		<div class="itemizedlist">
+			<ul type="disc">
+				<li><p>
+						<span class="bold"><b>Basic</b>
+						</span>
+					</p>
+					<div class="itemizedlist">
+						<ul type="circle">
+							<li><p>GetCapabilities (KVP GET (required) or XML POST)</p>
+							</li>
+							<li><p>DescribeFeatureType (KVP GET or XML POST)</p>
+							</li>
+							<li><p>GetFeature (KVP GET or XML POST)</p>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li><p>
+						<span class="bold"><b>Transactional</b>
+						</span>
+					</p>
+					<div class="itemizedlist">
+						<ul type="circle">
+							<li><p>Transaction (XML POST)</p>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li><p>
+						<span class="bold"><b>Locking</b>
+						</span>
+					</p>
+					<div class="itemizedlist">
+						<ul type="circle">
+							<li><p>LockFeature (XML POST)</p>
+							</li>
+							<li><p>GetFeatureWithLock (XML POST)</p>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<p>
+			The tests performed against an implementation are selected based on
+			the capabilities document for the WFS implementation. By omitting a
+			request, operation or filter capability from the capabilities
+			document the tests for that functionality will not be executed
+			against the implementation. The exception to this is for the complex
+			value tests that test the capability of the WFS to store features
+			that contain a complex value (an address object) in a property, this
+			option is selected via an option of the test engine. The <a
+				href="#conformanceReport"
+				title="A. WFS 1.0.0 Conformance Test Report">conformance test
+				report</a> contains a breakdown of the test result for the requests,
+			operations and filter capabilities to show the functionality
+			supported by the server.
+		</p>
+		<p>For a Basic WFS the server must implement each of the three
+			requests either using KVP GET or XML POST, it is not mandatory to
+			support both methods, except for GetCapabilities where KVP GET must
+			be supported.</p>
+		<p>For a Transactional and Locking WFS the server must implement
+			the requests using XML POST, KVP GET is not supported in the test
+			suite.</p>
+		<p>For a Locking WFS the server can implement either the
+			LockFeature or GetFeatureWithLock requests, it is not mandatory to
+			support both requests.</p>
+		<p>For the GetFeature tests an implementation is not required to
+			support all the filter operations defined in the specification. The
+			server must support the FeatureId filter operation and can optionally
+			support the other filter operations. The server must also support the
+			handling of property names and output formats as specified by the
+			specification, only GML2 is required for conformance testing.</p>
+		<p>The tests for spatial data and operations use the six
+			geometries (Point, LineString, Polygon, MultiPoint, MultiLineString
+			&amp; MultiPolygon) defined in GML 2.1.2 and the eleven spatial
+			operators (BBOX, Beyond, Contains, Crosses, Disjoint, DWithin,
+			Equals, Intersects, Overlaps, Touches &amp; Within). Note the DWithin
+			operator is allowed in the capabilities document although it was
+			accidentally excluded from the schema in the specification. The tests
+			perform between 2-3 tests per operator, geometry combination, a full
+			test of the accuracy of the spatial operations is outside the scope
+			of the conformance tests.</p>
+	</div>
+	<div class="section" lang="en">
+		<div class="titlepage">
+			<div>
+				<div>
+					<h2 class="title" style="clear: both">
+						<a id="N10054"></a>3. Test schemas and data
+					</h2>
+				</div>
+			</div>
+		</div>
+		<p>
+			The test scripts use three schemas and namespaces for the test data:
+			<a
+				href="http://cite.opengeospatial.org/teamengine/OGCTestData/wfs/1.0.0/schemas/dataFeatures.xsd">dataFeatures.xsd</a>,
+			<a
+				href="http://cite.opengeospatial.org/teamengine/OGCTestData/wfs/1.0.0/schemas/geometryFeatures.xsd">geometryFeatures.xsd
+			</a>and <a
+				href="http://cite.opengeospatial.org/teamengine/OGCTestData/wfs/1.0.0/schemas/complexFeatures.xsd">complexFeatures.xsd</a>.
+			The first is required for all tests, the second for the spatial
+			filter operations and the last has a property with a complex value
+			and is only required if the option is selected when running the
+			tests. Namespaces are inherent in GML application schemas and the use
+			of namespaces is required by the test scripts. If an implementation
+			only supports a single namespace at a time the tests scripts can be
+			run once per namespace and the results combined. In this case the
+			conformance report must include a note to this effect.
+		</p>
+	</div>
+	<div class="appendix" lang="en">
+		<h2 class="title" style="clear: both">
+			<a id="conformanceReport"></a>A. WFS 1.0.0 Conformance Test Report
+		</h2>
+		<div class="section" lang="en">
+			<div class="titlepage">
+				<div>
+					<div>
+						<h3 class="title">
+							<a id="N1005D"></a>A.1. Product information
+						</h3>
+					</div>
+				</div>
+			</div>
+			<div class="informaltable">
+				<table border="1">
+					<colgroup xmlns="http://www.w3.org/1999/xhtml">
+						<col />
+						<col />
+					</colgroup>
+					<tbody>
+						<tr>
+							<td><span class="bold"><b
+									xmlns="http://www.w3.org/1999/xhtml">Specification</b>
+							</span>
+							</td>
+							<td>Web Feature Service 1.0.0</td>
+						</tr>
+						<tr>
+							<td><span class="bold"><b
+									xmlns="http://www.w3.org/1999/xhtml">Product</b>
+							</span>
+							</td>
+							<td>Acme WFS 2.3</td>
+						</tr>
+						<tr>
+							<td><span class="bold"><b
+									xmlns="http://www.w3.org/1999/xhtml">Date</b>
+							</span>
+							</td>
+							<td>28 June 2003</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="section" lang="en">
+			<div class="titlepage">
+				<div>
+					<div>
+						<h3 class="title">
+							<a id="N10079"></a>A.2. Specification class results
+						</h3>
+					</div>
+				</div>
+			</div>
+			<p>The following table summarises the test results for the
+				server.</p>
+			<p>
+			<div class="informaltable">
+				<table border="1">
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Profile</th>
+							<th>Result</th>
+							<th># Tests Run</th>
+							<th># Tests Failed</th>
+							<th># Tests</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>WFS Basic</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>426</td>
+						</tr>
+						<tr>
+							<td>WFS Transactional</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>52</td>
+						</tr>
+						<tr>
+							<td>WFS Locking</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>17</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br />
+			<p>The result column contains either 'Passed', 'Failed' or 'Not
+				supported'. The result is 'Passed' if an implementation does not
+				fail any tests for the requests and requests and functionality the
+				server supports in that class, if any tests fail the result for the
+				class will be 'Failed'. If the server does not support any requests
+				in the class the result is 'Not supported'.</p>
+			<p>The #Tests run column indicates how many of the available
+				tests (# Tests) were run within each class, an implementation can be
+				conformant even if it does not support all the functionality
+				described in the specification for that class. The next section
+				breaks down the summary into more detail by functionality.</p>
+		</div>
+		<div class="section" lang="en">
+			<div class="titlepage">
+				<div>
+					<div>
+						<h3 class="title">
+							<a id="N100B5"></a>A.3. Detailed test results
+						</h3>
+					</div>
+				</div>
+			</div>
+			<p>The following tables show the breakdown of the number of tests
+				passed verses the number of tests run for each piece of
+				functionality tested for each request and request method. If the
+				server did not advertise the feature the number of tests will
+				contain 'N/A'.
+			<div class="table">
+				<a id="N100BA"></a>
+				<p class="title">
+					<b>Table A.1. Basic WFS Test results</b>
+				</p>
+				<table summary="Basic&#10;      WFS Test results" border="1">
+					<colgroup>
+						<col />
+						<col />
+						<col align="right" />
+						<col align="right" />
+						<col align="right" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Profile</th>
+							<th>Result</th>
+							<th align="left"># KVP Requests</th>
+							<th align="left"># XML Requests</th>
+							<th align="left"># Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>GetCapabilities</td>
+							<td></td>
+							<td align="right">/8</td>
+							<td align="right">/8</td>
+							<td align="right">/16</td>
+						</tr>
+						<tr>
+							<td>DescribeFeatureType</td>
+							<td></td>
+							<td align="right">/9</td>
+							<td align="right">/9</td>
+							<td align="right">/18</td>
+						</tr>
+						<tr>
+							<td>GetFeature - basic</td>
+							<td></td>
+							<td align="right">/10</td>
+							<td align="right">/10</td>
+							<td align="right">/20</td>
+						</tr>
+						<tr>
+							<td>GetFeature - complex values</td>
+							<td></td>
+							<td align="right">/9</td>
+							<td align="right">/9</td>
+							<td align="right">/18</td>
+						</tr>
+						<tr>
+							<td>GetFeature - arithmetic operators</td>
+							<td></td>
+							<td align="right">/4</td>
+							<td align="right">/4</td>
+							<td align="right">/8</td>
+						</tr>
+						<tr>
+							<td>GetFeature - comparison operators</td>
+							<td></td>
+							<td align="right">/18</td>
+							<td align="right">/18</td>
+							<td align="right">/36</td>
+						</tr>
+						<tr>
+							<td>GetFeature - like operator</td>
+							<td></td>
+							<td align="right">/1</td>
+							<td align="right">/1</td>
+							<td align="right">/2</td>
+						</tr>
+						<tr>
+							<td>GetFeature - between operator</td>
+							<td></td>
+							<td align="right">/2</td>
+							<td align="right">/2</td>
+							<td align="right">/4</td>
+						</tr>
+						<tr>
+							<td>GetFeature - null check operator</td>
+							<td></td>
+							<td align="right">/4</td>
+							<td align="right">/4</td>
+							<td align="right">/8</td>
+						</tr>
+						<tr>
+							<td>GetFeature - logical operators</td>
+							<td></td>
+							<td align="right">/10</td>
+							<td align="right">/10</td>
+							<td align="right">/20</td>
+						</tr>
+						<tr>
+							<td>GetFeature - BBOX operator</td>
+							<td></td>
+							<td align="right">/18</td>
+							<td align="right">/18</td>
+							<td align="right">/38</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Beyond operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Contains operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Crosses operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Disjoint operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - DWithin operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Equals operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Intersects operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Overlaps operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Touches operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+						<tr>
+							<td>GetFeature - Within operator</td>
+							<td></td>
+							<td align="right">/12</td>
+							<td align="right">/12</td>
+							<td align="right">/24</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="table">
+				<a id="N101AE"></a>
+				<p class="title">
+					<b>Table A.2. Transactional WFS Test results</b>
+				</p>
+				<table summary="Transactional&#10;      WFS Test results" border="1">
+					<colgroup>
+						<col />
+						<col />
+						<col align="right" />
+						<col align="right" />
+						<col align="right" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Profile</th>
+							<th>Result</th>
+							<th align="left"># KVP Requests</th>
+							<th align="left"># XML Requests</th>
+							<th align="left"># Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>GetCapabilities</td>
+							<td></td>
+							<td align="right">/4</td>
+							<td align="right">/4</td>
+							<td align="right">/8</td>
+						</tr>
+						<tr>
+							<td>Transaction - insert</td>
+							<td></td>
+							<td align="right">N/A</td>
+							<td align="right">/3</td>
+							<td align="right">/3</td>
+						</tr>
+						<tr>
+							<td>Transaction - update</td>
+							<td></td>
+							<td align="right">N/A</td>
+							<td align="right">/3</td>
+							<td align="right">/3</td>
+						</tr>
+						<tr>
+							<td>GetFeature - delete</td>
+							<td></td>
+							<td align="right">N/A</td>
+							<td align="right">/3</td>
+							<td align="right">/3</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="table">
+				<a id="N101F8"></a>
+				<p class="title">
+					<b>Table A.3. Locking WFS Test results</b>
+				</p>
+				<table summary="Locking&#10;      WFS Test results" border="1">
+					<colgroup>
+						<col />
+						<col />
+						<col align="right" />
+						<col align="right" />
+						<col align="right" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Profile</th>
+							<th>Result</th>
+							<th align="left"># KVP Requests</th>
+							<th align="left"># XML Requests</th>
+							<th align="left"># Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>GetCapabilities</td>
+							<td></td>
+							<td align="right">/4</td>
+							<td align="right">/4</td>
+							<td align="right">/8</td>
+						</tr>
+						<tr>
+							<td>LockFeature</td>
+							<td></td>
+							<td align="right">N/A</td>
+							<td align="right">/26</td>
+							<td align="right">/26</td>
+						</tr>
+						<tr>
+							<td>GetFeatureWithLock</td>
+							<td></td>
+							<td align="right">N/A</td>
+							<td align="right">/22</td>
+							<td align="right">/22</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br />
+		</div>
+	</div>
+</div>
+
+</body>

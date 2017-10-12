@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 	
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows/1.1" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/" 
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wmts="http://www.opengis.net/wmts/1.0"
+	xmlns:ctlFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/ctlFunctions.xml"	
+>
+	<ctl:function name="ctlFunctions:getSupportedImageTypes">
+		<ctl:description>Gets the supported image types in the ImageIO class (gives a comma-seperated list)</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.ImageParser" 
+                  method="getSupportedImageTypes"/>		
+	</ctl:function>
+
+	<ctl:function name="ctlFunctions:getImageFormat">
+		<ctl:param name="image.uri"/>
+		<ctl:description>Returns the format of an image that is one of the image types in the ImageIO class, or null.</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.ImageParser" 
+                  method="getImageType"/>
+	</ctl:function>
+
+	<ctl:function name="ctlFunctions:getImageWidth">
+		<ctl:param name="image.uri"/>
+		<ctl:description>Returns the width of the first image in image.uri in pixels.</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.ImageParser" 
+                  method="getImageWidth"/>
+	</ctl:function>   
+
+	<ctl:function name="ctlFunctions:getImageHeight">
+		<ctl:param name="image.uri"/>
+		<ctl:description>Returns the height of the first image in image.uri in pixels.</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.ImageParser" 
+                  method="getImageHeight"/>
+	</ctl:function>   
+	
+	<!--Validates response against schema-->
+	<!-- this function is overloaded, there are two versions -->
+	<!-- one version accepts the full path to the schema file as a parameter -->
+	<!-- the other constructs the path from parts -->
+	<!-- both originally from SOS, removed om.xsd schema to be more general-purpose -->
+	<ctl:function name="ctlFunctions:xmlValidatingParser">
+        <ctl:param name="schemaFile">schemaFile</ctl:param>
+		<ctl:description>Standard CTL XMLValidatingParser</ctl:description>
+        <ctl:code>						
+			<xsl:choose>
+				<xsl:when test="starts-with($schemaFile,'http')">
+					<parsers:XMLValidatingParser ignoreErrors="false">
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>
+							<parsers:schema type="url">
+								<xsl:value-of select="$schemaFile"/>								
+							</parsers:schema>							
+							<parsers:schema type="url">http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd</parsers:schema>	
+							<!-- added 2010-12-18 so exception report gets returned; requires subsequent test to be changed to
+							<xsl:when test="not($response/*) or $response//*[local-name() = 'ExceptionReport']"> PwD -->				
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>	
+				</xsl:when>
+				<xsl:otherwise>
+					<parsers:XMLValidatingParser ignoreErrors="false">
+						<parsers:schemas>
+							<parsers:schema type="url">http://www.w3.org/2001/xml.xsd</parsers:schema>						
+							<parsers:schema type="file">
+								<xsl:value-of select="$schemaFile"/>
+							</parsers:schema>
+							<parsers:schema type="url">http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd</parsers:schema>	
+						</parsers:schemas>
+					</parsers:XMLValidatingParser>
+				</xsl:otherwise>
+			</xsl:choose>				
+        </ctl:code>
+    </ctl:function>
+
+	<!-- from SOS functions.xml -->
+    <ctl:function name="ctlFunctions:xmlValidatingParser">
+        <ctl:param name="schemaRoot">The location of the schemas</ctl:param>
+		<ctl:param name="version">The numeric version of the schema</ctl:param>
+		<ctl:param name="encoding">The name of the service or encoding to be used</ctl:param>
+		<ctl:param name="filename">Filenam of schema file</ctl:param>
+		<ctl:description>Standard CTL XMLValidatingParser</ctl:description>
+        <ctl:code>				
+			<xsl:variable name="schemaFile" select="ctlFunctions:schemaPath($schemaRoot, $encoding, $version, $filename)"/>
+			<xsl:copy-of select="ctlFunctions:xmlValidatingParser($schemaFile)"/>
+        </ctl:code>
+    </ctl:function>
+
+	<!-- from SOS functions.xml, with param order change -->	
+	<ctl:function name="ctlFunctions:schemaPath">
+        <ctl:param name="schemaRoot">The location of the schemas</ctl:param>
+		<ctl:param name="encoding">The name of the service or encoding to be used</ctl:param>
+		<ctl:param name="version">The numeric version of the schema</ctl:param>
+		<ctl:param name="filename">Filename of schema file</ctl:param>	
+		<ctl:code>			
+			<xsl:value-of select="concat($schemaRoot, $encoding, '/', $version, '/', $filename)"/>
+		</ctl:code>
+	</ctl:function>
+
+ <!-- from SOS functions.xml -->
+ 	<ctl:function name="ctlFunctions:exceptionReportSchemaPath">
+        <ctl:param name="schemaRoot">The location of the schemas</ctl:param>
+		<ctl:param name="owsVersion">The numeric version of the schema</ctl:param>
+		<ctl:code>			
+			<xsl:value-of select="ctlFunctions:schemaPath($schemaRoot, 'ows', $owsVersion, 'owsExceptionReport.xsd')"/>
+		</ctl:code>
+	</ctl:function>
+
+
+  <!-- from WFS all.xsd -->
+  <ctl:function name="ctlFunctions:XMLValidator">
+		<ctl:param name="doc"/>
+		<ctl:param name="instruction"/>
+		<ctl:return>A list of errors (NodeList of "error" elements).</ctl:return>
+		<ctl:description>Invokes the XML Schema validator on the specified doc using the parsers:schemas specified in the instruction.</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.XMLValidatingParser" method="validate" initialized="true"/>
+  </ctl:function>
+
+
+	<!-- Function to validate a document outside of a ctl:request, e.g.
+					<xsl:variable name="results">
+						<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+							<ctl:with-param name="doc"><xsl:copy-of select="$wmts.capabilities.doc/*"/></ctl:with-param>
+							<ctl:with-param name="schemaPath" select="$schemaPath"/>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:choose>
+						<xsl:when  test="count($results/*) &gt; 0">
+							<ctl:message>Capabilities document failed schema validation.</ctl:message>
+							<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+							<ctl:fail/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Capabilities response is valid, continuing...</ctl:message>
+							...
+	-->
+	<ctl:function name="ctlFunctions:XMLschemaValidate">
+		<ctl:param name="doc"/>
+        <ctl:param name="schemaPath"/>
+		<ctl:return>Actually only returns the first validation error, with a line number of -1, or nothing if no errors.</ctl:return>
+		<ctl:description>Invokes the XML Schema validating parser on the specified doc using the specified schema.</ctl:description>
+		<ctl:code>
+			<!-- <xsl:message>XMLschemaValidate doc <xsl:copy-of select="$doc"/></xsl:message> -->
+			<xsl:variable name="instruction">
+				<parsers:schemas>
+					<xsl:choose>
+						<xsl:when test="starts-with($schemaPath,'http')">
+							<parsers:schema type="url">
+								<xsl:value-of select="$schemaPath"/>								
+							</parsers:schema>														
+						</xsl:when>
+						<xsl:otherwise>
+							<parsers:schema type="file">
+								<xsl:value-of select="$schemaPath"/>								
+							</parsers:schema>							
+						</xsl:otherwise>
+					</xsl:choose>
+				</parsers:schemas>
+			</xsl:variable>
+			<xsl:variable name="results">
+				<ctl:call-function name="ctlFunctions:XMLValidator">
+					<ctl:with-param name="doc"><xsl:copy-of select="$doc"/></ctl:with-param>
+					<ctl:with-param name="instruction" select="$instruction"/>
+				</ctl:call-function>	
+			</xsl:variable>
+			<xsl:copy-of select="$results"/>
+		</ctl:code>
+	</ctl:function>
+
+	<!--Function to parse base64 image data, e.g.
+
+						<xsl:variable name="base64Data">
+iVBORw0KGgoAAAANSUhEUgAABMYAAAOxCAYAAAAejas7AACAAElEQVR42uy9d1SV17r2ff759tl7&#xD;
+p+wUuyAqIL0JUgSkSG/Se+8sWPTee0cQEVTA3k00mpioiVGj0STGVBsivTd7oqZd37wnPoR4dnvf&#xD;
+...
+AAAAAMCT/j9KGCQIgHYI9QAAAABJRU5ErkJggg==&#xD;></xsl:variable>
+						<xsl:variable name="instruction">
+							<parsers:ImageParser>
+								<parsers:type/>
+								<parsers:height/>
+								<parsers:width/>
+								<parsers:metadata/>
+							</parsers:ImageParser>
+						</xsl:variable>
+						<xsl:variable name="response" select="ctlFunctions:ParseBase64ImageData($base64Data, $instruction/*)"/>
+						<xsl:variable name="parsersFormatTokens" select="tokenize($parsersFormatElementName, '_')"/>
+						<xsl:variable name="parsersFormat" select="concat('image/', $parsersFormatTokens[3])"/>
+						<xsl:variable name="type"  select="$response/parsers:ImageParser/parsers:type"/>
+						<xsl:variable name="width" select="$response/parsers:ImageParser/parsers:width"/>
+						<xsl:variable name="height" select="$response/parsers:ImageParser/parsers:height"/>
+						<ctl:message select="concat('parsersFormat ', $parsersFormat, ' type ', $type, ' width: ', $width, ' height: ', $height)"/>
+	 -->
+  <ctl:function name="ctlFunctions:ParseBase64ImageData">
+		<ctl:param name="base64Data">Base 64 image data, e.g. from wmts:BinaryPayload/wmts:BinaryContent returned by SOAPParser as unwrapped content from SOAP GetTile response, or from ImageParser parsers:base64Data instruction from a GetTile image. </ctl:param>
+		<ctl:param name="instruction">parsers:ImageParser element containing a list of parsers:* instruction child elements (any or all of type, height, width, metadata) for the ImageParser</ctl:param>
+		<ctl:return>Requested parsers:* elements with requested data</ctl:return>
+		<ctl:description>Invokes the ImageParser on the specified base64Data using the parsers:* elements specified in the instruction.</ctl:description>
+		<ctl:java class="com.occamlab.te.parsers.ImageParser" method="parseBase64" initialized="false"/>
+  </ctl:function>
+
+
+</ctl:package>

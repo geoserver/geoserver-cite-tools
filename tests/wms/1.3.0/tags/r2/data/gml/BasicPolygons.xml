@@ -1,0 +1,54 @@
+<cgf:GeometryFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                               xmlns:cgf="http://www.opengis.net/cite/geometry"
+                               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                               xsi:schemaLocation="http://www.opengis.net/cite/geometry geometryFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:BasicPolygons layer</gml:description>
+   <gml:name>cite:BasicPolygons</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>-2,-1 2,6</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cgf:PolygonFeature>
+         <cgf:id/>
+         <gml:polygonProperty>
+            <gml:Polygon srsName="CRS:84">
+               <gml:outerBoundaryIs>
+                  <gml:LinearRing>
+                     <gml:coordinates>-1,0 0,1 1,0 0,-1 -1,0</gml:coordinates>
+                  </gml:LinearRing>
+               </gml:outerBoundaryIs>
+            </gml:Polygon>
+         </gml:polygonProperty>
+      </cgf:PolygonFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cgf:PolygonFeature>
+         <cgf:id/>
+         <gml:polygonProperty>
+            <gml:Polygon srsName="CRS:84">
+               <gml:outerBoundaryIs>
+                  <gml:LinearRing>
+                     <gml:coordinates>-2,6 1,6 1,3 -2,3 -2,6</gml:coordinates>
+                  </gml:LinearRing>
+               </gml:outerBoundaryIs>
+            </gml:Polygon>
+         </gml:polygonProperty>
+      </cgf:PolygonFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cgf:PolygonFeature>
+         <cgf:id/>
+         <gml:polygonProperty>
+            <gml:Polygon srsName="CRS:84">
+               <gml:outerBoundaryIs>
+                  <gml:LinearRing>
+                     <gml:coordinates>-1,5 2,5 2,2 -1,2 -1,5</gml:coordinates>
+                  </gml:LinearRing>
+               </gml:outerBoundaryIs>
+            </gml:Polygon>
+         </gml:polygonProperty>
+      </cgf:PolygonFeature>
+   </gml:featureMember>
+</cgf:GeometryFeatureCollection>

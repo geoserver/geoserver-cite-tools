@@ -1,0 +1,7 @@
+WRS 1.0 Test Suite Release Notes
+
+
+Changes included in this revision:
+
+2009-10-12 (kstegemoller):
+- created tag wrs-1.0.0 r0

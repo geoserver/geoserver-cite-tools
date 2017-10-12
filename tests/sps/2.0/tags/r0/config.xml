@@ -1,0 +1,23 @@
+<config>
+	<organization>
+		<name>OGC</name>
+	</organization>
+	<standard>
+		<name>SPS</name>
+	</standard>
+	<version>
+		<name>2.0</name>
+	</version>
+	<revision>
+		<name>r5</name>
+	</revision>
+	<suite>
+		<namespace-uri>http://www.opengis.net/sps/2.0</namespace-uri>
+		<prefix>sps</prefix>
+		<local-name>suite</local-name>
+	</suite>
+	<source>ctl</source>
+	<resources>resources</resources>
+	<web>web</web>
+</config>
+

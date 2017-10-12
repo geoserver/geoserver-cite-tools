@@ -1,0 +1,25 @@
+<ctl:suite xmlns:ctl="http://www.occamlab.com/ctl" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:wcs2="http://www.opengis.net/wcs/2.0" name="wcs2:suite">
+	<ctl:title>wcs2 test suite</ctl:title>
+	<ctl:description>Validates wcs2</ctl:description>
+	<ctl:link>docs/wcs/2.0/</ctl:link>
+	<ctl:starting-test>wcs2:main</ctl:starting-test>
+	<ctl:form>
+		<h1>Web Coverage Service 2.0</h1>
+                	<p>The Web Coverage Service tests scripts are designed to test WCS 2.0
+implementations based on the WCS 2.0 specifications.</p>
+              		<p>A complete list of tests in the test suite is available in the OGC 09-147r1, OGC 09-148r1, OGC 09-149r1  and OGC 09-110r1 documents, but note that not
+all of the tests are applicable to all servers.</p>
+                  	<p>Requirements for the offered coverages:</p>
+                  		<p>  1. The implementation provides at least two coverages.</p>
+                  		<p>  2. The first coverage offering should be RectifiedGridCoverage with at least 2 dimensions, while the second coverage could be any thing.</p>
+                  		<p>  3. Do not use CoverageId_Bogus as a coverage ID, do not use Axis_Bogus as a axis label.</p>                  
+                  		<p>  4. The offered coverage  must be either GML or some well-known coverage data format as specified in the encoding format extension.</p>
+                  	<h2>Service entry</h2>
+                  		<p>Enter a tes entry URL below. A typical GetCapabilities request will take this form:</p>
+                  		<pre>http://10.70.11.145:8080/petascope/wcs2</pre>
+    		<xhtml:p>Precondition:Enter the URL of the wcs2 that you want to validate:</xhtml:p>
+    			<xhtml:input type="text" name="url" size="100"/>
+    		<xhtml:p/>  
+    		<xhtml:input type="submit" value="OK"/>
+  	</ctl:form>
+</ctl:suite>

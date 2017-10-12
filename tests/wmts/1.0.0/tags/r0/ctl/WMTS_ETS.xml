@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns:html="http://www.w3.org/1999/xhtml" 	
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows/1.1" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/" 
+    xmlns:te="http://www.occamlab.com/te"
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wmts="http://www.opengis.net/wmts/1.0"
+	xmlns:ctlFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/ctlFunctions.xml"	
+	xmlns:owsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/owsFunctions.xml"	
+	xmlns:wwwFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/wwwFunctions.xml"	
+	xmlns:wmtsFunctions="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/wmtsFunctions.xml"	
+	xmlns:wmtsBootstrap="https://cite.opengeospatial.org/wmts-1.0.0/src/ctl/bootstrap.xml"
+>
+	<!-- 2011-10-28  PwD  everything specifically supporting client tests commented out for future development -->
+				
+	<ctl:suite name="wmts:server.suite.base">		
+		<ctl:title>WMTS 1.0 Server Compliance Test Suite Base</ctl:title>
+		<!-- 2011-10-28  PwD  <ctl:description>Verifies that a WMTS 1.0 client or server implementation complies with a given conformance classes.</ctl:description> -->
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with a given conformance classes.</ctl:description>
+        <ctl:link>docs/wmts/1.0/WMTS 1.0 ATS.html</ctl:link>		
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:starting-test>wmts:main</ctl:starting-test>
+	</ctl:suite>
+	
+	<ctl:test name="wmts:main"  type="Mandatory">
+      	<ctl:context>wmts:server.suite.base</ctl:context>
+		<ctl:assertion>The server returns a valid Capabilities document from a KVP GET or RESTful request, to support further tests in one or more profiles.</ctl:assertion>
+		<ctl:code>
+			<ctl:call-function name="ctl:startStopwatch">
+				<ctl:with-param name="watchName">wmts.main</ctl:with-param>
+			</ctl:call-function>
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<!-- get cached elements from previous log, and save them in current log for future reuse -->
+					<ctl:message>Mode is <xsl:value-of select="$mode"/> - reuse Bootstrap Capabilities and other elements from cache.</ctl:message>
+					<xsl:variable name="wmts.capabilities.doc">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">capabilities</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:choose>
+						<xsl:when test="$wmts.capabilities.doc and $wmtsSchemaPath and $wmts.capabilities.url">
+							<ctl:message>Retrieved bootstrap wmts.capabilities.doc and other cached elements from cache</ctl:message>
+							<ctl:call-function name="ctl:putLogCache">
+								<ctl:with-param name="id">capabilities</ctl:with-param>
+								<ctl:with-param name="xmlToCache"><xsl:copy-of select="$wmts.capabilities.doc"/></ctl:with-param> 
+							</ctl:call-function>
+							<ctl:call-function name="ctl:putLogCache">
+								<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+								<ctl:with-param name="xmlToCache"><xsl:copy-of select="$wmtsSchemaPath"/></ctl:with-param> 
+							</ctl:call-function>
+							<ctl:call-function name="ctl:putLogCache">
+								<ctl:with-param name="id">url</ctl:with-param>
+								<ctl:with-param name="xmlToCache"><xsl:copy-of select="$wmts.capabilities.url"/></ctl:with-param> 
+							</ctl:call-function>
+							<ctl:message>Continuing with selected profile(s) ...</ctl:message>
+							<ctl:message select="'********************************************************'"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed to retrieve bootstrap wmts.capabilities.doc or other cached element from cache - you must start a new test session.</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>Mode is <xsl:value-of select="$mode"/> - get Capabilities Document, validate it, check Bootstrap Prerequisites, get Test Selections.</ctl:message>	
+				   <!-- global wmts schema settings -->
+				   <xsl:variable name="schemaRoot">
+					   <xsl:choose>
+						   <xsl:when test="te:isWeb() = 'true' ">
+							   <xsl:text>../webapps/teamengine/WEB-INF/scripts/wmts-1.0.0-dev/resources/xsd/ogc/</xsl:text>
+						   </xsl:when>
+						   <xsl:otherwise>
+							   <xsl:text>webapps/teamengine/WEB-INF/scripts/wmts-1.0.0-dev/resources/xsd/ogc/</xsl:text>
+						   </xsl:otherwise>
+					   </xsl:choose>
+				   </xsl:variable>
+				   <!-- change schemaRoot to http://schemas.opengis.net/ once TileMatrixLimits schema errors are fixed
+				   <xsl:variable name="schemaRoot">http://schemas.opengis.net/</xsl:variable>  -->
+				   <xsl:variable name="schemaEncoding">wmts</xsl:variable>
+				   <xsl:variable name="schemaVersion">1.0</xsl:variable>
+				   <xsl:variable name="schemaFilename">wmts.xsd</xsl:variable>
+				   <xsl:variable name="wmtsSchemaPath" select="ctlFunctions:schemaPath($schemaRoot, $schemaEncoding, $schemaVersion, $schemaFilename)"/>
+				   
+					<ctl:call-function name="ctl:putLogCache">  <!-- for use in profiles and Redo From Cache Mode -->
+						<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><wmtsSchemaPath><xsl:value-of select="$wmtsSchemaPath"/></wmtsSchemaPath></ctl:with-param> 
+					</ctl:call-function>
+				   
+					<!-- prompt the tester for a capabilities document URL -->
+					<xsl:variable name="form-values"> 
+						<ctl:form>						
+							<body>
+								<h2 align="center">Compliance test suite for Web Map Tile Service (WMTS) 1.0 Server</h2>
+								<p/>
+								<blockquote>
+									<table width="600" border="0" padding="4" bgcolor="#00ffff" align="center">
+										<tr>
+											<th colspan="3" align="center">Service metadata and Test Options</th>
+										</tr>
+										<tr/>
+										<tr>
+											<td colspan="3" align="left">Please provide an OGC WMTS Server URL from which a capabilities document can be retrieved. </td>
+										</tr>
+										<tr/>
+										<tr>
+											<td colspan="3" align="left">For a WMTS server that supports KVP GET requests, the URL should be in this form:</td>
+										</tr>
+										<tr>
+											<td/><td colspan="2" align="left">http://hostname/path?SERVICE=WMTS&amp;REQUEST=GetCapabilities&amp;VERSION=1.0.0</td>
+										</tr>
+										<tr/>
+										<tr>
+											<td colspan="3" align="left">For a WMTS server that supports RESTful requests, the URL should be in this form:</td>
+										</tr>
+										<tr>
+											<td/><td colspan="2" align="left">http://hostname/path/wmts/1.0.0/WMTSCapabilities.xml</td>
+										</tr>
+										<tr>
+											<td align="left" width="60">WMTS Service URL:</td>                        
+											<td align="left" width="500">
+												<input name="capabilities-url" size="128" onmouseover="status = 'Provide URL of an OGC WMTS Server'; return true;"
+														type="text" 
+														value="http://localhost:8080/teamengine/data/WMTScapabilitiesETS.xml"/> 
+														<!--http://hostname/path ...-->
+														<!-- http://localhost:8080/teamengine/data/WMTScapabilitiesETS.xml -->
+														<!-- http://iws.erdas.com/ImageX/ecw_wmts.dll?service=WMTS&amp;request=getcapabilities&amp;version=1.0.0-->
+														<!-- http://hexagon.intergraph.pl/sdiprowmtscite/service.svc/get?request=GetCapabilities&amp;service=WMTS -->
+											</td>
+											<td><input type="submit" value="OK" /></td>
+										</tr>			
+									</table>
+								</blockquote>
+							</body>
+						</ctl:form>
+					</xsl:variable>
+					
+					<xsl:variable name="wmts.capabilities.url" select="$form-values/values/value[@key='capabilities-url']"/>
+					
+					<ctl:call-function name="ctl:putLogCache"> <!-- for use in profiles and Redo From Cache Mode -->
+						<ctl:with-param name="id">url</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><url><xsl:value-of select="$wmts.capabilities.url"/></url></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:variable name="isRESTfulURL" select="wwwFunctions:isRESTfulURL($wmts.capabilities.url)"/>
+					<ctl:message select="'********************************************************'"/>
+					
+					<xsl:choose>
+						<xsl:when test="not($isRESTfulURL = 'true')">
+							<ctl:message>KVP Request for a Capabilities Document from the WMTS server: <xsl:value-of select="$wmts.capabilities.url"/></ctl:message>
+							<xsl:value-of select="substring-before($wmts.capabilities.url,'?')"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>RESTful Request for a Capabilities Document from the WMTS server: <xsl:value-of select="$wmts.capabilities.url"/></ctl:message>
+							<xsl:value-of select="$wmts.capabilities.url"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					<xsl:variable name="wmts.capabilities.doc.response">
+						<ctl:request>
+							<ctl:url>
+								<xsl:value-of select="$wmts.capabilities.url"/>
+							</ctl:url>
+							<ctl:method>get</ctl:method>
+							<parsers:HTTPParser/>
+						</ctl:request>
+					</xsl:variable>
+					
+					<xsl:choose>
+						<xsl:when test="not($wmts.capabilities.doc.response/*)">
+							<ctl:message>FAILURE: Missing or invalid GetCapabilities response entity contents.</ctl:message>
+							<ctl:fail/>
+						</xsl:when>
+						<xsl:otherwise>
+						<!-- 	
+							<xsl:message>response <xsl:copy-of select="$wmts.capabilities.doc.response"/></xsl:message>
+							<xsl:variable name="headers" select="$wmts.capabilities.doc.response/response/headers"/>  
+							<xsl:message>headers <xsl:copy-of select="$headers"/></xsl:message>
+						 -->
+							<xsl:variable name="responseTime" select="$wmts.capabilities.doc.response/response/comment()"/>
+							<ctl:message>Capabilities Document <xsl:value-of select="$responseTime"/></ctl:message>
+							<xsl:variable name="lastModified" select="$wmts.capabilities.doc.response/response/headers/header[@name='Last-Modified']"/>
+							<ctl:message>lastModified <xsl:value-of select="$lastModified"/></ctl:message>
+							<xsl:variable name="wmts.capabilities.doc" select="$wmts.capabilities.doc.response/response/content"/>
+							<!-- <xsl:message>capabilities <xsl:copy-of select="$wmts.capabilities.doc"/></xsl:message> -->
+							<xsl:choose>
+								<xsl:when test="not($wmts.capabilities.doc//wmts:Capabilities)">
+									<ctl:message>FAILURE: Did not receive a wmts:Capabilities document! Skipping remaining tests.</ctl:message>	
+									<ctl:fail/>
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>NOT Validating Capabilities Document against its XML Schema... FOR DEVELPMENT, CHANGE ME</ctl:message> 
+									<!-- <ctl:message>Validating Capabilities Document against its XML Schema...</ctl:message> -->
+
+									<ctl:call-function name="ctl:startStopwatch">
+										<ctl:with-param name="watchName">capabilities.validation</ctl:with-param>
+									</ctl:call-function>
+									
+									<!-- CHANGE ME to disable schema validation during development 	-->
+									<xsl:variable name="results">
+							<!--			<ctl:call-function name="ctlFunctions:XMLschemaValidate">
+											<ctl:with-param name="doc"><xsl:copy-of select="$wmts.capabilities.doc/*"/></ctl:with-param>
+											<ctl:with-param name="schemaPath" select="$wmtsSchemaPath"/>
+										</ctl:call-function> -->
+									</xsl:variable>
+								
+									<xsl:variable name="capabilities.validation.elapsed" select="ctl:elapsedTime('capabilities.validation')"/>
+									<xsl:choose>
+										<xsl:when test="not(true())"> <!-- uncomment me for development 
+										<xsl:when test="count($results/*) &gt; 0"> CHANGE ME-->
+											<ctl:message>Capabilities document failed schema validation; capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>
+											<ctl:message>results: <xsl:copy-of select="$results"/></ctl:message>
+											<ctl:fail/> 
+										</xsl:when>
+										<xsl:otherwise>
+											<ctl:message>capabilities.validation.elapsed [<xsl:value-of select="$capabilities.validation.elapsed"/>] milliseconds</ctl:message>											
+
+											<ctl:call-function name="ctl:putLogCache"> <!-- for use in profiles and Redo From Cache Mode -->
+												<ctl:with-param name="id">capabilities</ctl:with-param>
+												<ctl:with-param name="xmlToCache"><xsl:copy-of select="$wmts.capabilities.doc/*"/></ctl:with-param> 
+											</ctl:call-function>
+
+											<ctl:message>Capabilities response is valid, continuing with selected profile(s) ...</ctl:message>
+											<ctl:message select="'********************************************************'"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:variable name="wmts.main.elapsed" select="ctl:elapsedTime('wmts.main')"/>
+			<ctl:message>wmts.main.elapsed [<xsl:value-of select="$wmts.main.elapsed"/>] milliseconds</ctl:message>
+		</ctl:code>
+	</ctl:test>
+	
+	<ctl:profile name="wmts:server.profile.kvp.get">
+		<ctl:title>WMTS 1.0 Server Compliance Test Profile for KVP GET binding</ctl:title>
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with conformance classes for KVP GET binding.</ctl:description>
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:base>wmts:server.suite.base</ctl:base>
+		<ctl:starting-test>wmts:server.profile.kvp.get.main</ctl:starting-test>
+	</ctl:profile>
+	
+	<ctl:test name="wmts:server.profile.kvp.get.main">
+		<ctl:context>wmts:server.profile.kvp.get</ctl:context>
+		<ctl:assertion>The server satisfies all Mandatory and MandatoryIfImplemented requiresments for the KVP GET binding.  It must support both GetCapabilities and GetTile operations for KVP GET binding for any further tests to be performed. </ctl:assertion>
+		<ctl:code>
+			<ctl:message>KVP GET</ctl:message>
+			<xsl:variable name="wmts.capabilities.doc">
+				<ctl:call-function name="ctl:getLogCache">  <!-- from wmts:main -->
+					<ctl:with-param name="id">capabilities</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>		
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<ctl:call-function name="wmts:redoFromCache">
+						<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+						<ctl:with-param name="mode" select="$mode"/>
+						<ctl:with-param name="binding">KVP.GET</ctl:with-param>
+					</ctl:call-function>
+				</xsl:when>
+				<xsl:otherwise>  <!-- Test or Retest Mode -->
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>	
+					<!-- change wmtsSchemaType to string('url') once TileMatrixLimits schema errors are fixed -->
+					<xsl:variable name="wmtsSchemaType" select="string('file')"/>
+
+					<ctl:message>Checking prerequisites... </ctl:message>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">check.prerequisites</ctl:with-param>
+					</ctl:call-function>
+					
+					<xsl:variable name="bootstrap">
+						<ctl:call-function name="wmtsBootstrap:bootstrap.kvp.get">
+							<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+							<ctl:with-param name="wmtsSchemaPath" select="$wmtsSchemaPath"/>
+							<ctl:with-param name="wmtsSchemaType" select="$wmtsSchemaType"/>
+						</ctl:call-function>
+					</xsl:variable>
+
+					<xsl:variable name="check.prerequisites.elapsed" select="ctl:elapsedTime('check.prerequisites')"/>
+					<ctl:message>check.prerequisites.elapsed [<xsl:value-of select="$check.prerequisites.elapsed"/>] milliseconds</ctl:message>
+					
+					<!-- bootstrap xml contains global variables for use in both test and redo from cache modes-->
+					<ctl:call-function name="ctl:putLogCache">
+						<ctl:with-param name="id">bootstrap</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><xsl:copy-of select="$bootstrap"/></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:choose>
+						<xsl:when test="$bootstrap">
+							<ctl:message>Completed prerequisite check:</ctl:message>
+							<xsl:variable name="selected">
+								<ctl:call-function name="wmts:testMenus">
+									<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+									<ctl:with-param name="interface">Server.KVP.GET</ctl:with-param>
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="count($selected/sel/*) gt 0">
+								
+									<xsl:variable name="selectedWithSummary">
+										<ctl:call-function name="wmtsFunctions:interfaceSummary">
+											<ctl:with-param name="selected" select="$selected"/>
+										</ctl:call-function>
+									</xsl:variable>
+									
+									<ctl:call-function name="ctl:putLogCache">
+										<ctl:with-param name="id">selected</ctl:with-param>
+										<ctl:with-param name="xmlToCache" select="$selectedWithSummary"/>
+									</ctl:call-function>
+
+									<!-- <xsl:message>selected <xsl:copy-of select="$selected"/></xsl:message> -->
+									<ctl:call-function name="wmtsFunctions:printSelected">
+										<ctl:with-param name="selected" select="$selectedWithSummary"/>
+										<ctl:with-param name="interface">Server.KVP.GET</ctl:with-param>
+									</ctl:call-function>
+
+									<ctl:message select="concat('Completed test selecton - selected tests will now be run in ', $mode, ' mode.')"/>
+									<ctl:call-function name="wmtsFunctions:invokeTestGroupsForBinding">
+										<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+										<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+										<ctl:with-param name="selected" select="$selected/*"/>
+										<ctl:with-param name="binding">KVP.GET</ctl:with-param>
+									</ctl:call-function>
+
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>No tests selected -- failed test selection</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed bootstrap</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:otherwise>
+<!--		<ctl:message>wmtsSchemapath <xsl:value-of select="$wmtsSchemaPath"/></ctl:message>
+			<ctl:message>wmts.capabilities.url <xsl:value-of select="$wmts.capabilities.url"/></ctl:message>
+			<ctl:message>doc node name <xsl:value-of select="node-name($wmts.capabilities.doc)"/> namespace URI <xsl:value-of select="namespace-uri($wmts.capabilities.doc)"/></ctl:message> 
+			<xsl:message>CD <xsl:copy-of select="$wmts.capabilities.doc"/></xsl:message> -->
+
+			</xsl:choose>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:profile name="wmts:server.profile.kvp.post">
+		<ctl:title>WMTS 1.0 Server Compliance Test Profile for KVP POST binding</ctl:title>
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with conformance classes for KVP POST binding.</ctl:description>
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:base>wmts:server.suite.base</ctl:base>
+		<ctl:starting-test>wmts:server.profile.kvp.post.main</ctl:starting-test>
+	</ctl:profile>
+	
+	<ctl:test name="wmts:server.profile.kvp.post.main">
+		<ctl:context>wmts:server.profile.kvp.post</ctl:context>
+		<ctl:assertion>The server satisfies all Mandatory and MandatoryIfImplemented requiresments for the KVP POST binding.   It must support both GetCapabilities and GetTile operations for KVP POST binding for any further tests to be performed. </ctl:assertion>
+		<ctl:code>
+			<ctl:message>KVP POST</ctl:message>
+						<xsl:variable name="wmts.capabilities.doc">
+				<ctl:call-function name="ctl:getLogCache">  <!-- from wmts:main -->
+					<ctl:with-param name="id">capabilities</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>		
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<ctl:call-function name="wmts:redoFromCache">
+						<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+						<ctl:with-param name="mode" select="$mode"/>
+						<ctl:with-param name="binding">KVP.POST</ctl:with-param>
+					</ctl:call-function>
+				</xsl:when>
+				<xsl:otherwise>  <!-- Test or Retest Mode -->
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>	
+					<!-- change wmtsSchemaType to string('url') once TileMatrixLimits schema errors are fixed -->
+					<xsl:variable name="wmtsSchemaType" select="string('file')"/>
+
+					<ctl:message>Checking prerequisites... </ctl:message>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">check.prerequisites</ctl:with-param>
+					</ctl:call-function>
+					
+					<xsl:variable name="bootstrap">
+						<ctl:call-function name="wmtsBootstrap:bootstrap.kvp.post">
+							<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+							<ctl:with-param name="wmtsSchemaPath" select="$wmtsSchemaPath"/>
+							<ctl:with-param name="wmtsSchemaType" select="$wmtsSchemaType"/>
+						</ctl:call-function>
+					</xsl:variable>
+
+					<xsl:variable name="check.prerequisites.elapsed" select="ctl:elapsedTime('check.prerequisites')"/>
+					<ctl:message>check.prerequisites.elapsed [<xsl:value-of select="$check.prerequisites.elapsed"/>] milliseconds</ctl:message>
+					
+					<!-- bootstrap xml contains global variables for use in both test and redo from cache modes-->
+					<ctl:call-function name="ctl:putLogCache">
+						<ctl:with-param name="id">bootstrap</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><xsl:copy-of select="$bootstrap"/></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:choose>
+						<xsl:when test="$bootstrap">
+							<ctl:message>Completed prerequisite check:</ctl:message>
+							<xsl:variable name="selected">
+								<ctl:call-function name="wmts:testMenus">
+									<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+									<ctl:with-param name="interface">Server.KVP.POST</ctl:with-param>
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="count($selected/sel/*) gt 0">
+								
+									<xsl:variable name="selectedWithSummary">
+										<ctl:call-function name="wmtsFunctions:interfaceSummary">
+											<ctl:with-param name="selected" select="$selected"/>
+										</ctl:call-function>
+									</xsl:variable>
+									
+									<ctl:call-function name="ctl:putLogCache">
+										<ctl:with-param name="id">selected</ctl:with-param>
+										<ctl:with-param name="xmlToCache" select="$selectedWithSummary"/>
+									</ctl:call-function>
+
+									<!-- <xsl:message>selected <xsl:copy-of select="$selected"/></xsl:message> -->
+									<ctl:call-function name="wmtsFunctions:printSelected">
+										<ctl:with-param name="selected" select="$selectedWithSummary"/>
+										<ctl:with-param name="interface">Server.KVP.POST</ctl:with-param>
+									</ctl:call-function>
+
+									<ctl:message select="concat('Completed test selecton - selected tests will now be run in ', $mode, ' mode.')"/>
+									<ctl:call-function name="wmtsFunctions:invokeTestGroupsForBinding">
+										<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+										<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+										<ctl:with-param name="selected" select="$selected/*"/>
+										<ctl:with-param name="binding">KVP.POST</ctl:with-param>
+									</ctl:call-function>
+
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>No tests selected -- failed test selection</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed bootstrap</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>	
+	</ctl:test>
+
+	<ctl:profile name="wmts:server.profile.xml.post">
+		<ctl:title>WMTS 1.0 Server Compliance Test Profile for XML POST binding</ctl:title>
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with conformance classes for XML POST binding.</ctl:description>
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:base>wmts:server.suite.base</ctl:base>
+		<ctl:starting-test>wmts:server.profile.xml.post.main</ctl:starting-test>
+	</ctl:profile>
+	
+	<ctl:test name="wmts:server.profile.xml.post.main">
+		<ctl:context>wmts:server.profile.kvp.post</ctl:context>
+		<ctl:assertion>The server satisfies all Mandatory and MandatoryIfImplemented requiresments for the XML POST binding.   It must support both GetCapabilities and GetTile operations for XML POST binding for any further tests to be performed</ctl:assertion>
+		<ctl:code>
+			<ctl:message>XML POST</ctl:message>
+			<xsl:variable name="wmts.capabilities.doc">
+				<ctl:call-function name="ctl:getLogCache">  <!-- from wmts:main -->
+					<ctl:with-param name="id">capabilities</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>		
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<ctl:call-function name="wmts:redoFromCache">
+						<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+						<ctl:with-param name="mode" select="$mode"/>
+						<ctl:with-param name="binding">XML.POST</ctl:with-param>
+					</ctl:call-function>
+				</xsl:when>
+				<xsl:otherwise>  <!-- Test or Retest Mode -->
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>	
+					<!-- change wmtsSchemaType to string('url') once TileMatrixLimits schema errors are fixed -->
+					<xsl:variable name="wmtsSchemaType" select="string('file')"/>
+
+					<ctl:message>Checking prerequisites... </ctl:message>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">check.prerequisites</ctl:with-param>
+					</ctl:call-function>
+					
+					<xsl:variable name="bootstrap">
+						<ctl:call-function name="wmtsBootstrap:bootstrap.xml.post">
+							<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+							<ctl:with-param name="wmtsSchemaPath" select="$wmtsSchemaPath"/>
+							<ctl:with-param name="wmtsSchemaType" select="$wmtsSchemaType"/>
+						</ctl:call-function>
+					</xsl:variable>
+
+					<xsl:variable name="check.prerequisites.elapsed" select="ctl:elapsedTime('check.prerequisites')"/>
+					<ctl:message>check.prerequisites.elapsed [<xsl:value-of select="$check.prerequisites.elapsed"/>] milliseconds</ctl:message>
+					
+					<!-- bootstrap xml contains global variables for use in both test and redo from cache modes-->
+					<ctl:call-function name="ctl:putLogCache">
+						<ctl:with-param name="id">bootstrap</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><xsl:copy-of select="$bootstrap"/></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:choose>
+						<xsl:when test="$bootstrap">
+							<ctl:message>Completed prerequisite check:</ctl:message>
+							<xsl:variable name="selected">
+								<ctl:call-function name="wmts:testMenus">
+									<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+									<ctl:with-param name="interface">Server.XML.POST</ctl:with-param>
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="count($selected/sel/*) gt 0">
+								
+									<xsl:variable name="selectedWithSummary">
+										<ctl:call-function name="wmtsFunctions:interfaceSummary">
+											<ctl:with-param name="selected" select="$selected"/>
+										</ctl:call-function>
+									</xsl:variable>
+									
+									<ctl:call-function name="ctl:putLogCache">
+										<ctl:with-param name="id">selected</ctl:with-param>
+										<ctl:with-param name="xmlToCache" select="$selectedWithSummary"/>
+									</ctl:call-function>
+
+									<!-- <xsl:message>selected <xsl:copy-of select="$selected"/></xsl:message> -->
+									<ctl:call-function name="wmtsFunctions:printSelected">
+										<ctl:with-param name="selected" select="$selectedWithSummary"/>
+										<ctl:with-param name="interface">Server.XML.POST</ctl:with-param>
+									</ctl:call-function>
+
+									<ctl:message select="concat('Completed test selecton - selected tests will now be run in ', $mode, ' mode.')"/>
+									<ctl:call-function name="wmtsFunctions:invokeTestGroupsForBinding">
+										<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+										<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+										<ctl:with-param name="selected" select="$selected/*"/>
+										<ctl:with-param name="binding">XML.POST</ctl:with-param>
+									</ctl:call-function>
+
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>No tests selected -- failed test selection</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed bootstrap</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>	
+	</ctl:test>
+
+	<ctl:profile name="wmts:server.profile.soap.post">
+		<ctl:title>WMTS 1.0 Server Compliance Test Profile for SOAP POST binding</ctl:title>
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with conformance classes for SOAP POST binding.</ctl:description>
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:base>wmts:server.suite.base</ctl:base>
+		<ctl:starting-test>wmts:server.profile.soap.post.main</ctl:starting-test>
+	</ctl:profile>
+	
+	<ctl:test name="wmts:server.profile.soap.post.main">
+		<ctl:context>wmts:server.profile.soap.post</ctl:context>
+		<ctl:assertion>The server satisfies all Mandatory and MandatoryIfImplemented requiresments for the SOAP POST binding.   It must support both GetCapabilities and GetTile operations for SOAP POST binding for any further tests to be performed</ctl:assertion>
+		<ctl:code>
+			<ctl:message>SOAP POST</ctl:message>
+						<xsl:variable name="wmts.capabilities.doc">
+				<ctl:call-function name="ctl:getLogCache">  <!-- from wmts:main -->
+					<ctl:with-param name="id">capabilities</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>		
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<ctl:call-function name="wmts:redoFromCache">
+						<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+						<ctl:with-param name="mode" select="$mode"/>
+						<ctl:with-param name="binding">SOAP.POST</ctl:with-param>
+					</ctl:call-function>
+				</xsl:when>
+				<xsl:otherwise>  <!-- Test or Retest Mode -->
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>	
+					<!-- change wmtsSchemaType to string('url') once TileMatrixLimits schema errors are fixed -->
+					<xsl:variable name="wmtsSchemaType" select="string('file')"/>
+
+					<ctl:message>Checking prerequisites... </ctl:message>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">check.prerequisites</ctl:with-param>
+					</ctl:call-function>
+					
+					<xsl:variable name="bootstrap">
+						<ctl:call-function name="wmtsBootstrap:bootstrap.soap.post">
+							<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+							<ctl:with-param name="wmtsSchemaPath" select="$wmtsSchemaPath"/>
+							<ctl:with-param name="wmtsSchemaType" select="$wmtsSchemaType"/>
+						</ctl:call-function>
+					</xsl:variable>
+
+					<xsl:variable name="check.prerequisites.elapsed" select="ctl:elapsedTime('check.prerequisites')"/>
+					<ctl:message>check.prerequisites.elapsed [<xsl:value-of select="$check.prerequisites.elapsed"/>] milliseconds</ctl:message>
+					
+					<!-- bootstrap xml contains global variables for use in both test and redo from cache modes-->
+					<ctl:call-function name="ctl:putLogCache">
+						<ctl:with-param name="id">bootstrap</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><xsl:copy-of select="$bootstrap"/></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:choose>
+						<xsl:when test="$bootstrap">
+							<ctl:message>Completed prerequisite check:</ctl:message>
+							<xsl:variable name="selected">
+								<ctl:call-function name="wmts:testMenus">
+									<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+									<ctl:with-param name="interface">Server.SOAP.POST</ctl:with-param>
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="count($selected/sel/*) gt 0">
+								
+									<xsl:variable name="selectedWithSummary">
+										<ctl:call-function name="wmtsFunctions:interfaceSummary">
+											<ctl:with-param name="selected" select="$selected"/>
+										</ctl:call-function>
+									</xsl:variable>
+									
+									<ctl:call-function name="ctl:putLogCache">
+										<ctl:with-param name="id">selected</ctl:with-param>
+										<ctl:with-param name="xmlToCache" select="$selectedWithSummary"/>
+									</ctl:call-function>
+
+									<!-- <xsl:message>selected <xsl:copy-of select="$selected"/></xsl:message> -->
+									<ctl:call-function name="wmtsFunctions:printSelected">
+										<ctl:with-param name="selected" select="$selectedWithSummary"/>
+										<ctl:with-param name="interface">Server.SOAP.POST</ctl:with-param>
+									</ctl:call-function>
+
+									<ctl:message select="concat('Completed test selecton - selected tests will now be run in ', $mode, ' mode.')"/>
+									<ctl:call-function name="wmtsFunctions:invokeTestGroupsForBinding">
+										<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+										<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+										<ctl:with-param name="selected" select="$selected/*"/>
+										<ctl:with-param name="binding">SOAP.POST</ctl:with-param>
+									</ctl:call-function>
+
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>No tests selected -- failed test selection</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed bootstrap</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>	
+	</ctl:test>
+
+	<ctl:profile name="wmts:server.profile.restful">
+		<ctl:title>WMTS 1.0 Server Compliance Test Profile for RESTful binding</ctl:title>
+		<ctl:description>Verifies that a WMTS 1.0 server implementation complies with conformance classes for RESTful binding.</ctl:description>
+		<ctl:defaultResult>Pass</ctl:defaultResult>
+		<ctl:base>wmts:server.suite.base</ctl:base>
+		<ctl:starting-test>wmts:server.profile.restful.main</ctl:starting-test>
+	</ctl:profile>
+	
+	<ctl:test name="wmts:server.profile.restful.main">
+		<ctl:context>wmts:server.profile.kvp.post</ctl:context>
+		<ctl:assertion>The server satisfies all Mandatory and MandatoryIfImplemented requiresments for the RESTful binding.   It must support both GetCapabilities and GetTile operations for RESTful binding for any further tests to be performed</ctl:assertion>
+		<ctl:code>
+			<ctl:message>RESTful</ctl:message>
+						<xsl:variable name="wmts.capabilities.doc">
+				<ctl:call-function name="ctl:getLogCache">  <!-- from wmts:main -->
+					<ctl:with-param name="id">capabilities</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>		
+			<xsl:variable name="mode">
+				<ctl:getMode/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$mode = 'Redo From Cache Mode' ">
+					<ctl:call-function name="wmts:redoFromCache">
+						<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc"/>
+						<ctl:with-param name="mode" select="$mode"/>
+						<ctl:with-param name="binding">RESTful</ctl:with-param>
+					</ctl:call-function>
+				</xsl:when>
+				<xsl:otherwise>  <!-- Test or Retest Mode -->
+					<xsl:variable name="wmtsSchemaPath">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">wmtsSchemaPath</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>
+					<xsl:variable name="wmts.capabilities.url">
+						<ctl:call-function name="ctl:getLogCache">
+							<ctl:with-param name="id">url</ctl:with-param>
+						</ctl:call-function>
+					</xsl:variable>	
+					<!-- change wmtsSchemaType to string('url') once TileMatrixLimits schema errors are fixed -->
+					<xsl:variable name="wmtsSchemaType" select="string('file')"/>
+
+					<ctl:message>Checking prerequisites... </ctl:message>
+					<ctl:call-function name="ctl:startStopwatch">
+						<ctl:with-param name="watchName">check.prerequisites</ctl:with-param>
+					</ctl:call-function>
+					
+					<xsl:variable name="bootstrap">
+						<ctl:call-function name="wmtsBootstrap:bootstrap.restful">
+							<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+							<ctl:with-param name="wmtsSchemaPath" select="$wmtsSchemaPath"/>
+							<ctl:with-param name="wmtsSchemaType" select="$wmtsSchemaType"/>
+						</ctl:call-function>
+					</xsl:variable>
+
+					<xsl:variable name="check.prerequisites.elapsed" select="ctl:elapsedTime('check.prerequisites')"/>
+					<ctl:message>check.prerequisites.elapsed [<xsl:value-of select="$check.prerequisites.elapsed"/>] milliseconds</ctl:message>
+					
+					<!-- bootstrap xml contains global variables for use in both test and redo from cache modes-->
+					<ctl:call-function name="ctl:putLogCache">
+						<ctl:with-param name="id">bootstrap</ctl:with-param>
+						<ctl:with-param name="xmlToCache"><xsl:copy-of select="$bootstrap"/></ctl:with-param> 
+					</ctl:call-function>
+					
+					<xsl:choose>
+						<xsl:when test="$bootstrap">
+							<ctl:message>Completed prerequisite check:</ctl:message>
+							<xsl:variable name="selected">
+								<ctl:call-function name="wmts:testMenus">
+									<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+									<ctl:with-param name="interface">Server.RESTful</ctl:with-param>
+								</ctl:call-function>
+							</xsl:variable>
+							<xsl:choose>
+								<xsl:when test="count($selected/sel/*) gt 0">
+								
+									<xsl:variable name="selectedWithSummary">
+										<ctl:call-function name="wmtsFunctions:interfaceSummary">
+											<ctl:with-param name="selected" select="$selected"/>
+										</ctl:call-function>
+									</xsl:variable>
+									
+									<ctl:call-function name="ctl:putLogCache">
+										<ctl:with-param name="id">selected</ctl:with-param>
+										<ctl:with-param name="xmlToCache" select="$selectedWithSummary"/>
+									</ctl:call-function>
+
+									<!-- <xsl:message>selected <xsl:copy-of select="$selected"/></xsl:message> -->
+									<ctl:call-function name="wmtsFunctions:printSelected">
+										<ctl:with-param name="selected" select="$selectedWithSummary"/>
+										<ctl:with-param name="interface">Server.RESTful</ctl:with-param>
+									</ctl:call-function>
+
+									<ctl:message select="concat('Completed test selecton - selected tests will now be run in ', $mode, ' mode.')"/>
+									<ctl:call-function name="wmtsFunctions:invokeTestGroupsForBinding">
+										<ctl:with-param name="wmts.capabilities.doc" select="$wmts.capabilities.doc/*"/>
+										<ctl:with-param name="bootstrap" select="$bootstrap/*"/>
+										<ctl:with-param name="selected" select="$selected/*"/>
+										<ctl:with-param name="binding">RESTful</ctl:with-param>
+									</ctl:call-function>
+
+								</xsl:when>
+								<xsl:otherwise>
+									<ctl:message>No tests selected -- failed test selection</ctl:message>
+									<ctl:fail/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+						<xsl:otherwise>
+							<ctl:message>Failed bootstrap</ctl:message>
+							<ctl:fail/>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>	
+	</ctl:test>
+
+</ctl:package>

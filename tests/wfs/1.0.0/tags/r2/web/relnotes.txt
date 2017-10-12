@@ -1,0 +1,14 @@
+WFS 1.0.0 Test Suite Release Notes
+
+Changes included in this revision:
+
+2010-05-13 (kstegemoller):
+- production release of WFS 1.0.0 R2
+- updated release notes.
+
+2010-05-09 (jdeoliveira1):
+- committed fixes to wfs 1.0 cite test suite as discussed on cite list
+
+2009-10-12 (kstegemoller):
+- tag r1 - WFS 1.0.0
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc101.1 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1" resultType="results">
+  <csw:Query typeNames="csw:Record" 
+      xmlns:ows="http://www.opengis.net/ows">
+      <csw:ElementSetName>brief</csw:ElementSetName>
+      <csw:Constraint version="1.1.0">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+          <ogc:Intersects>
+            <ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+            <gml:Point srsName="urn:x-ogc:def:crs:EPSG:6.11.2:4326">
+              <gml:pos>49.0 -3.1</gml:pos>
+            </gml:Point>										
+          </ogc:Intersects>
+        </ogc:Filter>
+      </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

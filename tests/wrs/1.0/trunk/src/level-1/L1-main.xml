@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:parsers="http://www.occamlab.com/te/parsers"
+ xmlns:tep="http://teamengine.sourceforge.net/parsers"
+ xmlns:saxon="http://saxon.sf.net/"
+ xmlns:wrs="http://www.opengis.net/cat/wrs/1.0"
+ xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+ xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+ xmlns:ows="http://www.opengis.net/ows"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xi="http://www.w3.org/2001/XInclude">
+
+   <!-- include test groups -->
+   <xi:include href="WRS-GetCapabilities-GET.xml"/>
+   <xi:include href="WRS-DescribeRecord-POST.xml"/>
+   <xi:include href="WRS-GetRecordById-GET.xml"/>
+   <xi:include href="WRS-GetRecords-POST.xml"/>
+   <xi:include href="WRS-GetRepositoryItem-GET.xml"/>
+
+   <ctl:test name="wrs:Level-1">
+      <ctl:param name="wrs.capabilities.doc"/>
+      <ctl:assertion>The service under test implements all mandatory search and retrieval operations.</ctl:assertion>
+      <ctl:code>
+        <xsl:variable name="wrs.GetCapabilities.get.url">
+		    <xsl:value-of select="$wrs.capabilities.doc//ows:OperationsMetadata/ows:Operation[@name='GetCapabilities']/ows:DCP/ows:HTTP/ows:Get/@xlink:href"/>
+		</xsl:variable>
+        <xsl:if test="string-length($wrs.GetCapabilities.get.url) gt 0">
+          <ctl:call-test name="wrs:GetCapabilities-GET">
+            <ctl:with-param name="wrs.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+        </xsl:if>
+          <ctl:call-test name="wrs:DescribeRecord-POST">
+            <ctl:with-param name="wrs.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="wrs:GetRecordById-GET">
+            <ctl:with-param name="wrs.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="wrs:GetRecords-POST">
+            <ctl:with-param name="wrs.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>
+          <ctl:call-test name="wrs:GetRepositoryItem-GET">
+            <ctl:with-param name="wrs.capabilities.doc" select="$wrs.capabilities.doc"/>
+          </ctl:call-test>          
+      </ctl:code>
+   </ctl:test>
+</ctl:package>

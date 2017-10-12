@@ -1,0 +1,23 @@
+<config>
+	<organization>
+		<name>OGC</name>
+	</organization>
+	<standard>
+		<name>WCSEO</name>
+	</standard>
+	<version>
+		<name>1.0</name>
+	</version>
+	<revision>
+		<name>r0</name>
+	</revision>	
+	<suite>
+		<namespace-uri>http://www.opengis.net/wcseo/1.0</namespace-uri>
+		<prefix>wcseo</prefix>
+		<local-name>suite</local-name>
+	</suite>
+	<source>ctl</source>
+	<resources>resources</resources>
+	<web>web</web>
+</config>
+

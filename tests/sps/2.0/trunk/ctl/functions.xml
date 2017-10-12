@@ -1,0 +1,1118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ctl:package
+	xmlns:ctl="http://www.occamlab.com/ctl"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:sps="http://www.opengis.net/sps/2.0"
+	xmlns:swe="http://www.opengis.net/swe/2.0"
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+
+	xmlns:spsTesting="https://cite.opengeospatial.org/spsTesting"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:saxon="http://saxon.sf.net/" 
+	xmlns:spsFunctions="https://cite.opengeospatial.org/sps-1.0/src/ctl/functions.xml"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:ows="http://www.opengis.net/ows/1.1"
+	xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
+>
+	<!-- 沒有使用的命名空間
+		xmlns:xlink="http://www.w3.org/1999/xlink"
+		xmlns:xi="http://www.w3.org/2001/XInclude"
+		
+	-->
+ 	<!--	xml namespace changed from SPS 1.0 to SPS 2.0
+		xmlns:sps="http://www.opengis.net/sps/1.0"  =>	xmlns:sps="http://www.opengis.net/sps/2.0"
+		xmlns:swe="http://www.opengis.net/swe/1.0"	=>	http://www.opengis.net/swe/2.0
+		xmlns:gml="http://www.opengis.net/gml" 		=>	http://www.opengis.net/gml/3.2
+		xmlns:ows="http://www.opengis.net/ows"		=>	http://www.opengis.net/ows/1.1
+	-->
+    
+    <!--Returns the appropriate schema path-->
+    <ctl:function name="spsFunctions:getSchemaLocation">
+        <ctl:param name="schemaName">The name of the schema file for which the full path will be returned</ctl:param>
+        <ctl:return>The full schema path</ctl:return>
+        <ctl:description>Based on the provided schema name, this function returns the full URL to the schema document</ctl:description>
+        <ctl:code>
+            <xsl:variable name="schemaLocation" select="string('xsd/ogc/')" />
+            <xsl:variable name="spsSchemaLocation" select="concat($schemaLocation,'sps/2.0/')" />
+			<xsl:variable name="swesSchemaLocation" select="concat($schemaLocation,'swes/2.0/')" />
+            <xsl:variable name="owsSchemaLocation" select="concat($schemaLocation,'ows/1.1.0/')" />
+            <xsl:variable name="sensorMLSchemaLocation" select="concat($schemaLocation,'sensorML/1.0.1/')" />
+            <xsl:variable name="tmlSchemaLocation" select="concat($schemaLocation,'tml/1.0.0/')" />
+            <xsl:choose>
+                <xsl:when test="starts-with($schemaName,'sps')">
+                    <xsl:value-of select="concat($spsSchemaLocation,$schemaName)" />
+                </xsl:when>
+                <xsl:when test="starts-with($schemaName,'swes')">
+                    <xsl:value-of select="concat($swesSchemaLocation,$schemaName)" />
+                </xsl:when>
+                <xsl:when test="starts-with($schemaName,'ows')">
+                    <xsl:value-of select="concat($owsSchemaLocation,$schemaName)" />
+                </xsl:when>
+                <xsl:when test="starts-with($schemaName,'sensorML')">
+                    <xsl:value-of select="concat($sensorMLSchemaLocation,$schemaName)" />
+                </xsl:when>
+                <xsl:when test="starts-with($schemaName,'tml')">
+                    <xsl:value-of select="concat($tmlSchemaLocation,$schemaName)" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$schemaLocation" />
+                </xsl:otherwise>
+            </xsl:choose>
+        </ctl:code>
+    </ctl:function>
+    
+	<!--Returns the appropriate schema path-->
+    <ctl:function name="spsFunctions:getSensorMLSchemaLocation">
+        <ctl:param name="schemaName">The name of the schema</ctl:param>
+        <ctl:param name="version">The version of the SensorML schema</ctl:param>
+        <ctl:return>The full schema path</ctl:return>
+        <ctl:description>Based on the provided schema name, this function returns the full URL to the schema document</ctl:description>
+        <ctl:code>
+            <xsl:variable name="schemaLocation" select="string('xsd/ogc/')" />
+            <xsl:variable name="sensorMLSchemaLocation" select="concat($schemaLocation,'sensorML/',$version,'/')" />
+            <xsl:value-of select="concat($sensorMLSchemaLocation,$schemaName)" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Issues an invalid request to the service-->
+    <ctl:function name="spsFunctions:invalidRequest">
+        <ctl:param name="methodURL">The URL to which the request will be submitted</ctl:param>
+        <ctl:param name="postBody">The body of the invalid request</ctl:param>
+        <ctl:return>The response if it's a valid exception report</ctl:return>
+        <ctl:description>Posts an invalid request to the url specified by methodURL</ctl:description>
+        <ctl:code>
+            <xsl:variable name="invalidRequestResponse">
+                <ctl:request>
+                    <ctl:url>
+                        <xsl:value-of select="$methodURL" />
+                    </ctl:url>
+                    <ctl:method>post</ctl:method>
+                    <ctl:body>
+                        <xsl:value-of select="$postBody" />
+                    </ctl:body>
+                    <ctl:call-function name="spsFunctions:validateExceptionReport" />
+                </ctl:request>
+            </xsl:variable>
+            <xsl:copy-of select="$invalidRequestResponse" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Performs a DescribeTasking request-->
+    <ctl:function name="spsFunctions:describeTaskingRequest">
+        <ctl:param name="describeTaskingURL">The URL to which the request will be submitted</ctl:param>
+        <ctl:param name="sensorIDs">Comma-separated list of sensorID(s) to submit with the DescribeTasking request</ctl:param>
+        <ctl:return>The response from the server</ctl:return>
+        <ctl:description>Executes a DescribeTasking request</ctl:description>
+        <ctl:code>
+            <xsl:variable name="describeTaskingResponse">
+                <ctl:request>
+                    <ctl:url>
+                        <xsl:value-of select="$describeTaskingURL" />
+                    </ctl:url>
+                    <ctl:method>post</ctl:method>
+                    <ctl:body>
+                        <DescribeTasking xmlns="http://www.opengis.net/sps/1.0" service="SPS" version="1.0.0">
+                            <xsl:for-each select="tokenize($sensorIDs,',')">
+                                <sensorID><xsl:value-of select="." /></sensorID>
+                            </xsl:for-each>
+                        </DescribeTasking>
+                    </ctl:body>
+                    <ctl:call-function name="spsFunctions:validateDescribeTaskingResponse" />
+                </ctl:request>
+            </xsl:variable>
+            <xsl:copy-of select="$describeTaskingResponse" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Performs a DescribeResultAccess request-->
+    <ctl:function name="spsFunctions:describeResultAccessRequest">
+        <ctl:param name="describeResultAccessURL">The URL to which the request will be submitted</ctl:param>
+        <ctl:param name="sensorOrTaskID">Sensor/Task ID to use for the request</ctl:param>
+        <ctl:param name="type">sensorID or taskID</ctl:param>
+        <ctl:return>The response from the server</ctl:return>
+        <ctl:description>Executes a DescribeResultAccess request</ctl:description>
+        <ctl:code>
+            <xsl:variable name="describeResultAccessRequestResponse">
+                <ctl:request>
+                    <ctl:url>
+                        <xsl:value-of select="$describeResultAccessURL" />
+                    </ctl:url>
+                    <ctl:method>post</ctl:method>
+                    <ctl:body>
+                        <DescribeResultAccess xmlns="http://www.opengis.net/sps" service="SPS" version="1.0.0">
+                            <xsl:choose>
+                                <xsl:when test="$type='sensorID'">
+                                    <sensorID><xsl:value-of select="$sensorOrTaskID" /></sensorID>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <taskID><xsl:value-of select="$sensorOrTaskID" /></taskID>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </DescribeResultAccess>
+                    </ctl:body>
+                    <ctl:call-function name="spsFunctions:validateDescribeResultAccessResponse" />
+                </ctl:request>
+            </xsl:variable>
+            <xsl:copy-of select="$describeResultAccessRequestResponse" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates an ExceptionReport-->
+    <ctl:function name="spsFunctions:validateExceptionReport"><!-- CHECK OK -->
+        <ctl:return>The exception report if it's valid</ctl:return>
+        <ctl:description>Validates a returned exception report according to its schema and determines if it is an appropriate exception report for an SPS</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateExceptionReportSOAP"><!-- CHECK OK -->
+        <ctl:return>The exception report if it's valid</ctl:return>
+        <ctl:description>Validates a returned exception report according to its schema and determines if it is an appropriate exception report for an SPS</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Verifies that an ExceptionReport provides a valid exceptionCode for the requested operation-->
+    <ctl:function name="spsFunctions:verifyExceptionCode">
+        <ctl:param name="operationName"></ctl:param>
+        <ctl:param name="validExceptionCodes"></ctl:param>
+        <ctl:param name="exceptionReport"></ctl:param>
+        <ctl:return>True/false depending on whether or not the provided exceptionCode is a valid exceptionCode for the provided operationName</ctl:return>
+        <ctl:description></ctl:description>
+        <ctl:code>
+            <xsl:variable name="exceptionCodes" select="$validExceptionCodes//spsTesting:exceptionCode" />
+            <xsl:variable name="exceptionCode" select="$exceptionReport//ows:Exception/@exceptionCode" />
+            <xsl:variable name="validException" select="exists(index-of($exceptionCodes,$exceptionCode))" />
+            <xsl:value-of select="$validException" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates an ExceptionReport and checks for specific exceptionCode and locator values-->
+    <ctl:function name="spsFunctions:checkExceptionReport"><!-- CHECK OK -->
+        <ctl:param name="exceptionReport">The exception report to check</ctl:param>
+        <ctl:param name="exceptionCodeToCheck">The exceptionCode to check</ctl:param>
+        <ctl:param name="locatorToCheck">The locator to check (a * can be provided to indicate that any locator value is allowed)</ctl:param>
+		<ctl:param name="PostEncodingIsSOAP">Encoding Type</ctl:param>
+        <ctl:return>True/false depending on whether or not the exception report is valid</ctl:return>
+        <ctl:description></ctl:description>
+        <ctl:code>
+			<xsl:if test="$PostEncodingIsSOAP=string('true')">
+				<xsl:variable name="exceptionElement" select="$exceptionReport//soap12:Detail/ows:Exception" />
+				<xsl:variable name="exceptionCodeValue" select="$exceptionElement/@exceptionCode" />
+				<xsl:variable name="locatorValue" select="$exceptionElement/@locator" />
+				<xsl:choose>
+					<xsl:when test="$locatorToCheck='*'">
+						<xsl:value-of select="$exceptionElement and ($exceptionCodeToCheck=$exceptionCodeValue) and (string-length(normalize-space($locatorValue))>=0)" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$exceptionElement and ($exceptionCodeToCheck=$exceptionCodeValue) and (lower-case($locatorToCheck)=lower-case($locatorValue))" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="not($PostEncodingIsSOAP=string('true'))">
+				<xsl:variable name="exceptionElement" select="$exceptionReport//ows:ExceptionReport/ows:Exception" />
+				<xsl:variable name="exceptionCodeValue" select="$exceptionElement/@exceptionCode" />
+				<xsl:variable name="locatorValue" select="$exceptionElement/@locator" />
+				<xsl:choose>
+					<xsl:when test="$locatorToCheck='*'">
+						<xsl:value-of select="$exceptionElement and ($exceptionCodeToCheck=$exceptionCodeValue) and (string-length(normalize-space($locatorValue))>=0)" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$exceptionElement and ($exceptionCodeToCheck=$exceptionCodeValue) and (lower-case($locatorToCheck)=lower-case($locatorValue))" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+        </ctl:code>
+    </ctl:function>
+
+    
+	<!-- getExceptionInfo-->
+    <ctl:function name="spsFunctions:getExceptionInfo"> <!-- CHECK OK -->
+        <ctl:param name="exceptionReport">The exception report to check</ctl:param>
+        <ctl:return>True/false depending on whether or not the exception report is valid</ctl:return>
+        <ctl:description></ctl:description>
+        <ctl:code>
+            <xsl:variable name="exceptionElement" select="$exceptionReport//ows:ExceptionReport/ows:Exception" />
+            <xsl:variable name="exceptionCodeValue" select="$exceptionElement/@exceptionCode" />
+            <xsl:variable name="locatorValue" select="$exceptionElement/@locator" />
+            <xsl:variable name="exceptionText" select="$exceptionElement//ows:ExceptionText" />
+            <xsl:value-of select="concat('ExceptionReport (exceptionCode, locator):  ',$exceptionCodeValue,', ',$locatorValue,' - ',$exceptionText)" />
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:getExceptionInfoSOAP"><!-- CHECK OK -->
+        <ctl:param name="exceptionReport">The exception report to check</ctl:param>
+        <ctl:return>True/false depending on whether or not the exception report is valid</ctl:return>
+        <ctl:description></ctl:description>
+        <ctl:code>
+            <xsl:variable name="exceptionElement" select="$exceptionReport//soap12:Detail/ows:Exception" />
+            <xsl:variable name="exceptionCodeValue" select="$exceptionElement/@exceptionCode" />
+            <xsl:variable name="locatorValue" select="$exceptionElement/@locator" />
+            <xsl:variable name="exceptionText" select="$exceptionElement//ows:ExceptionText" />
+            <xsl:value-of select="concat('ExceptionReport (exceptionCode, locator):  ',$exceptionCodeValue,', ',$locatorValue,' - ',$exceptionText)" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates a SensorML or TML document-->
+    <ctl:function name="spsFunctions:validateSensorDescription">
+        <ctl:return>The SensorML/TML document if it's valid</ctl:return>
+        <ctl:description>Validates a SensorML/TML document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schema type="resource">
+					<xsl:value-of select="spsFunctions:getSensorMLSchemaLocation(string('sensorML.xsd'),string('1.0.0'))" />
+				</parsers:schema>
+				<parsers:schema type="resource">
+					<xsl:value-of select="spsFunctions:getSensorMLSchemaLocation(string('sensorML.xsd'),string('1.0.1'))" />
+				</parsers:schema>
+				<parsers:schema type="resource">
+					<xsl:value-of select="spsFunctions:getSchemaLocation(string('tml.xsd'))" />
+				</parsers:schema>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates a SensorML document-->
+    <ctl:function name="spsFunctions:validateSensorML">
+        <ctl:return>The SensorML document if it's valid</ctl:return>
+        <ctl:description>Validates a SensorML document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schema type="resource">
+					<xsl:value-of select="spsFunctions:getSchemaLocation(string('sensorML.xsd'))" />
+				</parsers:schema>
+			</parsers:XMLValidatingParser>
+		</ctl:code>
+	</ctl:function>
+   
+    <!--Validates a TML document-->
+    <ctl:function name="spsFunctions:validateTML">
+        <ctl:return>The TML document if it's valid</ctl:return>
+        <ctl:description>Validates a TML document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schema type="resource">
+					<xsl:value-of select="spsFunctions:getSchemaLocation(string('tml.xsd'))" />
+				</parsers:schema>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates a GetCapabilities response-->
+    <ctl:function name="spsFunctions:validateGetCapabilitiesResponse">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetCapabilities.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateGetCapabilitiesResponseSOAP">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetCapabilities.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+	<!--Validates a GetCapabilities response-->
+    <ctl:function name="spsFunctions:validateGetCapabilitiesResponseNoExceptionReport">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetCapabilities.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+	<ctl:function name="spsFunctions:validateGetCapabilitiesResponseNoExceptionReportSOAP">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetCapabilities.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+	<!--Validates a DescribeSensor response-->
+    <ctl:function name="spsFunctions:validateDescribeSensorResponseNoExceptionReport">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('swesDescribeSensor.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+	<ctl:function name="spsFunctions:validateDescribeSensorResponseNoExceptionReportSOAP">
+        <ctl:return>The GetCapabilitiesResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetCapabilitiesResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('swesDescribeSensor.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates a DescribeTaskingResponse-->
+    <ctl:function name="spsFunctions:validateDescribeTaskingResponse">
+        <ctl:return>The DescribeTaskingResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a DescribeTaskingResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsDescribeTasking.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateDescribeTaskingResponseSOAP">
+        <ctl:return>The DescribeTaskingResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a DescribeTaskingResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsDescribeTasking.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Validates a SubmitResponse-->
+    <ctl:function name="spsFunctions:validateSubmitResponse">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a SubmitResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsSubmit.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateSubmitResponseSOAP">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a SubmitResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsSubmit.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>   
+
+    <!--Validates a GetStatusResponse-->
+    <ctl:function name="spsFunctions:validateGetStatusResponse">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetStatusResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetStatus.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateGetStatusResponseSOAP">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetStatusResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetStatus.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>  	
+    
+    <!--Validates a GetTaskResponse-->
+    <ctl:function name="spsFunctions:validateGetTaskResponse">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetStatusResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetTask.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateGetTaskResponseSOAP">
+        <ctl:return>The SubmitResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a GetStatusResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsGetTask.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function> 
+	
+	<!--Validates a DescribeResultAccessResponse-->
+    <ctl:function name="spsFunctions:validateDescribeResultAccessResponse">
+        <ctl:return>The DescribeResultAccessResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a DescribeResultAccessResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:XMLValidatingParser>
+				<parsers:schemas>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsDescribeResultAccess.xsd'))" />
+					</parsers:schema>
+					<parsers:schema type="resource">
+						<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+					</parsers:schema>
+				</parsers:schemas>
+			</parsers:XMLValidatingParser>
+        </ctl:code>
+    </ctl:function>
+    <ctl:function name="spsFunctions:validateDescribeResultAccessResponseSOAP">
+        <ctl:return>The DescribeResultAccessResponse document if it's valid</ctl:return>
+        <ctl:description>Validates a DescribeResultAccessResponse document according to its schema</ctl:description>
+        <ctl:code>
+			<parsers:SOAPParser return="content">
+				<parsers:XMLValidatingParser>
+					<parsers:schemas>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('spsDescribeResultAccess.xsd'))" />
+						</parsers:schema>
+						<parsers:schema type="resource">
+							<xsl:value-of select="spsFunctions:getSchemaLocation(string('owsExceptionReport.xsd'))" />
+						</parsers:schema>
+					</parsers:schemas>
+				</parsers:XMLValidatingParser>
+			</parsers:SOAPParser>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Check for a valid definition URN-->
+    <ctl:function name="spsFunctions:isValidDefinitionURN">
+        <ctl:param name="urnString">The URN to validate</ctl:param>
+        <ctl:return>True/False depending on whether or not the URN is valid</ctl:return>
+        <ctl:description>Determines if a definition URN is valid according to the OGC Definition URN scheme [OGC 07-092r1].  Since this is a def urn, it must have 7 "pieces".  NOTE:  this check allows for both ogc and x-ogc as the namespace authority.</ctl:description>
+        <ctl:code>
+			<xsl:variable name="urnRegex" select="'^urn:(x-)?ogc:def(:(\w|\(|\)|\+|,|-|\.|=|\$|_|!|\*|'';)+)+$'"/>
+			<xsl:value-of select="(matches($urnString, $urnRegex,'i'))"/>							
+        </ctl:code>
+    </ctl:function>
+    
+        <!--Check for a valid URN-->
+    <ctl:function name="spsFunctions:validateGenericURN">
+        <ctl:param name="urnString">The URN to validate</ctl:param>
+        <ctl:return>True/False depending on whether or not the URN is a valid URN.</ctl:return>
+        <ctl:description>Determines if a URN is valid</ctl:description>
+        <ctl:code>
+            <xsl:value-of select="(matches($urnString,'^urn(:(\w|\(|\)|\+|,|-|\.|=|\$|_|!|\*|'')+)+$', 'i'))" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Check for a valid URN-->
+    <ctl:function name="spsFunctions:validateURN">
+        <ctl:param name="urnString">The URN to validate</ctl:param>
+        <ctl:return>True/False depending on whether or not the URN is valid according to the OGC URN scheme.  NOTE:  this check allows for both ogc and x-ogc as the namespace authority.</ctl:return>
+        <ctl:description>Determines if a URN is valid</ctl:description>
+        <ctl:code>
+            <xsl:value-of select="(matches($urnString,'^urn:(x-)?ogc(:(\w|\(|\)|\+|,|-|\.|=|\$|_|!|\*|'')+)+$', 'i'))" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Check for a valid URL-->
+    <ctl:function name="spsFunctions:validateURL">
+        <ctl:param name="urlString">The URL to validate</ctl:param>
+        <ctl:return>True/False depending on whether or not the URL is valid</ctl:return>
+        <ctl:description>Determines if a URL is valid</ctl:description>
+        <ctl:code>
+            <xsl:value-of select="(matches($urlString,'(^|[ \t\r\n])((ftp|http|https|gopher|mailto|news|nntp|telnet|wais|file|prospero|aim|webcal):(([A-Za-z0-9$_.+!*(),;/?:@&amp;~=-])|%[A-Fa-f0-9]{2}){2,}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*(),;/?:@&amp;~=%-]*))?([A-Za-z0-9$_+!*();/?:~-]))','i'))" /><!--[Uu][Rr][Nn]:([^\s.]+|\.(?!\s))+-->
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Convert an ISO8601 compliant date/time value to a valid xs:dateTime-->
+    <ctl:function name="spsFunctions:dateTimeFromISO">
+        <ctl:param name="dateString"></ctl:param>
+		<ctl:description>Convert a valid ISO 8601 date time to a valid XSL datetime. 
+						 It is assumed that dateString has already passed "sosFunctions:isValidDate".
+						 dateString is assumed to at least have a year month and day
+		</ctl:description>
+        <ctl:code>
+			<xsl:variable name="dateStringNoSpace" select="replace(normalize-space($dateString), ' ', 'T')"/>	
+			<xsl:variable name="newDateString" select="replace($dateString, 'Z', '')"/>			
+			<xsl:choose>
+				<xsl:when test="contains($newDateString, '.')"> <!-- if it passed validation and has a "." in it, it should be fine -->				
+					<xsl:value-of select="$newDateString"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="appendString" select="'T00:00:00+00:00'"/>
+					<xsl:variable name="newDateStringLngth" select="string-length($newDateString)"/>
+					<xsl:variable name="appendStringLength" select="string-length($appendString)"/>
+					<xsl:variable name="totalStringLength"	select="25"/>
+					<xsl:variable name="substringToAppend" select="substring($appendString, $appendStringLength - ($totalStringLength - $newDateStringLngth) + 1)"/>
+					<xsl:variable name="returnValue" select="concat($newDateString, $substringToAppend)"/>			
+					<xsl:value-of select="xsd:dateTime($returnValue)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Checks a time value to ensure that it is properly formatted and that it occurs after the compareTime-->
+    <ctl:function name="spsFunctions:checkTime">
+        <ctl:param name="timeToCheck">The time value to check for correctness</ctl:param>
+        <ctl:param name="compareTime">The value to compare this time value to</ctl:param>
+        <ctl:return>True if the time to check is valid; false otherwise</ctl:return>
+        <ctl:description>Checks that the supplied timeToCheck value is a valid time or duration and that it occurs on or after the compareTime</ctl:description>
+        <ctl:code>
+            <xsl:choose>
+                <xsl:when test="xs:boolean(spsFunctions:checkDuration($timeToCheck))">
+                    <xsl:value-of select="true()" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="isValidDate" select="spsFunctions:isValidDate($timeToCheck)" />
+                    <xsl:value-of select="xs:boolean($isValidDate) and (xs:dateTime($timeToCheck) ge xs:dateTime($compareTime))" />
+                </xsl:otherwise>
+            </xsl:choose>
+        </ctl:code>
+    </ctl:function>
+    
+    <!--Checks a date/time value-->
+    <ctl:function name="spsFunctions:isValidDate">
+        <ctl:param name="dateString">The date to be tested</ctl:param>
+		<ctl:description>Check whether a date is a valid ISO 8601 date with at least a day included, or one of the valid constants.</ctl:description>
+		<!--ctl:return>Boolean</ctl:return-->
+        <ctl:code>	
+			<xsl:variable name="isoDateFormatRegex" select="'^([0-9]{4})(-([0-9]{2})(-([0-9]{2})(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\.([0-9]+))?)?(Z|(([-+])([0-9]{2})(:([0-9]{2}))?))?)?))$'"/>
+			<xsl:variable name="validDateRegex" select="'^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$'"/>
+			<xsl:variable name="datePortion" select="substring($dateString, 1, 10)"/>						
+			<xsl:value-of select="(matches($dateString, $isoDateFormatRegex) 
+								and matches($datePortion, $validDateRegex))"/>
+        </ctl:code>
+    </ctl:function>
+    
+    <!---->
+    <ctl:function name="spsFunctions:checkDuration">
+        <ctl:param name="durationToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the duration is valid</ctl:return>
+        <ctl:description>Checks duration values for validity (i.e. P1Y2M3DT5H10M30S)</ctl:description>
+        <ctl:code>
+            <!---?P([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+(\.[0-9]+)?S)?)?-->
+            <xsl:value-of select="matches($durationToCheck,'-?P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+(\.\d+)?S)?)?')" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!---->
+    <ctl:function name="spsFunctions:buildSubmitRequest">
+        <ctl:param name="sensorID">SensorID used in the Submit request</ctl:param>
+        <ctl:param name="describeTaskingResponse">The response to a DescribeTasking request for the sensor identified by the sensorID parameter</ctl:param>
+        <ctl:param name="enterTaskingOptionsForm">The form used to gather the user input for the tasking request.</ctl:param>
+        <ctl:param name="invalidNotificationTarget">True/False indicating whether the request should be constructed with an invalid notificationTarget element</ctl:param>
+        <ctl:param name="invalidParameters">True/False indicating whether the request should be constructed with invalid parameter values</ctl:param>
+        <ctl:param name="missingRequiredParameters">True/False indicating whether the request should be constructed with missing required parameter values</ctl:param>
+        <ctl:param name="invalidTimeFrame">True/False indicating whether the request should be constructed with an invalid timeFrame value</ctl:param>
+        <ctl:param name="unhandledInputParameters">True/False indicating whether the service has complex InputParameters that were not handled by the Submit request form</ctl:param>
+        <ctl:return>A Submit request document based on the supplied parameters</ctl:return>
+        <ctl:description>
+        Builds a Submit request document from the supplied parameters.  This document can either have valid or invalid parameters.
+        NOTE:  This function does not currently handle most of the more complex scenarios within a Submit document (other than Position w/ coordinates).
+        The function handles all simple InputParameters and Position InputParameters with coordinate elements.  This function should be updated in the future to handle the more complex scenarios.
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="submitRequest">
+                    <sps:Submit xmlns:sps="http://www.opengis.net/sps/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0" service="SPS" version="1.0.0">
+                        <sps:notificationTarget>
+                            <sps:notificationID>
+                                <xsl:choose>
+                                    <xsl:when test="not(xs:boolean($invalidNotificationTarget))">
+                                        <xsl:value-of select="$enterTaskingOptionsForm/values/value[@key='wnsUserID']" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="string('This is a test...')" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </sps:notificationID>
+                            <sps:notificationURL>
+                                <xsl:choose>
+                                    <xsl:when test="not(xs:boolean($invalidNotificationTarget))">
+                                        <xsl:value-of select="$enterTaskingOptionsForm/values/value[@key='wnsURL']" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="string('This is a test...')" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </sps:notificationURL>
+                        </sps:notificationTarget>
+                        <sps:sensorParam>
+                            <sps:sensorID><xsl:value-of select="$sensorID" /></sps:sensorID>
+                                <xsl:choose>
+                                    <xsl:when test="not(xs:boolean($unhandledInputParameters))">
+                                    <sps:parameters>
+                                        <xsl:for-each select="$describeTaskingResponse//sps:InputDescriptor">
+                                            <xsl:variable name="parameterID">
+                                                <xsl:value-of select="@parameterID" />
+                                            </xsl:variable>
+                                            <xsl:variable name="use">
+                                                <xsl:value-of select="@use" />
+                                            </xsl:variable>
+                                            <xsl:variable name="inputID" select="concat($parameterID,'_Value')" />
+                                            <xsl:variable name="parameterValue" select="$enterTaskingOptionsForm/values/value[@key=$inputID]" />
+                                            <xsl:variable name="includeParameter">
+                                                <xsl:choose>
+                                                    <xsl:when test="not(xs:boolean($missingRequiredParameters))">
+                                                        <xsl:value-of select="($use='required') or (string-length(normalize-space($parameterValue))>0)" />
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <xsl:value-of select="($use='optional') and (string-length(normalize-space($parameterValue))>0)" />
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </xsl:variable>
+                                            <xsl:if test="xs:boolean($includeParameter)">
+                                                <sps:InputParameter><xsl:attribute name="parameterID"><xsl:value-of select="$parameterID" /></xsl:attribute>
+                                                    <sps:value>
+                                                        <xsl:variable name="definitionNode" select="sps:definition/*/*[1]" />
+                                                        <xsl:variable name="elementName" select="local-name-from-QName(node-name($definitionNode))" />
+                                                        <xsl:variable name="elementValue">
+                                                            <xsl:choose>
+                                                                <xsl:when test="not(xs:boolean($invalidParameters))">
+                                                                    <xsl:value-of select="$parameterValue" />
+                                                                </xsl:when>
+                                                                <xsl:otherwise>
+                                                                    <xsl:value-of select="string('')" />
+                                                                </xsl:otherwise>
+                                                            </xsl:choose>
+                                                        </xsl:variable>
+                                                        <xsl:choose>
+                                                            <xsl:when test="$elementName='Position'">
+                                                                <xsl:variable name="positionChild" select="$definitionNode/*[1]" />
+                                                                <xsl:variable name="positionChildName" select="local-name-from-QName(node-name($positionChild))" />
+                                                                <swe:Position>
+                                                                    <xsl:for-each select="$definitionNode/@*">
+                                                                        <xsl:variable name="attributeName" select="name()" />
+                                                                        <xsl:attribute name="{$attributeName}"><xsl:value-of select="." /></xsl:attribute>
+                                                                    </xsl:for-each>
+                                                                    <xsl:choose>
+                                                                        <xsl:when test="$positionChildName='time'">
+                                                                            <swe:time>
+                                                                                <swe:Time>
+                                                                                    <swe:value></swe:value>
+                                                                                </swe:Time>
+                                                                            </swe:time>
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='location'">
+                                                                            <swe:location>
+                                                                                <swe:Vector>           
+                                                                                    <xsl:variable name="coordinates" select="$positionChild/*[1]/*" />
+                                                                                    <xsl:for-each select="$coordinates">
+                                                                                        <xsl:variable name="coordinateName">
+                                                                                            <xsl:value-of select="@name" />
+                                                                                        </xsl:variable>
+                                                                                        <xsl:variable name="coordinateChild" select="*[1]" />
+                                                                                        <xsl:variable name="coordinateChildName" select="local-name-from-QName(node-name($coordinateChild))" />
+                                                                                        <swe:coordinate><xsl:attribute name="name"><xsl:value-of select="$coordinateName" /></xsl:attribute>
+                                                                                            <xsl:element name="{$coordinateChildName}" namespace="http://www.opengis.net/swe/1.0">
+                                                                                                <xsl:for-each select="$coordinateChild/@*">
+                                                                                                    <xsl:variable name="attributeName" select="name()" />
+                                                                                                    <xsl:attribute name="{$attributeName}"><xsl:value-of select="." /></xsl:attribute>                                                                                        
+                                                                                                </xsl:for-each>
+                                                                                                <xsl:for-each select="$coordinateChild/*">
+                                                                                                    <xsl:variable name="childName" select="local-name-from-QName(node-name(.))" />
+                                                                                                    <xsl:if test="not($childName='constraint')">
+                                                                                                        <xsl:element name="{$childName}" namespace="http://www.opengis.net/swe/1.0">
+                                                                                                            <xsl:for-each select="@*">
+                                                                                                                <xsl:variable name="attributeName" select="name()" />
+                                                                                                                <xsl:attribute name="{$attributeName}"><xsl:value-of select="." /></xsl:attribute>
+                                                                                                            </xsl:for-each>
+                                                                                                            <xsl:value-of select="." />
+                                                                                                        </xsl:element>
+                                                                                                    </xsl:if>
+                                                                                                </xsl:for-each>
+                                                                                                <xsl:variable name="updatedInputID" select="concat($parameterID,'_',translate($coordinateName,' ','_'),'_Value')" />
+                                                                                                <xsl:variable name="updatedInputIDValue" select="$enterTaskingOptionsForm/values/value[@key=$updatedInputID]" />
+                                                                                                <swe:value><xsl:value-of select="$updatedInputIDValue" /></swe:value>
+                                                                                            </xsl:element>
+                                                                                        </swe:coordinate>
+                                                                                    </xsl:for-each>
+                                                                                </swe:Vector>
+                                                                            </swe:location>
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='orientation'">
+                                                                            <swe:orientation>
+                                                                            </swe:orientation>
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='velocity'">
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='angularVelocity'">
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='acceleration'">
+                                                                        </xsl:when>
+                                                                        <xsl:when test="$positionChildName='angularAcceleration'">
+                                                                        </xsl:when>
+                                                                        <xsl:otherwise>
+                                                                        </xsl:otherwise>
+                                                                    </xsl:choose>
+                                                                </swe:Position>
+                                                            </xsl:when>
+                                                            <xsl:otherwise>
+                                                                <xsl:element name="{$elementName}" namespace="http://www.opengis.net/swe/1.0">
+                                                                    <swe:value>
+                                                                        <xsl:value-of select="$elementValue" />
+                                                                    </swe:value>
+                                                                </xsl:element>
+                                                            </xsl:otherwise>
+                                                        </xsl:choose>                                             
+                                                    </sps:value>
+                                                </sps:InputParameter>
+                                            </xsl:if>
+                                        </xsl:for-each>
+                                        </sps:parameters>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:variable name="parametersStartTag" select="string('&lt;sps:parameters xmlns:sps=&quot;http://www.opengis.net/sps/1.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/1.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot;&gt;')" />
+                                        <xsl:variable name="parametersEndTag" select="string('&lt;/sps:parameters&gt;')" />
+                                        <xsl:choose>
+                                            <xsl:when test="xsd:boolean($invalidParameters)">
+                                                <xsl:copy-of select="saxon:parse(concat($parametersStartTag,$enterTaskingOptionsForm/values/value[@key='invalidInputParameters'],$parametersEndTag))" />
+                                            </xsl:when>
+                                            <xsl:when test="xsd:boolean($missingRequiredParameters)">
+                                                <xsl:copy-of select="saxon:parse(concat($parametersStartTag,$enterTaskingOptionsForm/values/value[@key='missingRequiredInputParameters'],$parametersEndTag))" />
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:copy-of select="saxon:parse(concat($parametersStartTag,$enterTaskingOptionsForm/values/value[@key='validInputParameters'],$parametersEndTag))" />
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                        </sps:sensorParam>
+                        <sps:timeFrame>
+                            <gml:TimeInstant>
+                                <gml:timePosition>
+                                    <xsl:choose>
+                                        <xsl:when test="not(xs:boolean($invalidTimeFrame))">
+                                            <xsl:variable name="timeFrame" select="$enterTaskingOptionsForm/values/value[@key='timeFrame']" />
+                                            <xsl:value-of select="$timeFrame" />
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            2000-01-01T00:00:00.000Z
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </gml:timePosition>
+                            </gml:TimeInstant>
+                        </sps:timeFrame>
+                    </sps:Submit>
+                </xsl:variable>
+                <xsl:copy-of select="$submitRequest" />
+        </ctl:code>
+    </ctl:function>
+    
+    <!---->
+    <ctl:function name="spsFunctions:buildSubmitRequestFromInput">
+        <ctl:param name="sensorID">SensorID used in the Submit request</ctl:param>
+        <ctl:param name="describeTaskingResponse">The response to a DescribeTasking request for the sensor identified by the sensorID parameter</ctl:param>
+        <ctl:param name="enterTaskingOptionsForm">The form used to gather the user input for the tasking request.</ctl:param>
+        <ctl:param name="invalidNotificationTarget">True/False indicating whether the request should be constructed with an invalid notificationTarget element</ctl:param>
+        <ctl:param name="invalidParameters">True/False indicating whether the request should be constructed with invalid parameter values</ctl:param>
+        <ctl:param name="missingRequiredParameters">True/False indicating whether the request should be constructed with missing required parameter values</ctl:param>
+        <ctl:param name="invalidTimeFrame">True/False indicating whether the request should be constructed with an invalid timeFrame value</ctl:param>
+        <ctl:return>A Submit request document based on the supplied parameters</ctl:return>
+        <ctl:description>
+        Builds a Submit request document from the supplied parameters.  This document can either have valid or invalid parameters.
+        NOTE:  This function does not currently handle most of the more complex scenarios within a Submit document (other than Position w/ coordinates).
+        The function handles all simple InputParameters and Position InputParameters with coordinate elements.  This function should be updated in the future to handle the more complex scenarios.
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="submitRequest">
+                    <sps:Submit xmlns:sps="http://www.opengis.net/sps/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0" service="SPS" version="1.0.0">
+                        <sps:notificationTarget>
+                            <sps:notificationID>
+                                <xsl:choose>
+                                    <xsl:when test="not(xs:boolean($invalidNotificationTarget))">
+                                        <xsl:value-of select="$enterTaskingOptionsForm/values/value[@key='wnsUserID']" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="string('This is a test...')" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </sps:notificationID>
+                            <sps:notificationURL>
+                                <xsl:choose>
+                                    <xsl:when test="not(xs:boolean($invalidNotificationTarget))">
+                                        <xsl:value-of select="$enterTaskingOptionsForm/values/value[@key='wnsURL']" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="string('This is a test...')" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </sps:notificationURL>
+                        </sps:notificationTarget>
+                        <sps:sensorParam>
+                            <sps:sensorID><xsl:value-of select="$sensorID" /></sps:sensorID>
+                            <sps:parameters>
+                                <xsl:choose>
+                                    <xsl:when test="xsd:boolean($invalidParameters)">
+                                        <xsl:copy-of select="$enterTaskingOptionsForm/values/value[@key='invalidInputParameters']" />
+                                    </xsl:when>
+                                    <xsl:when test="xsd:boolean($missingRequiredParameters)">
+                                        <xsl:copy-of select="$enterTaskingOptionsForm/values/value[@key='missingRequiredInputParameters']" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:copy-of select="$enterTaskingOptionsForm/values/value[@key='validInputParameters']" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </sps:parameters>
+                        </sps:sensorParam>
+                        <sps:timeFrame>
+                            <gml:TimeInstant>
+                                <gml:timePosition>
+                                    <xsl:choose>
+                                        <xsl:when test="not(xs:boolean($invalidTimeFrame))">
+                                            <xsl:variable name="timeFrame" select="$enterTaskingOptionsForm/values/value[@key='timeFrame']" />
+                                            <xsl:value-of select="$timeFrame" />
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            2000-01-01T00:00:00.000Z
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </gml:timePosition>
+                            </gml:TimeInstant>
+                        </sps:timeFrame>
+                    </sps:Submit>
+                </xsl:variable>
+                <xsl:copy-of select="$submitRequest" />
+        </ctl:code>
+    </ctl:function>
+    
+    <ctl:function name="spsFunctions:checkWGS84Position">
+        <ctl:param name="positionToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the position is valid</ctl:return>
+        <ctl:description>
+        Checks WGS84 position values for validity:
+        1)  The position is in the correct format:  longitude latitude (in decimal degrees)
+        2)  The longitude is between -180 and 180
+        3)  The latitude is between -90 and 90
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="isValidFormat" select="matches($positionToCheck,'-?\d{1,3}\.\d+ -?\d{1,2}\.\d+')" />
+            <xsl:variable name="parts" select="tokenize($positionToCheck/text(),'\s+')" />
+            <xsl:variable name="longitude" select="$parts[1]" />
+            <xsl:variable name="latitude" select="$parts[2]" />
+            <xsl:variable name="isValidLongitude" select="xs:double($longitude)&gt;=-180.0 and xs:double($longitude)&lt;=180.0" />
+            <xsl:variable name="isValidLatitude" select="xs:double($latitude)&gt;=-90.0 and xs:double($latitude)&lt;=90.0" />
+            <xsl:value-of select="xs:boolean($isValidFormat) and xs:boolean($isValidLongitude) and xs:boolean($isValidLatitude)" />
+        </ctl:code>
+    </ctl:function>
+    
+	<ctl:function name="spsFunctions:comparePosition">
+        <ctl:param name="position1"></ctl:param>
+        <ctl:param name="position2"></ctl:param>
+        <ctl:return>True if position1 is greater than or equal to position2; false otherwise</ctl:return>
+        <ctl:description>Compares two position values</ctl:description>
+        <ctl:code>
+            <xsl:variable name="parts1" select="tokenize($position1/text(),'\s+')" />
+            <xsl:variable name="parts2" select="tokenize($position2/text(),'\s+')" />
+            <xsl:variable name="longitude1" select="$parts1[1]" />
+            <xsl:variable name="latitude1" select="$parts1[2]" />
+            <xsl:variable name="longitude2" select="$parts2[1]" />
+            <xsl:variable name="latitude2" select="$parts2[2]" />
+            <xsl:variable name="isLongitude1Greater" select="xs:double($longitude1)&gt;=xs:double($longitude2)" />
+            <xsl:variable name="isLatitude1Greater" select="xs:double($latitude1)&gt;=xs:double($latitude2)" />
+            <xsl:value-of select="xs:boolean($isLongitude1Greater) and xs:boolean($isLatitude1Greater)" />
+        </ctl:code>
+    </ctl:function>
+
+    <ctl:function name="spsFunctions:printBoundingBox">
+        <ctl:param name="boundingBox"></ctl:param>
+        <ctl:return>True/false depending on whether or not the WGS84BoundingBox is valid</ctl:return>
+        <ctl:description></ctl:description>
+        <ctl:code>
+            <xsl:variable name="upperCorner" select="$boundingBox//ows:UpperCorner" />
+            <xsl:variable name="lowerCorner" select="$boundingBox//ows:LowerCorner" />
+            <xsl:value-of select="concat('Bounding Box (UC,LC):  ',$upperCorner,',',$lowerCorner)" />
+        </ctl:code>
+    </ctl:function>
+    
+    <ctl:function name="spsFunctions:checkWGS84BoundingBox">
+        <ctl:param name="wgs84BoundingBoxToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the WGS84BoundingBox is valid</ctl:return>
+        <ctl:description>
+        Performs a specific check on an ows:WGS84BoundingBox:
+        1)  The UpperCorner and LowerCorner are valid according to the checkWGS84Position function
+        2)  The UpperCorner values are greater than or equal to the LowerCorner values
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="upperCorner" select="$wgs84BoundingBoxToCheck//ows:UpperCorner" />
+            <xsl:variable name="lowerCorner" select="$wgs84BoundingBoxToCheck//ows:LowerCorner" />
+            <xsl:variable name="isUpperCornerValid" select="spsFunctions:checkWGS84Position($upperCorner)" />
+            <xsl:variable name="isLowerCornerValid" select="spsFunctions:checkWGS84Position($lowerCorner)" />
+            <xsl:variable name="isUCGreater" select="spsFunctions:comparePosition($upperCorner,$lowerCorner)" />
+            <xsl:value-of select="xs:boolean($isUpperCornerValid) and xs:boolean($isLowerCornerValid) and xs:boolean($isUCGreater)" />
+        </ctl:code>
+    </ctl:function>
+    
+    <ctl:function name="spsFunctions:checkBoundingBox">
+        <ctl:param name="boundingBoxToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the BoundingBox is valid</ctl:return>
+        <ctl:description>
+        Performs a generic check on a ows:BoundingBox:
+        1)  The UpperCorner and LowerCorner values are valid according to the checkPosition function
+        2)  The UpperCorner values are greater than or equal to the LowerCorner values
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="upperCorner" select="$boundingBoxToCheck//ows:UpperCorner" />
+            <xsl:variable name="lowerCorner" select="$boundingBoxToCheck//ows:LowerCorner" />
+            <xsl:variable name="isUpperCornerValid" select="spsFunctions:checkPosition($upperCorner)" />
+            <xsl:variable name="isLowerCornerValid" select="spsFunctions:checkPosition($lowerCorner)" />
+            <xsl:variable name="isUCGreater" select="spsFunctions:comparePosition($upperCorner,$lowerCorner)" />
+            <xsl:value-of select="xs:boolean($isUpperCornerValid) and xs:boolean($isLowerCornerValid) and xs:boolean($isUCGreater)" />
+        </ctl:code>
+    </ctl:function>
+    
+    <ctl:function name="spsFunctions:checkPosition">
+        <ctl:param name="positionToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the position element (gml:pos, etc.) is valid</ctl:return>
+        <ctl:description>
+        Checks position values for validity.  Does not do any specific checks to ensure that the position values correspond with their CRS.
+        This function only checks that the values in the gml:pos element are in a numeric format separated by spaces with 2 or 3 coordinates (i.e. -150 -89 or -34.234234 10.00000 or 0.0000 34.00000 250 or 234234 234324)                 
+        </ctl:description>
+        <ctl:code>
+            <xsl:value-of select="matches($positionToCheck,'(-?\d+\.?\d+ -?\d+\.?\d+)( -?\d+\.?\d+)?')" />
+        </ctl:code>
+    </ctl:function>    
+    
+    <ctl:function name="spsFunctions:checkIntervalConstraint">
+        <ctl:param name="inputDescriptorToCheck"></ctl:param>
+        <ctl:return>True/false depending on whether or not the InputDescriptor has a valid interval constraint</ctl:return>
+        <ctl:description>
+        </ctl:description>
+        <ctl:code>
+            <xsl:variable name="constraintNode" select="$inputDescriptorToCheck//swe:constraint/*" />
+            <xsl:variable name="constraintType" select="local-name-from-QName(node-name($constraintNode))" />
+            <xsl:variable name="interval" select="$constraintNode//swe:interval" />
+            <xsl:variable name="intervalParts" select="tokenize($interval/text(),'\s+')" />
+            <xsl:variable name="intervalMin" select="$intervalParts[1]" />
+            <xsl:variable name="intervalMax" select="$intervalParts[2]" />
+            <xsl:choose>
+                <xsl:when test="$interval">
+                    <xsl:choose>
+                        <xsl:when test="$intervalMin and $intervalMax">
+                            <xsl:choose>
+                                <xsl:when test="$constraintType='AllowedTimes'">
+                                    <xsl:value-of select="xs:dateTime(spsFunctions:dateTimeFromISO($intervalMax))>=xs:dateTime(spsFunctions:dateTimeFromISO($intervalMin))" />
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="xs:double($intervalMax)>=xs:double($intervalMin)" />
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="false()" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="true()" />
+                </xsl:otherwise>
+            </xsl:choose>
+        </ctl:code>
+    </ctl:function>
+
+</ctl:package>

@@ -1,0 +1,62 @@
+<cblf:BlueLakeFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                                xmlns:cblf="http://www.opengis.net/cite/bluelake"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.opengis.net/cite/bluelake blueLakeFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:RoadSegments layer</gml:description>
+   <gml:name>cite:RoadSegments</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>-0.0042,-0.0024 0.0042,0.0024</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cblf:RoadSegmentFeature fid="BlueLake.102">
+         <cblf:name>Route 5</cblf:name>
+         <cblf:centerline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>-0.0042,-0.0006 -0.0032,-0.0003 -0.0026,-0.0001 -0.0014,0.0002 0.0002,0.0007</gml:coordinates>
+            </gml:LineString>
+         </cblf:centerline>
+      </cblf:RoadSegmentFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:RoadSegmentFeature fid="BlueLake.103">
+         <cblf:name>Route 5</cblf:name>
+         <cblf:centerline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>0.0002,0.0007 0.0014,0.0010 0.0028,0.0014</gml:coordinates>
+            </gml:LineString>
+         </cblf:centerline>
+      </cblf:RoadSegmentFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:RoadSegmentFeature fid="BlueLake.104">
+         <cblf:name>Route 5</cblf:name>
+         <cblf:centerline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>0.0028,0.0014 0.0030,0.0024</gml:coordinates>
+            </gml:LineString>
+         </cblf:centerline>
+      </cblf:RoadSegmentFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:RoadSegmentFeature fid="BlueLake.105">
+         <cblf:name>Main Street</cblf:name>
+         <cblf:centerline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>0.0002,0.0007 0.0014,0.0010 0.0028,0.0014 0.0042,0.0018</gml:coordinates>
+            </gml:LineString>
+         </cblf:centerline>
+      </cblf:RoadSegmentFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:RoadSegmentFeature fid="BlueLake.106">
+         <cblf:name>Dirt Road by Green Forest</cblf:name>
+         <cblf:centerline>
+            <gml:LineString srsName="CRS:84">
+               <gml:coordinates>-0.0014,-0.0024 -0.0014,0.0002</gml:coordinates>
+            </gml:LineString>
+         </cblf:centerline>
+      </cblf:RoadSegmentFeature>
+   </gml:featureMember>
+</cblf:BlueLakeFeatureCollection>

@@ -1,0 +1,39 @@
+WCS 1.0.0 Test Suite Release Notes
+
+
+Changes included in latest revision:
+
+2009-10-12 (kstegemoller):
+ - tag r0 
+ - no new changes
+
+2009-10-7 (cmorris):
+- Corrected time parameter on test getcoverage_operations-getcoverage_request-time-get-kvp-1 (Issue 307)
+- Added CRS parameter to test getcoverage_operations-getcoverage_request-time-get-kvp-2 (Issues 330, 309)
+- Added tests and bug fixes written for NSG that apply to the base WCS specification:
+1	Each HTTP GET URL prefix ends in either a '?' or a '&'
+2	The server handles encoded commas and spaces in list values correctly if any coverage names contain commas or spaces
+3	Service exception XML validates according to the Service Exception XML Schema
+4	N/A - NSG specific
+5	The version and updateSequence attributes are omitted from all of the three capabilities sections (Service, Capability, and ContentMetadata) element when the full Capabilities XML is retrieved.
+6	When a GetCoverage request is made with a BBOX inside the defined Bounding BOX, the server returns content.
+7	When a GetCoverage request is made with a BBOX partly contained in the defined Bounding BOX, the server returns content.
+8	For coverages with a temporal domain with time instants, a GetCoverage request with a temporalSubset that specifies a time instant returns content.
+9	For coverages with a temporal domain with time periods, a GetCoverage request with a temporalSubset that specifies a time period returns content.
+10	For coverages with at least one RectifiedGrid, each of the supportedCRSs is the same as the srsName of one of its RectifiedGrids
+11	If the describeCoverage provides a NativeCRSs element, a getcoverage request with this request succeeds without distortion or degradation of the coverage data.
+12	N/A - NSG specific
+13	SupportedInterpolations is absent, empty, or has a default attribute that specifies one of the child interpolation methods.
+14	For each of the advertised interpolation methods, the server returns content.
+15	When a request contains a BBOX in upper,lower instead of lower,upper format, the service returns an exception.
+16	If the only interpolation method supported is "none", a GetCoverage request that uses resolution parameters to request a coverage that is not at the native resolution returns an exception.
+17	If the only interpolation method supported is "none", a GetCoverage request that uses height and width parameters to request a coverage that is not at the native resolution returns an exception.
+18	A coverage request using RESX, RESY, RESZ and INTERPOLATION=none raises an exception.
+19	A coverage request using RESESPONSE_CRS and INTERPOLATION=none raises an exception.
+20	A coverage request that specifies aGML Rectified grid in its domain subset returns a valid coverage.
+21	A valid getCoverage response is returned for each supportedFormat
+22	If they exist, UPDATESEQUENCE values work with GetCapabilities requests. Test UPDATESEQUENCE parameters with GetCapabilities requests (same as WCS 1.1.1 tests)
+23	To return a coverage in multiple part files, the multi-part MIME encoding is used by the service.
+24	N/A - NSG specific
+25	Each coverage offering supports at least one of these: GeoTIFF, HDF-EOS, DTED, NITF, or GML 
+

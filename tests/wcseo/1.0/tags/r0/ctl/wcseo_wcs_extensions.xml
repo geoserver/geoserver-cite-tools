@@ -1,0 +1,98 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+
+	<ctl:test name="wcseo:wcs-extensions">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Test WCS extensions.</ctl:assertion>
+    		<ctl:code>
+			<ctl:call-test name="wcseo:req62">
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req63">
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req64">
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req65">
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req66">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 			
+    		</ctl:code>
+  	</ctl:test>
+  	
+  	<ctl:test name="wcseo:req62">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req62:Implementations of this Earth Observation Application Profile shall support the WCS 2.0 Band Subsetting Extension.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_service-model_band-subsetting/1.0/conf/band-subsetting'))">
+				<ctl:fail/>
+			</xsl:if>
+    		</ctl:code>
+  	</ctl:test>
+  	<ctl:test name="wcseo:req63">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req63:Implementations of this Earth Observation Application Profile shall support the WCS 2.0  Scaling + Interpolation Extension.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_service-model_scaling+interpolation/1.0/conf/scaling+interpolation'))">
+				<ctl:fail/>
+			</xsl:if>
+    		</ctl:code>
+  	</ctl:test>  
+	<ctl:test name="wcseo:req64">
+		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req64:Implementations of this Earth Observation Application Profile shall support the WCS 2.0 Predefined CRS Extension.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_service-model_crs-predefined/1.0/conf/crs-predefined'))">
+				<ctl:fail/>
+			</xsl:if>
+    		</ctl:code>
+	</ctl:test>     
+
+	<ctl:test name="wcseo:req65">
+		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req65:Implementations of this Earth Observation Application Profile shall support at least one of the WCS 2.0 coverage format encodings GeoTIFF, NetCDF, and JPEG2000.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_encoding_geotiff/1.0/conf/geotiff') or contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_encoding_netcdf/1.0/conf/netcdf') or contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_encoding_jpeg2000/1.0/conf/jpeg2000'))">
+				<ctl:fail/>
+			</xsl:if>
+    		</ctl:code>
+	</ctl:test> 
+	<ctl:test name="wcseo:req66">
+		<ctl:param name="Capabilities"/>
+		<ctl:param name="url"/>
+    		<ctl:assertion>Req66:Implementations of this Earth Observation Application Profile shall support at least one of the conformance classes ap-eo_get-kvp or ap-eo_soap.</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_application-profile_earth-observation/1.0/conf/ap-eo_get-kvp') or contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_application-profile_earth-observation/1.0/conf/ap-eo_soap'))">
+				<ctl:fail/>
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_application-profile_earth-observation/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_application-profile_earth-observation/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>			
+    		</ctl:code>
+	</ctl:test> 	
+</ctl:package>

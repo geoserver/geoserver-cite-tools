@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="csw2ebrim3" default="convert" basedir=".">
+
+  <target name="convert" 
+    description="Converts csw:Record instances to ebRIM 3.0 registry objects.">
+     <xslt in="csw-records.xml" out="csw-insert.xml" style="record2ebrim3.xsl" />
+  </target>
+</project>

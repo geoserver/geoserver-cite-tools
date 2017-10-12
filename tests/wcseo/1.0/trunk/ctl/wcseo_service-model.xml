@@ -1,0 +1,41 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+
+	<ctl:test name="wcseo:service-model">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Test EO-WCS service-model.</ctl:assertion>
+    		<ctl:code>
+			<ctl:call-test name="wcseo:GetCapabilities">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:DescribeCoverage">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:GetCoverage">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:DescribeEOCoverageSet">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 	
+    		</ctl:code>
+  	</ctl:test>
+  	
+</ctl:package>

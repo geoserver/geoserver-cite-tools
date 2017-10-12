@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc4.2 -->
+<csw:GetRecords service="CSW" version="2.0.1" 
+  xmlns:csw="http://www.opengis.net/cat/csw" 
+  resultType="results">
+  <csw:Query typeNames="csw:Record"
+    xmlns:dc="http://purl.org/dc/elements/1.1/" 
+    xmlns:dct="http://purl.org/dc/terms/">
+    <csw:ElementName>./dc:identifier</csw:ElementName>
+    <csw:ElementName>./dc:type</csw:ElementName>
+    <csw:ElementName>./dct:modified</csw:ElementName>
+    <ogc:SortBy xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:SortProperty>
+        <ogc:PropertyName>dct:modified</ogc:PropertyName>
+        <ogc:SortOrder>DESC</ogc:SortOrder>
+      </ogc:SortProperty>
+    </ogc:SortBy>
+  </csw:Query>
+</csw:GetRecords>

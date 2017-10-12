@@ -1,0 +1,4044 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ctl:package
+	xmlns:wms-1.3.0="https://cite.opengeospatial.org/wms-1.3.0/src/ctl"
+	xmlns:functions="https://cite.opengeospatial.org/wms-1.3.0/src/ctl/functions.xml"
+	xmlns:ccf="http://www.opengis.net/cite/complex"
+	xmlns:cdf="http://www.opengis.net/cite/data"
+	xmlns:cgf="http://www.opengis.net/cite/geometry"
+	xmlns:citef="http://www.opengis.net/cite/functions"
+	xmlns:ctl="http://www.occamlab.com/ctl"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:parsers="http://www.occamlab.com/te/parsers"
+	xmlns:saxon="http://saxon.sf.net/"
+	xmlns:wms="http://www.opengis.net/wms"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:dgiwg="https://cite.opengeospatial.org/wms/1.3.0/profiles/dgiwg/ed1.3/ets/ctl"
+	xmlns:getmap="https://cite.opengeospatial.org/wms-1.3.0/src/ctl/getmap.xml">
+
+	<ctl:profile name="dgiwg:wms-1.3.0_profile">
+		<ctl:title>DGIWG Profile for Web Map Service (WMS) 1.3.0</ctl:title>
+		<ctl:description>Validates that a WMS 1.3.0 is compliant with DGIWG Profile.</ctl:description>
+		<ctl:base>wms-1.3.0:compliance_suite</ctl:base>
+		<ctl:starting-test>dgiwg:profile_main</ctl:starting-test>
+		<ctl:form>
+			<h2>DGIWG Profile for Web Map Service (WMS) 1.3.0</h2>
+			<h4>Options</h4>
+			<blockquote>
+				<table border="3" padding="3">
+					<tr>
+						<td align="center">
+							<input name="metadata" type="checkbox" value="provided" />
+						</td>
+						<td align="left">Verify that complete test configuration metadata has been provided.</td>
+					</tr>
+					<tr>
+						<td align="center">
+							<input name="performance" type="checkbox" value="tested" />
+						</td>
+						<td align="left">Verify response time requirement for local WMS.</td>
+					</tr>
+				</table>
+			</blockquote>
+			<br />
+			<input type="submit" value="OK" />
+		</ctl:form>
+	</ctl:profile>
+
+	<ctl:function name="dgiwg:current-time">
+		<!-- The built-in current-time function only returns one unique instance per transformation.
+			Since CTL functions are executed in their own transformation, wrapping it in this
+			function ensures a unique value -->
+		<ctl:code>
+			<xsl:value-of select="current-time()" />
+		</ctl:code>
+	</ctl:function>
+
+	<ctl:test name="dgiwg:profile_main">
+		<ctl:param name="capabilities-url" />
+		<ctl:param name="metadata" />
+		<ctl:param name="performance" />
+		<ctl:assertion>This WMS Implementation supports the DGIWG Profile.</ctl:assertion>
+		<ctl:code>
+			<xsl:variable name="WMS_CAPABILITIES">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$capabilities-url" />
+					</ctl:url>
+					<ctl:method>get</ctl:method>
+				</ctl:request>
+			</xsl:variable>
+
+			<xsl:variable name="form-values">
+				<ctl:form>
+					<xsl:if test="$WMS_CAPABILITIES//TestConfig">
+						This WMS is already configured with test configuration metadata for the test suite.
+						You may supply your own metadata to use instead, or press
+						Skip to use the metadata in the WMS.
+						<br />
+						<br />
+					</xsl:if>
+					<h4>Select XML file with complete test configuration metadata.</h4>
+					<input name="file" type="file" />
+					<br />
+					<input name="submit" type="submit" value="OK" />
+					<input name="submit" type="submit" value="Skip" />
+					<ctl:parse file="file" />
+				</ctl:form>
+			</xsl:variable>
+
+			<xsl:variable name="METADATA">
+				<TestConfig>
+					<xsl:choose>
+						<xsl:when test="$form-values/values/value[@key='submit'] = 'OK'">
+							<xsl:if test="not($form-values/values/value[@key='file']/TestConfig)">
+								<ctl:message>Upload is invalid. The root element should be TestConfig (without a namespace).</ctl:message>
+							</xsl:if>
+							<xsl:copy-of select="$form-values/values/value[@key='file']/TestConfig/*" />
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="$WMS_CAPABILITIES//TestConfig/*" />
+						</xsl:otherwise>
+					</xsl:choose>
+				</TestConfig>
+			</xsl:variable>
+
+			<xsl:if test="$metadata='provided'">
+				<ctl:call-test name="dgiwg:test-config-complete">
+					<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+					<ctl:with-param name="METADATA" select="$METADATA/*" />
+				</ctl:call-test>
+			</xsl:if>
+
+			<ctl:call-test name="dgiwg:limits">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+			</ctl:call-test>
+			
+			<ctl:call-test name="dgiwg:layer-visibility">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+			
+			<ctl:call-test name="dgiwg:layer-portrayal">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+			
+			<ctl:call-test name="dgiwg:supported-crs">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:getmap-formats">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:layer-transparency">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:multidimensional-data">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:layer-structure-and-granularity">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:legend-support">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:getfeatureinfo-operation">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:metadata-support">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+			</ctl:call-test>
+
+			<ctl:call-test name="dgiwg:getmap-responsiveness">
+				<ctl:with-param name="CAPABILITIES" select="$WMS_CAPABILITIES/*" />
+				<ctl:with-param name="METADATA" select="$METADATA/*" />
+				<ctl:with-param name="performance" select="$performance" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+
+	<ctl:test name="dgiwg:limits">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The requirements regarding the service's limits configuration are met.</ctl:assertion>
+		<ctl:link title="Section 3.1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S31</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:layerlimit">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:mapsize">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+	
+	<ctl:test name="dgiwg:layer-visibility">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding layers' visibility configuration are met.</ctl:assertion>
+		<ctl:link title="Section 3.2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S32</ctl:link>
+		<ctl:link title="Section 4.1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S41</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:subsetable-and-resizable">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:scales">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+	
+	<ctl:test name="dgiwg:layer-portrayal">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding layers' portrayal are met.</ctl:assertion>
+		<ctl:link title="Section 3.3" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S33</ctl:link>
+		<ctl:link title="Section 4.2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S42</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:bathymetric-and-elevation-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:bathymetric-and-elevation-portrayal">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+				<ctl:with-param name="STYLE" label="shaded">shaded</ctl:with-param>
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:bathymetric-and-elevation-portrayal">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+				<ctl:with-param name="STYLE" label="hypsometric">hypsometric</ctl:with-param>
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:default-bathymetric-and-elevation-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+	
+	<ctl:test name="dgiwg:supported-crs">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The requirements regarding supported Coordinate Reference Systems are met.</ctl:assertion>
+		<ctl:link title="Section 3.4" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S34</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:crs84">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:epsg4326">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:epsg3395">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:epsg32661">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:epsg32761">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:utm-north">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:utm-south">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:getmap-formats">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The requirements regarding supported GetMap output formats are met.</ctl:assertion>
+		<ctl:link title="Section 3.5" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S35</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:png">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:jpeg">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:gif">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:png-properties">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:layer-transparency">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding layers' transparency are met.</ctl:assertion>
+		<ctl:link title="Section 3.6" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S36</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:vector-layers-not-opaque">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:vectors-support-transparency">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:coverages-support-transparency">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<xsl:if test="$CAPABILITIES//wms:Layer[wms:Title='cite:Lakes']">
+				<ctl:call-test name="dgiwg:vector-overlaying-coverage">
+					<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+					<ctl:with-param name="METADATA" select="$METADATA" />
+				</ctl:call-test>
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:multidimensional-data">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The requirements regarding multidimensional data are met.</ctl:assertion>
+		<ctl:link title="Section 3.7" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S37</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:layers-with-dims">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:layer-structure-and-granularity">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding structure and granularity of the layers are met.</ctl:assertion>
+		<ctl:link title="Section 3.8" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S38</ctl:link>
+		<ctl:link title="Section 4.3" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S43</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:no-hierarchical-layers">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:vmap">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:legend-support">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding legend support are met.</ctl:assertion>
+		<ctl:link title="Section 3.9" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S39</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:legendurls">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:getfeatureinfo-operation">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The requirements regarding GetFeatureInfo operation are met.</ctl:assertion>
+		<ctl:link title="Section 3.10" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S310</ctl:link>
+		<ctl:link title="Section 4.6" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S46</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:vector-queryable">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:coverage-queryable">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:info-formats">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:featureinfo-vector">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:featureinfo-coverage">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:feature_count">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:metadata-support">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The requirements for systems regarding metadata support are met.</ctl:assertion>
+		<ctl:link title="Section 4.4" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:metadata-layers-exist">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:metadata-layers-work">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:getmap-responsiveness">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:param name="performance" />
+		<ctl:assertion>The requirements for systems regarding GetMap request responsiveness are met.</ctl:assertion>
+		<ctl:link title="Section 4.5" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S451</ctl:link>
+		<ctl:code>
+			<xsl:if test="$performance='tested'">
+				<ctl:call-test name="dgiwg:performance">
+					<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+					<ctl:with-param name="METADATA" select="$METADATA" />
+				</ctl:call-test>
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+
+	<ctl:test name="dgiwg:test-config-complete">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Complete test configuration metadata has been provided.</ctl:assertion>
+		<ctl:comment>
+			This test is only executed if the "Verify that complete test configuration metadata is provided" option is checked. Make sure that test configuration
+			metadata has been provided, either as a file uploaded by the user or as a vendor-specific element in the service&apos;s capabilities.
+		</ctl:comment>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:test-config-type-and-scale">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:test-config-vector-featureinfo">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:test-config-coverage-featureinfo">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:test-config-type-and-scale">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each layer's type and a native scale are identified.</ctl:assertion>
+		<ctl:comment>Each layer is included in the metadata, and has a type (coverage, raster, or vector) and a native scale.</ctl:comment>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LISTED">
+					<xsl:for-each select="$METADATA/self::TestConfig/layer">
+						<xsl:variable name="CFG-NAME">
+							<xsl:value-of select="./@name" />
+						</xsl:variable>
+						<xsl:variable name="CFG-TYPE">
+							<xsl:value-of select="./@type" />
+						</xsl:variable>
+						<xsl:variable name="CFG-SCALE">
+							<xsl:value-of select="./scale" />
+						</xsl:variable>
+
+						<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+							<xsl:value-of select="./@name" />
+							<xsl:if test="not($CFG-TYPE='coverage' or $CFG-TYPE='raster' or $CFG-TYPE='vector'and number($CFG-SCALE) &gt; 0)">
+								<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> does not have a type (coverage, raster;, or vector) and a native scale.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:if test="$LISTED=''">
+					<ctl:message>TestConfig does not contain metadata for <xsl:value-of select="$LYR-NAME" /> layer.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:test-config-vector-featureinfo">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each vector layer has featureinfo data.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='vector'">
+							<xsl:if test="not(./featureinfo)">
+								<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> does not have featureinfo data.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:test-config-coverage-featureinfo">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each coverage layer has featureinfo data.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='coverage'">
+							<xsl:if test="not(./featureinfo)">
+								<ctl:message>Coverage Layer <xsl:value-of select="$LYR-NAME" /> does not have featureinfo data.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:vector-queryable">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>All vector named layers are queryable.</ctl:assertion>
+		<ctl:comment>Check capabilities XML.</ctl:comment>
+		<ctl:link title="Section 3.10.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3101</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="QUERYABLE">
+					<xsl:value-of select="./@queryable" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='vector'">
+							<xsl:if test="not($QUERYABLE='1')">
+								<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> is not queryable.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:coverage-queryable">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>All coverage named layers are queryable.</ctl:assertion>
+		<ctl:comment>Check capabilities XML.</ctl:comment>
+		<ctl:link title="Section 3.10.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3102</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="QUERYABLE">
+					<xsl:value-of select="./@queryable" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='coverage'">
+							<xsl:if test="not($QUERYABLE='1')">
+								<ctl:message>Coverage Layer <xsl:value-of select="$LYR-NAME" /> is not queryable.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:vector-layers-not-opaque">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>No vector named layers are advertised as opaque.</ctl:assertion>
+		<ctl:comment>Vector layers are identified by keyword "vector".</ctl:comment>
+		<ctl:link title="Section 3.6.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S361</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-OPAQUE">
+					<xsl:value-of select="./@opaque" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='vector'">
+							<xsl:if test="$LYR-OPAQUE='1'">
+								<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> is opaque.</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:vmap">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each VMAP layer uses the standard VMAP naming conventions.</ctl:assertion>
+		<ctl:comment>
+			For each named layer identified as VMAP in the uploaded metadata, layer name and title must be one of the values from the VMAP list.
+		</ctl:comment>
+		<ctl:link title="Section 4.3, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S431</ctl:link>
+		<ctl:code>
+			<xsl:variable name="VMAP-LIST">
+				<vmap cat="bnd">
+					<name>barrierl</name>
+					<description>Barrier Line</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>bndvoida</name>
+					<description>Boundaries Void Collection Area</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>bndtxt</name>
+					<description>Boundaries Text</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>coastl</name>
+					<description>Coast Line</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>depthl</name>
+					<description>Depth Line</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>magareaa</name>
+					<description>Magnetic Disturbance Area Area</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>markersp</name>
+					<description>Markers Point</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>oceansea</name>
+					<description>Ocean/Sea Area</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>polbnda</name>
+					<description>Political Boundary Area</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>polbndl</name>
+					<description>Political Boundary Line</description>
+				</vmap>
+				<vmap cat="bnd">
+					<name>polbndp</name>
+					<description>Political Boundary Point</description>
+				</vmap>
+				<vmap cat="dq">
+					<name>dqarea</name>
+					<description>Data Quality Area</description>
+				</vmap>
+				<vmap cat="dq">
+					<name>dqline</name>
+					<description>Data Quality Line</description>
+				</vmap>
+				<vmap cat="dq">
+					<name>dqtxt</name>
+					<description>Data Quality Text</description>
+				</vmap>
+				<vmap cat="dq">
+					<name>dqvoida</name>
+					<description>Data Quality Void Collection Area</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>contourl</name>
+					<description>Contour Line</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>depthl</name>
+					<description>Depth Line</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>dqpoint</name>
+					<description>Elevation Data Quality Point</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>elevoida</name>
+					<description>Elevation Void Collection Area</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>elevp</name>
+					<description>Elevation Point</description>
+				</vmap>
+				<vmap cat="elev">
+					<name>elevtxt</name>
+					<description>Elevation Text</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>aquecanl</name>
+					<description>Aqueduct/Canal/Flume/Penstock Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>aquedctl</name>
+					<description>Aqueduct Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>aquedctc</name>
+					<description>Aqueduct Node</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>coasta</name>
+					<description>Coast Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>damc</name>
+					<description>Dam/Weir Node</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>daml</name>
+					<description>Dam/Weir Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>dangera</name>
+					<description>Danger Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>dangerl</name>
+					<description>Danger Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>dangerp</name>
+					<description>Danger Point</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>hydrotxt</name>
+					<description>Hydrography Text</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>hydvoida</name>
+					<description>Hydrography Void Collection Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>inunda</name>
+					<description>Inundation Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>inwatera</name>
+					<description>Inland Water Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>lakeresa</name>
+					<description>Lake Reservoir Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>lockl</name>
+					<description>Lock Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>miscl</name>
+					<description>Miscellaneous Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>miscp</name>
+					<description>Miscellaneous Point</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>rapidsc</name>
+					<description>Rapids Node</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>rapidsl</name>
+					<description>Rapids Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>seastrtl</name>
+					<description>Sea Structure Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>watrcrsa</name>
+					<description>Water Course Area</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>watrcrsl</name>
+					<description>Water Course Line</description>
+				</vmap>
+				<vmap cat="hydro">
+					<name>wellsprp</name>
+					<description>Well Spring Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>agristrp</name>
+					<description>Agricultural Storage Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>disposea</name>
+					<description>Disposal Area</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>extracta</name>
+					<description>Extraction Area</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>extractp</name>
+					<description>Extraction Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>fishinda</name>
+					<description>Fishery Industry Area</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>indl</name>
+					<description>Industry Line</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>indtxt</name>
+					<description>Industry Text</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>indvoida</name>
+					<description>Industry Void Collection Area</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>misindp</name>
+					<description>Miscellaneous Industry Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>nuclearp</name>
+					<description>Particle Accelerator Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>obstrp</name>
+					<description>Obstruction Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>processa</name>
+					<description>Processing Area</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>processp</name>
+					<description>Processing Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>rigwellp</name>
+					<description>Rig Well Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>storagep</name>
+					<description>Storage Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>towerp</name>
+					<description>Tower Point</description>
+				</vmap>
+				<vmap cat="ind">
+					<name>treata</name>
+					<description>Treatment Area</description>
+				</vmap>
+				<vmap cat="libref">
+					<name>libref</name>
+					<description>Library Reference Line</description>
+				</vmap>
+				<vmap cat="libref">
+					<name>libreft</name>
+					<description>Library Reference Text</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>asphalta</name>
+					<description>Asphalt Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>bluffl</name>
+					<description>Bluff Line</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>cutfill</name>
+					<description>Cut/Fill Line</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>embankl</name>
+					<description>Embankment/Fill Line</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>grounda</name>
+					<description>Ground Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>landicea</name>
+					<description>Land Ice Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>lndfrm1a</name>
+					<description>Landform 1 Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>lndfrm2a</name>
+					<description>Landform 2 Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>lndfrml</name>
+					<description>Landform Line</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>lndfrmp</name>
+					<description>Landform Point</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>mtnp</name>
+					<description>Mountain Point</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>phystxt</name>
+					<description>Physiography Text</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>phyvoida</name>
+					<description>Physiography Void Collection Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>seaicea</name>
+					<description>Sea Ice Area</description>
+				</vmap>
+				<vmap cat="phys">
+					<name>thermalp</name>
+					<description>Thermal Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>builda</name>
+					<description>Buildings Area</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>buildp</name>
+					<description>Buildings Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>builtupa</name>
+					<description>Built-Up Area Area</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>builtupp</name>
+					<description>Built-Up Area Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>fortp</name>
+					<description>Fortification Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>landmrka</name>
+					<description>Landmark Area</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>landmrkl</name>
+					<description>Landmark Line</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>landmrkp</name>
+					<description>Landmark Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>mispopa</name>
+					<description>Miscellaneous Population Area</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>mispopp</name>
+					<description>Miscellaneous Population Point</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>poptxt</name>
+					<description>Population Text</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>popvoida</name>
+					<description>Population Void Collection Area</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>ruinsa</name>
+					<description>Ruins Line</description>
+				</vmap>
+				<vmap cat="pop">
+					<name>ruinsp</name>
+					<description>Ruins Point</description>
+				</vmap>
+				<vmap cat="tileref">
+					<name>tileref</name>
+					<description>Tile Reference Area</description>
+				</vmap>
+				<vmap cat="tileref">
+					<name>tilereft</name>
+					<description>Tile Reference Text</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>aerofacp</name>
+					<description>Airport Point</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>bridgec</name>
+					<description>Bridge Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>bridgel</name>
+					<description>Bridge Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>ferryc</name>
+					<description>Ferry Crossing Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>ferryl</name>
+					<description>Ferry Crossing Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>fordc</name>
+					<description>Ford Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>fordl</name>
+					<description>Ford Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>harbora</name>
+					<description>Harbor Area</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>interc</name>
+					<description>Interchange Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>liftl</name>
+					<description>Lift Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>misaerop</name>
+					<description>Miscellaneous Aeronautical Point</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>mistranl</name>
+					<description>Miscellaneous Transportation Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>pierl</name>
+					<description>Pier Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>railrdl</name>
+					<description>Railroad Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>restp</name>
+					<description>Rest Area Point</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>roadl</name>
+					<description>Road Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>rryarda</name>
+					<description>Railroad Yard Area</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>rryardp</name>
+					<description>Railroad Yard Point</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>runwayl</name>
+					<description>Runway Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>runwayp</name>
+					<description>Runway Point</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>shedc</name>
+					<description>Snow Shed Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>shedl</name>
+					<description>Snow Shed Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>trackl</name>
+					<description>Track Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>traill</name>
+					<description>Trail Line</description>
+					<description>Trails and Tracks Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>transtrc</name>
+					<description>Transportation Structures Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>transtrl</name>
+					<description>Transportation Structures Line</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>transtxt</name>
+					<description>Transportation Text</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>travoida</name>
+					<description>Transportation Void Collection Area</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>tunnelc</name>
+					<description>Tunnel Node</description>
+				</vmap>
+				<vmap cat="trans">
+					<name>tunnell</name>
+					<description>Tunnel Line</description>
+				</vmap>
+				<vmap cat="util">
+					<name>commp</name>
+					<description>Communication Point</description>
+				</vmap>
+				<vmap cat="util">
+					<name>pipel</name>
+					<description>Pipeline Line</description>
+				</vmap>
+				<vmap cat="util">
+					<name>powera</name>
+					<description>Power Plant Area</description>
+				</vmap>
+				<vmap cat="util">
+					<name>powerl</name>
+					<description>Powerline Line</description>
+				</vmap>
+				<vmap cat="util">
+					<name>powerp</name>
+					<description>Power Plant Point</description>
+				</vmap>
+				<vmap cat="util">
+					<name>pumpingp</name>
+					<description>Pumping Station Point</description>
+				</vmap>
+				<vmap cat="util">
+					<name>telel</name>
+					<description>Telephone Line</description>
+				</vmap>
+				<vmap cat="util">
+					<name>utill</name>
+					<description>Utility Line</description>
+				</vmap>
+				<vmap cat="util">
+					<name>utilp</name>
+					<description>Utility Point</description>
+				</vmap>
+				<vmap cat="util">
+					<name>utiltxt</name>
+					<description>Utilities Text</description>
+				</vmap>
+				<vmap cat="util">
+					<name>utivoida</name>
+					<description>Utilities Void Collection Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>cropa</name>
+					<description>Cropland Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>firebrkl</name>
+					<description>Cleared Way/Firebreak Line</description>
+					<description>Firebreak Line</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>grassa</name>
+					<description>Grassland Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>hedgel</name>
+					<description>Hedge Line</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>oasisa</name>
+					<description>Oasis Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>oasisp</name>
+					<description>Oasis Point</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>orcharda</name>
+					<description>Orchard Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>swampa</name>
+					<description>Swamp Area</description>
+					<description>Marsh/Swamp Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>treesa</name>
+					<description>Trees Area</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>treesl</name>
+					<description>Trees Line</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>tundraa</name>
+					<description>Tundra Area Feature Table</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>vegtxt</name>
+					<description>Vegetation Text</description>
+				</vmap>
+				<vmap cat="veg">
+					<name>vegvoida</name>
+					<description>Vegetation Void Collection Area</description>
+				</vmap>
+			</xsl:variable>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-TITLE">
+					<xsl:value-of select="./wms:Title" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-VMAP">
+						<xsl:value-of select="./@vmap" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-VMAP='true'">
+							<xsl:choose>
+								<xsl:when test="not($VMAP-LIST/vmap[name=$LYR-NAME])">
+									<ctl:message>Layer <xsl:value-of select="$LYR-NAME" /> does not use a VMAP feature class name as its name.</ctl:message>
+									<ctl:fail />
+								</xsl:when>
+								<xsl:when test="not($VMAP-LIST/vmap[name=$LYR-NAME]/description[.=$LYR-TITLE])">
+									<ctl:message>Layer <xsl:value-of select="$LYR-NAME" /> does not use the VMAP feature class description (<xsl:value-of select="$VMAP-LIST/vmap[name=$LYR-NAME]/description[1]" />) as its title.</ctl:message>
+									<ctl:fail />
+								</xsl:when>
+							</xsl:choose>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:feature_count">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The maximum FEATURE_COUNT supported is not less than 100.</ctl:assertion>
+		<ctl:comment>
+			If there is a vector layer that supports over 99 layers, submit a GetFeatureInfo request with FEATURE_COUNT=100 and a GetFeatureInfo
+			request with FEATURE_COUNT=99. Verify that neither request returns an exception, and the first response is larger than the second
+			response.
+		</ctl:comment>
+		<ctl:link title="Section 3.10.5, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3105</ctl:link>
+		<ctl:code>
+			<xsl:if test="not($METADATA/self::TestConfig/layer/@over99)">
+				<ctl:message>No metadata indicating a location with over 99 features.</ctl:message>
+			</xsl:if>
+			<xsl:variable name="MAP-FORMAT" select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:Format[1]" />
+			<xsl:variable name="FEATURE-FORMAT" select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetFeatureInfo/wms:Format[1]" />
+			<xsl:variable name="FEATURE-INFO-URL"
+				select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetFeatureInfo/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+					<xsl:variable name="CFG-OVER-99">
+						<xsl:value-of select="./@over99" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-OVER-99='true'">
+							<xsl:variable name="RESPONSE-100">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of select="$FEATURE-INFO-URL" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="QuErY_LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="I">50</ctl:param>
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="StYlEs" />
+									<ctl:param name="WiDtH">100</ctl:param>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="ReQuEsT">GetFeatureInfo</ctl:param>
+									<ctl:param name="InFo_fOrMaT">
+										<xsl:value-of select="functions:encode($FEATURE-FORMAT)" />
+									</ctl:param>
+									<ctl:param name="BbOx">-2,2,2,6</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="J">50</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($MAP-FORMAT)" />
+									</ctl:param>
+									<ctl:param name="FeAtUrE_CoUnT">100</ctl:param>
+									<parsers:CDataParser />
+								</ctl:request>
+							</xsl:variable>
+							<xsl:variable name="RESPONSE-99">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of select="$FEATURE-INFO-URL" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="QuErY_LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="I">50</ctl:param>
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="StYlEs" />
+									<ctl:param name="WiDtH">100</ctl:param>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="ReQuEsT">GetFeatureInfo</ctl:param>
+									<ctl:param name="InFo_fOrMaT">
+										<xsl:value-of select="functions:encode($FEATURE-FORMAT)" />
+									</ctl:param>
+									<ctl:param name="BbOx">-2,2,2,6</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="J">50</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($MAP-FORMAT)" />
+									</ctl:param>
+									<ctl:param name="FeAtUrE_CoUnT">99</ctl:param>
+									<parsers:CDataParser />
+								</ctl:request>
+							</xsl:variable>
+
+							<xsl:if test="not(string-length($RESPONSE-100) &gt; string-length($RESPONSE-99))">
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:bathymetric-and-elevation-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>For each named layer that portrays bathymetric or elevation data, styles named &quot;shaded&quot; and &quot;hypsometric&quot; are advertised.</ctl:assertion>
+		<ctl:comment>Bathymetric and Elevation layers are marked in uploaded data.</ctl:comment>
+		<ctl:link title="Section 3.3.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S331</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:bathymetric-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:elevation-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:bathymetric-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The style for bathymetric data shall be &quot;hypsometric&quot;.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.3.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S331</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-SYL-NAME">
+					<xsl:for-each select="./wms:Style">
+						<xsl:if test="./wms:Name='hypsometric'">
+							<xsl:value-of select="./wms:Name" />
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-BATHYMETRY">
+						<xsl:value-of select="./@bathymetry" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-BATHYMETRY='true'">
+							<xsl:if test="not($LYR-SYL-NAME='hypsometric')">
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:elevation-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The style for elevation data shall be &quot;shaded&quot;.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.3.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S331</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-SYL-NAME">
+					<xsl:for-each select="./wms:Style">
+						<xsl:if test="./wms:Name='shaded'">
+							<xsl:value-of select="./wms:Name" />
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-ELEVATION">
+						<xsl:value-of select="./@elevation" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-ELEVATION='true'">
+							<xsl:if test="not($LYR-SYL-NAME='shaded')">
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:bathymetric-and-elevation-portrayal">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:param name="STYLE" />
+		<ctl:assertion>For style &quot;{$STYLE}&quot; on a bathymetric or elevation data layer, the map is portrayed correctly.</ctl:assertion>
+		<ctl:comment>The user is asked to verify the results manually.</ctl:comment>
+		<ctl:link title="Section 3.3.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S331</ctl:link>
+		<ctl:code>
+			<xsl:variable name="LYR"
+				select="$METADATA/self::TestConfig/layer[featureinfo and (functions:boolean-as-integer(@elevation)=1 or functions:boolean-as-integer(@bathymetry)=1)][1]" />
+			<xsl:choose>
+				<xsl:when test="$LYR/self::layer">
+					<xsl:variable name="form-values">
+						<ctl:form width="700" height="500">
+							<img border="1">
+								<xsl:attribute name="src">
+									<xsl:value-of
+										select="functions:correct-url-prefix($CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href)" />
+									<xsl:text>VERSION=</xsl:text>
+									<xsl:value-of select="functions:version()" />
+									<xsl:text>&amp;REQUEST=GetMap</xsl:text>
+									<xsl:text>&amp;LAYERS=</xsl:text>
+									<xsl:value-of select="functions:encode(string($LYR/@name))" />
+									<xsl:text>&amp;STYLES=</xsl:text>
+									<xsl:value-of select="$STYLE" />
+									<xsl:text>&amp;CRS=CRS:84</xsl:text>
+									<xsl:text>&amp;BBOX=</xsl:text>
+									<xsl:value-of select="$LYR/featureinfo/@bbox" />
+									<xsl:text>&amp;WIDTH=</xsl:text>
+									<xsl:value-of select="$LYR/featureinfo/@width" />
+									<xsl:text>&amp;HEIGHT=</xsl:text>
+									<xsl:value-of select="$LYR/featureinfo/@height" />
+									<xsl:text>&amp;FORMAT=</xsl:text>
+									<xsl:value-of
+										select="functions:encode(string($CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:Format[1]))" />
+								</xsl:attribute>
+							</img>
+							<p>
+								<xsl:text>Is the </xsl:text>
+								<xsl:choose>
+									<xsl:when test="functions:boolean-as-integer($LYR/@elevation)=1">elevation</xsl:when>
+									<xsl:otherwise>bathymetric</xsl:otherwise>
+								</xsl:choose>
+								<xsl:text> data above portrayed in a </xsl:text>
+								<a href="dgiwg/ed1.3/styles/{$STYLE}.html" target="style">
+									<xsl:value-of select="$STYLE" />
+								</a>
+								<xsl:text> style?</xsl:text>
+							</p>
+							<p>
+								<input type="submit" name="submit" value="yes" />
+								<input type="submit" name="submit" value="no" />
+							</p>
+						</ctl:form>
+					</xsl:variable>
+				</xsl:when>
+				<xsl:otherwise>
+					<ctl:message>No qualifying layers.</ctl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:default-bathymetric-and-elevation-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The default style for each bathymetry layer is &quot;hypsometric&quot;, and the default style for each elevation layer is &quot;shaded&quot;.</ctl:assertion>
+		<ctl:comment>
+			Determine which style is the default by comparing the checksum of the default image with the checksum of the images for both of the
+			styles.
+		</ctl:comment>
+		<ctl:link title="Section 4.2.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S421</ctl:link>
+		<ctl:code>
+			<ctl:call-test name="dgiwg:default-bathymetric-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+			<ctl:call-test name="dgiwg:default-elevation-styles">
+				<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+				<ctl:with-param name="METADATA" select="$METADATA" />
+			</ctl:call-test>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:default-bathymetric-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The default style for each bathymetry layer is &quot;hypsometric&quot;.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.2.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S421</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-BB">
+					<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+						<xsl:value-of select="wms:westBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:southBoundLatitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:eastBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:northBoundLatitude" />
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-BATHYMETRY">
+						<xsl:value-of select="./@bathymetry" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-BATHYMETRY='true'">
+							<xsl:variable name="image-format"
+								select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+							<xsl:variable name="response-default">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of
+											select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($image-format)" />
+									</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="WiDtH">200</ctl:param>
+									<ctl:param name="StYlEs" />
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="ReQuEsT">GetMap</ctl:param>
+									<ctl:param name="BbOx">
+										<xsl:value-of select="$LYR-BB" />
+									</ctl:param>
+									<parsers:ImageParser>
+										<parsers:model value="ARGB">
+											<parsers:checksum></parsers:checksum>
+										</parsers:model>
+									</parsers:ImageParser>
+								</ctl:request>
+							</xsl:variable>
+
+							<xsl:variable name="response-hypsometric">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of
+											select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($image-format)" />
+									</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="WiDtH">200</ctl:param>
+									<ctl:param name="StYlEs">hypsometric</ctl:param>
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="ReQuEsT">GetMap</ctl:param>
+									<ctl:param name="BbOx">
+										<xsl:value-of select="$LYR-BB" />
+									</ctl:param>
+									<parsers:ImageParser>
+										<parsers:model value="ARGB">
+											<parsers:checksum></parsers:checksum>
+										</parsers:model>
+									</parsers:ImageParser>
+								</ctl:request>
+							</xsl:variable>
+							<xsl:if
+								test="not($response-default/parsers:ImageParser/parsers:model/parsers:checksum = $response-hypsometric/parsers:ImageParser/parsers:model/parsers:checksum)">
+								<ctl:fail />
+							</xsl:if>
+
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:default-elevation-styles">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The default style for each elevation layer is "shaded".</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.2.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S421</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-BB">
+					<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+						<xsl:value-of select="wms:westBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:southBoundLatitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:eastBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:northBoundLatitude" />
+					</xsl:for-each>
+				</xsl:variable>
+
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-ELEVATION">
+						<xsl:value-of select="./@elevation" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-ELEVATION='true'">
+							<xsl:variable name="image-format"
+								select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+							<xsl:variable name="response-default">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of
+											select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($image-format)" />
+									</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="WiDtH">200</ctl:param>
+									<ctl:param name="StYlEs" />
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="ReQuEsT">GetMap</ctl:param>
+									<ctl:param name="BbOx">
+										<xsl:value-of select="$LYR-BB" />
+									</ctl:param>
+									<parsers:ImageParser>
+										<parsers:model value="ARGB">
+											<parsers:checksum></parsers:checksum>
+										</parsers:model>
+									</parsers:ImageParser>
+								</ctl:request>
+							</xsl:variable>
+
+							<xsl:variable name="response-shaded">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of
+											select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($image-format)" />
+									</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="WiDtH">200</ctl:param>
+									<ctl:param name="StYlEs">shaded</ctl:param>
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="ReQuEsT">GetMap</ctl:param>
+									<ctl:param name="BbOx">
+										<xsl:value-of select="$LYR-BB" />
+									</ctl:param>
+									<parsers:ImageParser>
+										<parsers:model value="ARGB">
+											<parsers:checksum></parsers:checksum>
+										</parsers:model>
+									</parsers:ImageParser>
+								</ctl:request>
+							</xsl:variable>
+							<xsl:if
+								test="not($response-default/parsers:ImageParser/parsers:model/parsers:checksum = $response-shaded/parsers:ImageParser/parsers:model/parsers:checksum)">
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:coverages-support-transparency">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>For each named layer, GetMap returns transparent pixels for pixels outside of the bounds of the data.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.6.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S361</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-BB">
+					<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+						<xsl:value-of select="wms:eastBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:southBoundLatitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="number(wms:eastBoundLongitude) + 10" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:northBoundLatitude" />
+					</xsl:for-each>
+				</xsl:variable>
+
+				<xsl:variable name="image-format"
+					select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+				<xsl:variable name="response">
+					<ctl:request>
+						<ctl:url>
+							<xsl:value-of select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+						</ctl:url>
+						<ctl:method>get</ctl:method>
+						<ctl:param name="TrAnSpArEnT">TRUE</ctl:param>
+						<ctl:param name="CrS">CRS:84</ctl:param>
+						<ctl:param name="FoRmAt">
+							<xsl:value-of select="functions:encode($image-format)" />
+						</ctl:param>
+						<ctl:param name="VeRsIoN">
+							<xsl:value-of select="functions:version()" />
+						</ctl:param>
+						<ctl:param name="HeIgHt">100</ctl:param>
+						<ctl:param name="WiDtH">200</ctl:param>
+						<ctl:param name="StYlEs" />
+						<ctl:param name="LaYeRs">
+							<xsl:value-of select="functions:encode($LYR-NAME)" />
+						</ctl:param>
+						<ctl:param name="ReQuEsT">GetMap</ctl:param>
+						<ctl:param name="BbOx">
+							<xsl:value-of select="$LYR-BB" />
+						</ctl:param>
+						<parsers:ImageParser>
+							<parsers:model value="ARGB">
+								<parsers:count bands="A" sample="0x00"></parsers:count>
+							</parsers:model>
+						</parsers:ImageParser>
+					</ctl:request>
+				</xsl:variable>
+
+				<xsl:if test="not($response/parsers:ImageParser/parsers:model/parsers:count)">
+					<ctl:fail />
+				</xsl:if>
+				<xsl:if test="number($response/parsers:ImageParser/parsers:model/parsers:count) = 0">
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:vectors-support-transparency">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>For a vector layer, GetMap returns transparent pixels for pixels not covered by features.</ctl:assertion>
+		<ctl:comment>Verify that there are transparent pixels in the response to a GetMap request on a vector layer.</ctl:comment>
+		<ctl:link title="Section 3.6.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S361</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-BB">
+					<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+						<xsl:value-of select="wms:westBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:southBoundLatitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:eastBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:northBoundLatitude" />
+					</xsl:for-each>
+				</xsl:variable>
+
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='vector'">
+							<xsl:variable name="image-format"
+								select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+							<xsl:variable name="response">
+								<ctl:request>
+									<ctl:url>
+										<xsl:value-of
+											select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+									</ctl:url>
+									<ctl:method>get</ctl:method>
+									<ctl:param name="TrAnSpArEnT">TRUE</ctl:param>
+									<ctl:param name="CrS">CRS:84</ctl:param>
+									<ctl:param name="FoRmAt">
+										<xsl:value-of select="functions:encode($image-format)" />
+									</ctl:param>
+									<ctl:param name="VeRsIoN">
+										<xsl:value-of select="functions:version()" />
+									</ctl:param>
+									<ctl:param name="HeIgHt">100</ctl:param>
+									<ctl:param name="WiDtH">200</ctl:param>
+									<ctl:param name="StYlEs" />
+									<ctl:param name="LaYeRs">
+										<xsl:value-of select="functions:encode($LYR-NAME)" />
+									</ctl:param>
+									<ctl:param name="ReQuEsT">GetMap</ctl:param>
+									<ctl:param name="BbOx">
+										<xsl:value-of select="$LYR-BB" />
+									</ctl:param>
+									<parsers:ImageParser>
+										<parsers:model value="ARGB">
+											<parsers:count bands="A" sample="0x00"></parsers:count>
+										</parsers:model>
+									</parsers:ImageParser>
+								</ctl:request>
+							</xsl:variable>
+
+							<xsl:if test="not($response/parsers:ImageParser/parsers:model/parsers:count)">
+								<ctl:fail />
+							</xsl:if>
+							<xsl:if test="number($response/parsers:ImageParser/parsers:model/parsers:count) = 0">
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:vector-overlaying-coverage">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>When a vector layer overalys a raster or coverage layer, the coverage layer is visible.</ctl:assertion>
+		<ctl:comment>
+			This test is only be executed if the cite:Lakes layer exists. Overlay cite:Lakes on a coverage layer and verify that in an area not
+			covered by the lake, the result is identical to the result for the coverage only.
+		</ctl:comment>
+		<ctl:link title="Section 3.6.1, Test type 3" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S361</ctl:link>
+		<ctl:code>
+			<xsl:if test="$CAPABILITIES//wms:Layer[wms:Title='cite:Lakes']">
+				<xsl:variable name="LAKES" select="string($CAPABILITIES//wms:Layer[wms:Title='cite:Lakes']/wms:Name)" />
+				<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+					<xsl:variable name="LYR-NAME">
+						<xsl:value-of select="./wms:Name" />
+					</xsl:variable>
+					<xsl:variable name="LYR-BB">
+						<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+							<xsl:if	test="number(wms:westBoundLongitude) &lt;= number(0.0) and number(wms:southBoundLatitude) &lt;= number(-0.01) and number(wms:eastBoundLongitude) &gt;= number(0.01) and number(wms:northBoundLatitude) &gt;= number(0.0)">
+								<xsl:value-of select="wms:westBoundLongitude" />
+								<xsl:text>,</xsl:text>
+								<xsl:value-of select="wms:southBoundLatitude" />
+								<xsl:text>,</xsl:text>
+								<xsl:value-of select="wms:eastBoundLongitude" />
+								<xsl:text>,</xsl:text>
+								<xsl:value-of select="wms:northBoundLatitude" />
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:for-each select="$METADATA/self::TestConfig/layer">
+						<xsl:variable name="CFG-NAME">
+							<xsl:value-of select="./@name" />
+						</xsl:variable>
+						<xsl:variable name="CFG-TYPE">
+							<xsl:value-of select="./@type" />
+						</xsl:variable>
+						<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+							<xsl:if test="$CFG-TYPE='coverage' and not($LYR-BB='')">
+								<xsl:variable name="image-format"
+									select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+								<xsl:variable name="response-coverage">
+									<ctl:request>
+										<ctl:url>
+											<xsl:value-of
+												select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+										</ctl:url>
+										<ctl:method>get</ctl:method>
+										<ctl:param name="CrS">CRS:84</ctl:param>
+										<ctl:param name="FoRmAt">
+											<xsl:value-of select="functions:encode($image-format)" />
+										</ctl:param>
+										<ctl:param name="VeRsIoN">
+											<xsl:value-of select="functions:version()" />
+										</ctl:param>
+										<ctl:param name="HeIgHt">400</ctl:param>
+										<ctl:param name="WiDtH">400</ctl:param>
+										<ctl:param name="StYlEs" />
+										<ctl:param name="LaYeRs">
+											<xsl:value-of select="functions:encode($LYR-NAME)" />
+										</ctl:param>
+										<ctl:param name="ReQuEsT">GetMap</ctl:param>
+										<ctl:param name="BbOx">0.0,-0.01,0.01,0.0</ctl:param>
+										<parsers:ImageParser>
+											<parsers:model value="RGB">
+												<parsers:subimage x="150" y="0" width="250" height="400">
+													<parsers:checksum></parsers:checksum>
+												</parsers:subimage>
+												<parsers:subimage x="0" y="80" width="400" height="320">
+													<parsers:checksum></parsers:checksum>
+												</parsers:subimage>
+											</parsers:model>
+										</parsers:ImageParser>
+									</ctl:request>
+								</xsl:variable>
+
+								<xsl:variable name="response-overlay">
+									<ctl:request>
+										<ctl:url>
+											<xsl:value-of
+												select="$CAPABILITIES//wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+										</ctl:url>
+										<ctl:method>get</ctl:method>
+										<ctl:param name="CrS">CRS:84</ctl:param>
+										<ctl:param name="FoRmAt">
+											<xsl:value-of select="functions:encode($image-format)" />
+										</ctl:param>
+										<ctl:param name="VeRsIoN">
+											<xsl:value-of select="functions:version()" />
+										</ctl:param>
+										<ctl:param name="HeIgHt">400</ctl:param>
+										<ctl:param name="WiDtH">400</ctl:param>
+										<ctl:param name="StYlEs" />
+										<ctl:param name="LaYeRs">
+											<xsl:value-of select="concat(functions:encode($LYR-NAME), ',', functions:encode($LAKES))" />
+										</ctl:param>
+										<ctl:param name="ReQuEsT">GetMap</ctl:param>
+										<ctl:param name="BbOx">0.0,-0.01,0.01,0.0</ctl:param>
+										<parsers:ImageParser>
+											<parsers:model value="RGB">
+												<parsers:subimage x="150" y="0" width="250" height="400">
+													<parsers:checksum></parsers:checksum>
+												</parsers:subimage>
+												<parsers:subimage x="0" y="80" width="400" height="320">
+													<parsers:checksum></parsers:checksum>
+												</parsers:subimage>
+											</parsers:model>
+										</parsers:ImageParser>
+									</ctl:request>
+								</xsl:variable>
+								<xsl:if
+									test="not($response-coverage/parsers:ImageParser/parsers:model/parsers:subimage[1]/parsers:checksum = $response-overlay/parsers:ImageParser/parsers:model/parsers:subimage[1]/parsers:checksum)">
+									<ctl:fail />
+								</xsl:if>
+								<xsl:if
+									test="not($response-coverage/parsers:ImageParser/parsers:model/parsers:subimage[2]/parsers:checksum = $response-overlay/parsers:ImageParser/parsers:model/parsers:subimage[2]/parsers:checksum)">
+									<ctl:fail />
+								</xsl:if>
+							</xsl:if>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:scales">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each layer supports scales from at least 4x to at least 0.25x the native scale(s) or resolution(s) of the underlying datasets.</ctl:assertion>
+		<ctl:comment>Implement file upload</ctl:comment>
+		<ctl:link title="Section 4.1.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:variable name="LYR-MIN-SCALE">
+					<xsl:value-of select="./wms:MinScaleDenominator" />
+				</xsl:variable>
+				<xsl:variable name="LYR-MAX-SCALE">
+					<xsl:value-of select="./wms:MaxScaleDenominator" />
+				</xsl:variable>
+
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="not($LYR-MIN-SCALE='')">
+							<xsl:variable name="CFG-MIN-SCALE">
+								<xsl:for-each select="./scale">
+									<xsl:variable name="CFG-SCALE" select="number(.)" />
+									<xsl:if
+										test="not(preceding-sibling::scale[. &lt; $CFG-SCALE]) and not(following-sibling::scale[. &lt; $CFG-SCALE]) ">
+										<xsl:value-of select="$CFG-SCALE" />
+									</xsl:if>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:if test="number($LYR-MIN-SCALE) &gt; $CFG-MIN-SCALE * number(0.25)">
+								<ctl:message>Layer <xsl:value-of select="$LYR-NAME" /> does not support scales that are 0.25x the native scale given in the test metadata</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+						<xsl:if test="not($LYR-MAX-SCALE='')">
+							<xsl:variable name="CFG-MAX-SCALE">
+								<xsl:for-each select="./scale">
+									<xsl:variable name="CFG-SCALE" select="number(.)" />
+									<xsl:if
+										test="not(preceding-sibling::scale[. &gt; $CFG-SCALE]) and not(following-sibling::scale[. &gt; $CFG-SCALE]) ">
+										<xsl:value-of select="$CFG-SCALE" />
+									</xsl:if>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:if test="number($LYR-MAX-SCALE) &lt; $CFG-MAX-SCALE * number(4)">
+								<ctl:message>Layer <xsl:value-of select="$LYR-NAME" /> does not support scales that are 4x the native scale given in the test metadata</ctl:message>
+								<ctl:fail />
+							</xsl:if>
+						</xsl:if>
+
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:performance">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>If the WMS is local, no GetMap request takes more than 1 second per layer.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.5.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S451</ctl:link>
+		<ctl:code>
+			<xsl:for-each
+				select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif') or starts-with(., 'image/jpeg')]">
+				<ctl:call-test name="dgiwg:performance-image-format">
+					<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+					<ctl:with-param name="METADATA" select="$METADATA" />
+					<ctl:with-param name="IMAGE-FORMAT" select="string(.)" label="GIF, PNG, and JPEG" label-expr="string(.)" />
+				</ctl:call-test>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+
+	<ctl:test name="dgiwg:performance-image-format">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:param name="IMAGE-FORMAT" />
+		<ctl:assertion>For {$IMAGE-FORMAT}, no GetMap request takes more than 1 second per layer.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.5.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S451</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="layer-name" select="string(wms:Name)" />
+				<xsl:variable name="layer-info">
+					<ctl:call-function name="functions:layer-info">
+						<ctl:with-param name="root-layer" select="$CAPABILITIES/wms:Capability/wms:Layer" />
+						<ctl:with-param name="preferred-name">
+							<xsl:value-of select="./wms:Name" />
+						</ctl:with-param>
+						<ctl:with-param name="preferred-crs">CRS:84</ctl:with-param>
+						<ctl:with-param name="preferred-bbox">
+							<xsl:if test="$METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo">
+								<xsl:value-of select="$METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo/@bbox" />
+							</xsl:if>
+						</ctl:with-param>
+						<ctl:with-param name="preferred-width">
+							<xsl:choose>
+								<!--
+									<xsl:when test="$METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo">
+									<xsl:value-of select="number($METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo/@width)"/>
+									</xsl:when>
+								-->
+								<xsl:when test="$CAPABILITIES/wms:Service/wms:MaxWidth">
+									<xsl:value-of select="number($CAPABILITIES/wms:Service/wms:MaxWidth)" />
+								</xsl:when>
+								<xsl:otherwise>800</xsl:otherwise>
+							</xsl:choose>
+						</ctl:with-param>
+						<ctl:with-param name="preferred-height">
+							<xsl:choose>
+								<!--
+									<xsl:when test="$METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo">
+									<xsl:value-of select="number($METADATA/self::TestConfig/layer[@name=$layer-name]/featureinfo/@height)"/>
+									</xsl:when>
+								-->
+								<xsl:when test="$CAPABILITIES/wms:Service/wms:MaxHeight">
+									<xsl:value-of select="number($CAPABILITIES/wms:Service/wms:MaxHeight)" />
+								</xsl:when>
+								<xsl:otherwise>800</xsl:otherwise>
+							</xsl:choose>
+						</ctl:with-param>
+					</ctl:call-function>
+				</xsl:variable>
+
+				<ctl:call-test name="dgiwg:performance-get-map">
+					<ctl:with-param name="LAYER-INFO" select="$layer-info/LayerInfo" label="each layer"
+						label-expr="concat('layer ', $layer-info/LayerInfo/@name)" />
+					<ctl:with-param name="GETMAP-URL"
+						select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+					<ctl:with-param name="IMAGE-FORMAT" select="$IMAGE-FORMAT" />
+				</ctl:call-test>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:performance-get-map">
+		<ctl:param name="LAYER-INFO" />
+		<ctl:param name="GETMAP-URL" />
+		<ctl:param name="IMAGE-FORMAT" />
+		<ctl:assertion>GetMap request for {$LAYER-INFO} takes less than 1 second.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.5.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S451</ctl:link>
+		<ctl:code>
+			<xsl:variable name="START-TIME">
+				<xsl:value-of select="dgiwg:current-time()" />
+			</xsl:variable>
+			<xsl:variable name="RESPONSE">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$GETMAP-URL" />
+					</ctl:url>
+					<ctl:method>get</ctl:method>
+					<ctl:param name="LaYeRs">
+						<xsl:value-of select="functions:encode($LAYER-INFO/self::LayerInfo/@name)" />
+					</ctl:param>
+					<ctl:param name="FoRmAt">
+						<xsl:value-of select="functions:encode($IMAGE-FORMAT)" />
+					</ctl:param>
+					<ctl:param name="HeIgHt">
+						<xsl:value-of select="$LAYER-INFO/self::LayerInfo/@height" />
+					</ctl:param>
+					<ctl:param name="CrS">
+						<xsl:value-of select="functions:encode($LAYER-INFO/self::LayerInfo/@crs)" />
+					</ctl:param>
+					<ctl:param name="VeRsIoN">
+						<xsl:value-of select="functions:version()" />
+					</ctl:param>
+					<ctl:param name="BbOx">
+						<xsl:value-of select="$LAYER-INFO/self::LayerInfo/@bbox" />
+					</ctl:param>
+					<ctl:param name="WiDtH">
+						<xsl:value-of select="$LAYER-INFO/self::LayerInfo/@width" />
+					</ctl:param>
+					<ctl:param name="ReQuEsT">GetMap</ctl:param>
+					<ctl:param name="StYlEs" />
+					<parsers:NullParser />
+				</ctl:request>
+			</xsl:variable>
+			<xsl:variable name="END-TIME">
+				<xsl:value-of select="dgiwg:current-time()" />
+			</xsl:variable>
+
+			<!-- Calculate response time by adjusting for minutes -->
+			<xsl:variable name="RSP-TIME">
+				<xsl:choose>
+					<xsl:when test="number(minutes-from-time($END-TIME)) &gt; number(minutes-from-time($START-TIME))">
+						<xsl:value-of
+							select="((((number(minutes-from-time($END-TIME)) - number(minutes-from-time($START-TIME))) * number(60.0))) - number(seconds-from-time($START-TIME)))" />
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="(number(seconds-from-time($END-TIME)) - number(seconds-from-time($START-TIME)))" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:if test="number($RSP-TIME) &gt; number(1.0)">
+				<ctl:message>Response time for <xsl:value-of select="$LAYER-INFO/self::LayerInfo/@name" /> is <xsl:value-of select="$RSP-TIME" /> seconds</ctl:message>
+				<ctl:fail />
+			</xsl:if>
+
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:metadata-layers-exist">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each layer has at least one &lt;MetadataURL/&gt; that references a WMS metadata layer.</ctl:assertion>
+		<ctl:comment>Check capabilities to verify each named layer has a MetadataURL element with a "#" in the url.</ctl:comment>
+		<ctl:link title="Section 4.4.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="WMS-METADATA">
+					<xsl:for-each select="./wms:MetadataURL">
+						<xsl:if test="contains(./wms:OnlineResource/@xlink:href, '#')">
+							<xsl:value-of select="." />
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:if test="$WMS-METADATA=''">
+					<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not reference a WMS metadata layer.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:metadata-layers-work">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The metadata layer for each layer supports GetMap and GetFeatureInfo requests.</ctl:assertion>
+		<ctl:comment>
+			For each named layer, send a GetMap request and a GetFeatureInfo request (using one of the formats supported by the server) and check the
+			content-type of the response.
+		</ctl:comment>
+		<ctl:link title="Section 4.4.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="WMS-METADATA">
+					<xsl:for-each select="./wms:MetadataURL">
+						<xsl:if test="contains(./wms:OnlineResource/@xlink:href, '#')">
+							<xsl:value-of select="./wms:OnlineResource/@xlink:href" />
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="LYR-BB">
+					<xsl:for-each select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox">
+						<xsl:value-of select="wms:westBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:southBoundLatitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:eastBoundLongitude" />
+						<xsl:text>,</xsl:text>
+						<xsl:value-of select="wms:northBoundLatitude" />
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:choose>
+					<xsl:when test="$WMS-METADATA=''">
+						<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not reference a WMS metadata layer.</ctl:message>
+						<ctl:fail />
+					</xsl:when>
+					<xsl:otherwise>
+						<ctl:call-test name="dgiwg:metadata-layers-work-get-map">
+							<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+							<ctl:with-param name="WMS-METADATA" select="$WMS-METADATA" />
+							<ctl:with-param name="BBOX" select="$LYR-BB" />
+						</ctl:call-test>
+						<ctl:call-test name="dgiwg:metadata-layers-work-get-featureinfo">
+							<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+							<ctl:with-param name="WMS-METADATA" select="$WMS-METADATA" />
+							<ctl:with-param name="BBOX" select="$LYR-BB" />
+						</ctl:call-test>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:metadata-layers-work-get-map">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="WMS-METADATA" />
+		<ctl:param name="BBOX" />
+		<ctl:assertion>The metadata layer supports GetMap requests.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.4.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+			<xsl:variable name="image-format"
+				select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+			<xsl:variable name="info-format" select="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[1]" />
+			<xsl:variable name="RESPONSE">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="substring-before($WMS-METADATA, '#')" />
+					</ctl:url>
+					<ctl:method>get</ctl:method>
+					<ctl:param name="LaYeRs">
+						<xsl:value-of select="functions:encode(substring-after($WMS-METADATA, '#'))" />
+					</ctl:param>
+					<ctl:param name="FoRmAt">
+						<xsl:value-of select="functions:encode($image-format)" />
+					</ctl:param>
+					<ctl:param name="HeIgHt">200</ctl:param>
+					<ctl:param name="CrS">
+						<xsl:value-of select="functions:encode('CRS:84')" />
+					</ctl:param>
+					<ctl:param name="VeRsIoN">
+						<xsl:value-of select="functions:version()" />
+					</ctl:param>
+					<ctl:param name="BbOx">
+						<xsl:value-of select="$BBOX" />
+					</ctl:param>
+					<ctl:param name="WiDtH">200</ctl:param>
+					<ctl:param name="ReQuEsT">GetMap</ctl:param>
+					<ctl:param name="StYlEs" />
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:NullParser />
+						</parsers:parse>
+					</parsers:HTTPParser>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:if	test="functions:mime-match($RESPONSE/response/headers/header[functions:to-lowercase(@name) = 'content-type'], $image-format) = 'false'">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:metadata-layers-work-get-featureinfo">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="WMS-METADATA" />
+		<ctl:param name="BBOX" />
+		<ctl:assertion>The metadata layer supports GetFeatureInfo requests.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 4.4.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S441</ctl:link>
+		<ctl:code>
+
+			<xsl:variable name="image-format"
+				select="$CAPABILITIES//wms:Request/wms:GetMap/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif')][1]" />
+			<xsl:variable name="info-format" select="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[1]" />
+
+			<xsl:variable name="RESPONSE">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="substring-before($WMS-METADATA, '#')" />
+					</ctl:url>
+					<ctl:method>get</ctl:method>
+					<ctl:param name="LaYeRs">
+						<xsl:value-of select="functions:encode(substring-after($WMS-METADATA, '#'))" />
+					</ctl:param>
+					<ctl:param name="WiDtH">200</ctl:param>
+					<ctl:param name="HeIgHt">200</ctl:param>
+					<ctl:param name="I">100</ctl:param>
+					<ctl:param name="BbOx">
+						<xsl:value-of select="$BBOX" />
+					</ctl:param>
+					<ctl:param name="CrS">
+						<xsl:value-of select="functions:encode('CRS:84')" />
+					</ctl:param>
+					<ctl:param name="ReQuEsT">GetFeatureInfo</ctl:param>
+					<ctl:param name="InFo_fOrMaT">
+						<xsl:value-of select="functions:encode($info-format)" />
+					</ctl:param>
+					<ctl:param name="J">100</ctl:param>
+					<ctl:param name="StYlEs" />
+					<ctl:param name="FoRmAt">
+						<xsl:value-of select="functions:encode($image-format)" />
+					</ctl:param>
+					<ctl:param name="QuErY_LaYeRs">
+						<xsl:value-of select="functions:encode(substring-after($WMS-METADATA, '#'))" />
+					</ctl:param>
+					<ctl:param name="VeRsIoN">
+						<xsl:value-of select="functions:version()" />
+					</ctl:param>
+					<parsers:HTTPParser>
+						<parsers:parse>
+							<parsers:NullParser />
+						</parsers:parse>
+					</parsers:HTTPParser>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:if	test="functions:mime-match($RESPONSE/response/headers/header[functions:to-lowercase(@name) = 'content-type'], $info-format) = 'false'">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:layerlimit">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>If the service advertises a LayerLimit, its value is not less than 20.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.1.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S331</ctl:link>
+		<ctl:code>
+			<xsl:variable name="LAYERLIMIT">
+				<xsl:value-of select="$CAPABILITIES//wms:LayerLimit" />
+			</xsl:variable>
+			<xsl:if test="not($LAYERLIMIT='') ">
+				<xsl:if test="number($LAYERLIMIT) &lt; number(20) ">
+					<ctl:fail />
+				</xsl:if>
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:mapsize">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>If the server limits the width and height of the map that can be retrieved, they are >= 800</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.1.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S312</ctl:link>
+		<ctl:code>
+			<xsl:variable name="WIDTH">
+				<xsl:value-of select="$CAPABILITIES//wms:MaxWidth" />
+			</xsl:variable>
+			<xsl:variable name="HEIGHT">
+				<xsl:value-of select="$CAPABILITIES//wms:MaxHeight" />
+			</xsl:variable>
+			<xsl:if test="not($WIDTH='' or $HEIGHT='')">
+				<xsl:if test="number($WIDTH) &lt; number(800) or number($HEIGHT) &lt; number(800)">
+					<ctl:fail />
+				</xsl:if>
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:subsetable-and-resizable">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>All layers published by the server are subsetable and resizable.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.2.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S321</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer">
+				<xsl:variable name="SUBSETABLE">
+					<xsl:value-of select="./@noSubsets" />
+				</xsl:variable>
+				<xsl:variable name="WIDTH">
+					<xsl:value-of select="./@fixedWidth" />
+				</xsl:variable>
+				<xsl:variable name="HEIGHT">
+					<xsl:value-of select="./@fixedHeight" />
+				</xsl:variable>
+				<xsl:if test="not($SUBSETABLE='' or $WIDTH='' or $HEIGHT='')">
+					<xsl:if test="$SUBSETABLE or $SUBSETABLE='1' or number($WIDTH) &gt; number(0) or number($HEIGHT) &gt; number(0)">
+						<ctl:message>Layer <xsl:value-of select="@name" /> is not subsettable and resizable.</ctl:message>
+						<ctl:fail />
+					</xsl:if>
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:crs84">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer advertises support for CRS:84.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S341</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = 'CRS:84')">
+					<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support CRS CRS:84.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:epsg4326">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer advertises support for EPSG:4326.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S341</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = 'EPSG:4326')">
+					<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support CRS EPSG:4326.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:epsg3395">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer advertises support for EPSG:3395.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S341</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = 'EPSG:3395')">
+					<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support CRS EPSG:3395.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:png">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The server advertises support for PNG output.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.5.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S351</ctl:link>
+		<ctl:code>
+			<xsl:variable name="PNG">
+				<xsl:for-each select="$CAPABILITIES//wms:GetMap/wms:Format">
+					<xsl:variable name="FORMAT">
+						<xsl:value-of select="." />
+					</xsl:variable>
+					<xsl:if test="$FORMAT = 'image/png'">
+						<xsl:value-of select="." />
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:if test="$PNG = ''">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:jpeg">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The server advertises support for JPEG output.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.5.3, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S353</ctl:link>
+		<ctl:code>
+			<xsl:variable name="JPEG">
+				<xsl:for-each select="$CAPABILITIES//wms:GetMap/wms:Format">
+					<xsl:variable name="FORMAT">
+						<xsl:value-of select="." />
+					</xsl:variable>
+					<xsl:if test="$FORMAT = 'image/jpeg'">
+						<xsl:value-of select="." />
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:if test="$JPEG = ''">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:gif">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>The server advertises support for GIF output.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.5.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S352</ctl:link>
+		<ctl:code>
+			<xsl:variable name="GIF">
+				<xsl:for-each select="$CAPABILITIES//wms:GetMap/wms:Format">
+					<xsl:variable name="FORMAT">
+						<xsl:value-of select="." />
+					</xsl:variable>
+					<xsl:if test="$FORMAT = 'image/gif'">
+						<xsl:value-of select="." />
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:if test="$GIF = ''">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:no-hierarchical-layers">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>There are no hierarchical layers.</ctl:assertion>
+		<ctl:comment>This means that the root layer is not named, each child layer is named, and there are no children of named layers.</ctl:comment>
+		<ctl:link title="Section 3.8.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S381</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer">
+				<xsl:if test="ancestor::wms:Layer[wms:Name]">
+					<ctl:message>Layer <xsl:value-of select="./wms:Name" /> is hierarchical.</ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:info-formats">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>GetFeatureInfo supports at least one of XML, HTML, and PNG.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.10.3, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3103</ctl:link>
+		<ctl:code>
+			<xsl:variable name="INFO-FORMATS">
+				<xsl:for-each select="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format">
+					<xsl:variable name="FORMAT">
+						<xsl:value-of select="." />
+					</xsl:variable>
+					<xsl:if test="$FORMAT = 'text/xml' or $FORMAT = 'text/html' or $FORMAT = 'image/png'">
+						<xsl:value-of select="." />
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:if test="$INFO-FORMATS = ''">
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+
+	<ctl:test name="dgiwg:epsg32661">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer that intersects the northern hemisphere supports the UPS north zone CRS EPSG:32661.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S342</ctl:link>
+		<ctl:code>
+			<xsl:variable name="ZN-WEST" select="-180.0000" />
+			<xsl:variable name="ZN-SOUTH" select="60.0000" />
+			<xsl:variable name="ZN-EAST" select="180.0000" />
+			<xsl:variable name="ZN-NORTH" select="90.0000" />
+
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="bbox" select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox"/>
+				<xsl:variable name="BB-WEST">
+					<xsl:value-of select="$bbox/wms:westBoundLongitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-SOUTH">
+					<xsl:value-of select="$bbox/wms:southBoundLatitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-EAST">
+					<xsl:value-of select="$bbox/wms:eastBoundLongitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-NORTH">
+					<xsl:value-of select="$bbox/wms:northBoundLatitude" />
+				</xsl:variable>
+
+				<xsl:if
+					test="number($BB-WEST) &lt;= number($ZN-EAST) and number($BB-SOUTH) &lt;=number($ZN-NORTH)
+									and number($BB-EAST) &gt;=number($ZN-WEST) and number($BB-NORTH) &gt;=number($ZN-SOUTH)">
+					<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = 'EPSG:32661')">
+						<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support CRS EPSG:32661.</ctl:message>
+						<ctl:fail />
+					</xsl:if>
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:epsg32761">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer that intersects the southern hemisphere supports the UPS south zone CRS EPSG:32761.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S342</ctl:link>
+		<ctl:code>
+			<xsl:variable name="ZN-WEST" select="-180.0000" />
+			<xsl:variable name="ZN-SOUTH" select="-90.0000" />
+			<xsl:variable name="ZN-EAST" select="180.0000" />
+			<xsl:variable name="ZN-NORTH" select="-60.0000" />
+
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="bbox" select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox"/>
+				<xsl:variable name="BB-WEST">
+					<xsl:value-of select="$bbox/wms:westBoundLongitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-SOUTH">
+					<xsl:value-of select="$bbox/wms:southBoundLatitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-EAST">
+					<xsl:value-of select="$bbox/wms:eastBoundLongitude" />
+				</xsl:variable>
+				<xsl:variable name="BB-NORTH">
+					<xsl:value-of select="$bbox/wms:northBoundLatitude" />
+				</xsl:variable>
+
+				<xsl:if
+					test="number($BB-WEST) &lt;= number($ZN-EAST) and number($BB-SOUTH) &lt;=number($ZN-NORTH)
+									and number($BB-EAST) &gt;=number($ZN-WEST) and number($BB-NORTH) &gt;=number($ZN-SOUTH)">
+					<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = 'EPSG:32761')">
+						<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support CRS EPSG:32761.</ctl:message>
+						<ctl:fail />
+					</xsl:if>
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:utm-north">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer advertises support for each of the UTM North CRSs it intersects.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S342</ctl:link>
+		<ctl:code>
+			<xsl:variable name="UTM-NORTH">
+				<zone name="1N">
+					<crs>EPSG:32601</crs>
+					<west>-180.0000</west>
+					<south>0.0000</south>
+					<east>-174.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="2N">
+					<crs>EPSG:32602</crs>
+					<west>-174.0000</west>
+					<south>0.0000</south>
+					<east>-168.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="3N">
+					<crs>EPSG:32603</crs>
+					<west>-168.0000</west>
+					<south>0.0000</south>
+					<east>-162.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="4N">
+					<crs>EPSG:32604</crs>
+					<west>-162.0000</west>
+					<south>0.0000</south>
+					<east>-156.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="5N">
+					<crs>EPSG:32605</crs>
+					<west>-156.0000</west>
+					<south>0.0000</south>
+					<east>-150.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="6N">
+					<crs>EPSG:32606</crs>
+					<west>-150.0000</west>
+					<south>0.0000</south>
+					<east>-144.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="7N">
+					<crs>EPSG:32607</crs>
+					<west>-144.0000</west>
+					<south>0.0000</south>
+					<east>-138.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="8N">
+					<crs>EPSG:32608</crs>
+					<west>-138.0000</west>
+					<south>0.0000</south>
+					<east>-132.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="9N">
+					<crs>EPSG:32609</crs>
+					<west>-132.0000</west>
+					<south>0.0000</south>
+					<east>-126.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="10N">
+					<crs>EPSG:32610</crs>
+					<west>-126.0000</west>
+					<south>0.0000</south>
+					<east>-120.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="11N">
+					<crs>EPSG:32611</crs>
+					<west>-120.0000</west>
+					<south>0.0000</south>
+					<east>-114.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="12N">
+					<crs>EPSG:32612</crs>
+					<west>-114.0000</west>
+					<south>0.0000</south>
+					<east>-108.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="13N">
+					<crs>EPSG:32613</crs>
+					<west>-108.0000</west>
+					<south>0.0000</south>
+					<east>-102.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="14N">
+					<crs>EPSG:32614</crs>
+					<west>-102.0000</west>
+					<south>0.0000</south>
+					<east>-96.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="15N">
+					<crs>EPSG:32615</crs>
+					<west>-96.0000</west>
+					<south>0.0000</south>
+					<east>-90.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="16N">
+					<crs>EPSG:32616</crs>
+					<west>-90.0000</west>
+					<south>0.0000</south>
+					<east>-84.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="17N">
+					<crs>EPSG:32617</crs>
+					<west>-84.0000</west>
+					<south>0.0000</south>
+					<east>-78.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="18N">
+					<crs>EPSG:32618</crs>
+					<west>-78.0000</west>
+					<south>0.0000</south>
+					<east>-72.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="19N">
+					<crs>EPSG:32619</crs>
+					<west>-72.0000</west>
+					<south>0.0000</south>
+					<east>-66.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="20N">
+					<crs>EPSG:32620</crs>
+					<west>-66.0000</west>
+					<south>0.0000</south>
+					<east>-60.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="21N">
+					<crs>EPSG:32621</crs>
+					<west>-60.0000</west>
+					<south>0.0000</south>
+					<east>-54.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="22N">
+					<crs>EPSG:32621</crs>
+					<west>-54.0000</west>
+					<south>0.0000</south>
+					<east>-48.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="23N">
+					<crs>EPSG:32623</crs>
+					<west>-48.0000</west>
+					<south>0.0000</south>
+					<east>-42.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="24N">
+					<crs>EPSG:32623</crs>
+					<west>-42.0000</west>
+					<south>0.0000</south>
+					<east>-36.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="24N">
+					<crs>EPSG:32623</crs>
+					<west>-42.0000</west>
+					<south>0.0000</south>
+					<east>-36.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="25N">
+					<crs>EPSG:32625</crs>
+					<west>-36.0000</west>
+					<south>0.0000</south>
+					<east>-30.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="26N">
+					<crs>EPSG:32626</crs>
+					<west>-30.0000</west>
+					<south>0.0000</south>
+					<east>-24.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="27N">
+					<crs>EPSG:32627</crs>
+					<west>-24.0000</west>
+					<south>0.0000</south>
+					<east>-18.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="28N">
+					<crs>EPSG:32628</crs>
+					<west>-18.0000</west>
+					<south>0.0000</south>
+					<east>-12.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="29N">
+					<crs>EPSG:32629</crs>
+					<west>-12.0000</west>
+					<south>0.0000</south>
+					<east>-6.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="30N">
+					<crs>EPSG:32630</crs>
+					<west>-6.0000</west>
+					<south>0.0000</south>
+					<east>0.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="31N">
+					<crs>EPSG:32631</crs>
+					<west>0.0000</west>
+					<south>0.0000</south>
+					<east>6.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="32N">
+					<crs>EPSG:32632</crs>
+					<west>6.0000</west>
+					<south>0.0000</south>
+					<east>12.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="33N">
+					<crs>EPSG:32633</crs>
+					<west>12.0000</west>
+					<south>0.0000</south>
+					<east>18.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="34N">
+					<crs>EPSG:32634</crs>
+					<west>18.0000</west>
+					<south>0.0000</south>
+					<east>24.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="35N">
+					<crs>EPSG:32635</crs>
+					<west>24.0000</west>
+					<south>0.0000</south>
+					<east>30.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="36N">
+					<crs>EPSG:32636</crs>
+					<west>30.0000</west>
+					<south>0.0000</south>
+					<east>36.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="37N">
+					<crs>EPSG:32637</crs>
+					<west>36.0000</west>
+					<south>0.0000</south>
+					<east>42.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="38N">
+					<crs>EPSG:32638</crs>
+					<west>42.0000</west>
+					<south>0.0000</south>
+					<east>48.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="39N">
+					<crs>EPSG:32639</crs>
+					<west>48.0000</west>
+					<south>0.0000</south>
+					<east>54.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="40N">
+					<crs>EPSG:32640</crs>
+					<west>54.0000</west>
+					<south>0.0000</south>
+					<east>60.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="41N">
+					<crs>EPSG:32641</crs>
+					<west>60.0000</west>
+					<south>0.0000</south>
+					<east>66.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="42N">
+					<crs>EPSG:32642</crs>
+					<west>66.0000</west>
+					<south>0.0000</south>
+					<east>72.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="43N">
+					<crs>EPSG:32643</crs>
+					<west>72.0000</west>
+					<south>0.0000</south>
+					<east>78.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="44N">
+					<crs>EPSG:32644</crs>
+					<west>78.0000</west>
+					<south>0.0000</south>
+					<east>84.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="45N">
+					<crs>EPSG:32645</crs>
+					<west>84.0000</west>
+					<south>0.0000</south>
+					<east>90.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="46N">
+					<crs>EPSG:32646</crs>
+					<west>90.0000</west>
+					<south>0.0000</south>
+					<east>96.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="47N">
+					<crs>EPSG:32647</crs>
+					<west>96.0000</west>
+					<south>0.0000</south>
+					<east>102.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="48N">
+					<crs>EPSG:32648</crs>
+					<west>102.0000</west>
+					<south>0.0000</south>
+					<east>108.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="49N">
+					<crs>EPSG:32649</crs>
+					<west>108.0000</west>
+					<south>0.0000</south>
+					<east>114.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="50N">
+					<crs>EPSG:32650</crs>
+					<west>114.0000</west>
+					<south>0.0000</south>
+					<east>120.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="51N">
+					<crs>EPSG:32651</crs>
+					<west>120.0000</west>
+					<south>0.0000</south>
+					<east>126.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="52N">
+					<crs>EPSG:32652</crs>
+					<west>126.0000</west>
+					<south>0.0000</south>
+					<east>132.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="53N">
+					<crs>EPSG:32653</crs>
+					<west>132.0000</west>
+					<south>0.0000</south>
+					<east>138.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="54N">
+					<crs>EPSG:32654</crs>
+					<west>138.0000</west>
+					<south>0.0000</south>
+					<east>144.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="55N">
+					<crs>EPSG:32655</crs>
+					<west>144.0000</west>
+					<south>0.0000</south>
+					<east>150.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="56N">
+					<crs>EPSG:32656</crs>
+					<west>150.0000</west>
+					<south>0.0000</south>
+					<east>156.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="57N">
+					<crs>EPSG:32657</crs>
+					<west>156.0000</west>
+					<south>0.0000</south>
+					<east>162.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="58N">
+					<crs>EPSG:32658</crs>
+					<west>162.0000</west>
+					<south>0.0000</south>
+					<east>168.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="59N">
+					<crs>EPSG:32659</crs>
+					<west>168.0000</west>
+					<south>0.0000</south>
+					<east>174.0000</east>
+					<north>84.0000</north>
+				</zone>
+				<zone name="60N">
+					<crs>EPSG:32660</crs>
+					<west>174.0000</west>
+					<south>0.0000</south>
+					<east>180.0000</east>
+					<north>84.0000</north>
+				</zone>
+			</xsl:variable>
+			<xsl:for-each select="$UTM-NORTH/zone">
+				<xsl:variable name="ZN-WEST">
+					<xsl:value-of select="./west" />
+				</xsl:variable>
+				<xsl:variable name="ZN-SOUTH">
+					<xsl:value-of select="./south" />
+				</xsl:variable>
+				<xsl:variable name="ZN-EAST">
+					<xsl:value-of select="./east" />
+				</xsl:variable>
+				<xsl:variable name="ZN-NORTH">
+					<xsl:value-of select="./north" />
+				</xsl:variable>
+				<xsl:variable name="ZN-CRS">
+					<xsl:value-of select="./crs" />
+				</xsl:variable>
+				<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+					<xsl:variable name="bbox" select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox"/>
+					<xsl:variable name="BB-WEST">
+						<xsl:value-of select="$bbox/wms:westBoundLongitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-SOUTH">
+						<xsl:value-of select="$bbox/wms:southBoundLatitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-EAST">
+						<xsl:value-of select="$bbox/wms:eastBoundLongitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-NORTH">
+						<xsl:value-of select="$bbox/wms:northBoundLatitude" />
+					</xsl:variable>
+					<xsl:if
+						test="number($BB-WEST) &lt;= number($ZN-EAST) and number($BB-SOUTH) &lt;=number($ZN-NORTH)
+									and number($BB-EAST) &gt;=number($ZN-WEST) and number($BB-NORTH) &gt;=number($ZN-SOUTH)">
+						<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = $ZN-CRS)">
+							<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support <xsl:value-of select="$ZN-CRS" />.</ctl:message>
+							<ctl:fail />
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:utm-south">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Each named layer advertises support for each of the UTM South CRSs it intersects.</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.4.2, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S342</ctl:link>
+		<ctl:code>
+			<xsl:variable name="UTM-SOUTH">
+				<zone name="1S">
+					<crs>EPSG:32701</crs>
+					<west>-180.0000</west>
+					<south>-80.0000</south>
+					<east>-174.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="2S">
+					<crs>EPSG:32702</crs>
+					<west>-174.0000</west>
+					<south>-80.0000</south>
+					<east>-168.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="3S">
+					<crs>EPSG:32703</crs>
+					<west>-168.0000</west>
+					<south>-80.0000</south>
+					<east>-162.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="4S">
+					<crs>EPSG:32704</crs>
+					<west>-162.0000</west>
+					<south>-80.0000</south>
+					<east>-156.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="5S">
+					<crs>EPSG:32705</crs>
+					<west>-156.0000</west>
+					<south>-80.0000</south>
+					<east>-150.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="6S">
+					<crs>EPSG:32706</crs>
+					<west>-150.0000</west>
+					<south>-80.0000</south>
+					<east>-144.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="7S">
+					<crs>EPSG:32707</crs>
+					<west>-144.0000</west>
+					<south>-80.0000</south>
+					<east>-138.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="8S">
+					<crs>EPSG:32708</crs>
+					<west>-138.0000</west>
+					<south>-80.0000</south>
+					<east>-132.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="9S">
+					<crs>EPSG:32709</crs>
+					<west>-132.0000</west>
+					<south>-80.0000</south>
+					<east>-126.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="10S">
+					<crs>EPSG:32710</crs>
+					<west>-126.0000</west>
+					<south>-80.0000</south>
+					<east>-120.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="11S">
+					<crs>EPSG:32711</crs>
+					<west>-120.0000</west>
+					<south>-80.0000</south>
+					<east>-114.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="12S">
+					<crs>EPSG:32712</crs>
+					<west>-114.0000</west>
+					<south>-80.0000</south>
+					<east>-108.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="13S">
+					<crs>EPSG:32713</crs>
+					<west>-108.0000</west>
+					<south>-80.0000</south>
+					<east>-102.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="14S">
+					<crs>EPSG:32714</crs>
+					<west>-102.0000</west>
+					<south>-80.0000</south>
+					<east>-96.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="15S">
+					<crs>EPSG:32715</crs>
+					<west>-96.0000</west>
+					<south>-80.0000</south>
+					<east>-90.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="16S">
+					<crs>EPSG:32716</crs>
+					<west>-90.0000</west>
+					<south>-80.0000</south>
+					<east>-84.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="17S">
+					<crs>EPSG:32717</crs>
+					<west>-84.0000</west>
+					<south>-80.0000</south>
+					<east>-78.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="18S">
+					<crs>EPSG:32718</crs>
+					<west>-78.0000</west>
+					<south>-80.0000</south>
+					<east>-72.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="19S">
+					<crs>EPSG:32719</crs>
+					<west>-72.0000</west>
+					<south>-80.0000</south>
+					<east>-66.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="20S">
+					<crs>EPSG:32720</crs>
+					<west>-66.0000</west>
+					<south>-80.0000</south>
+					<east>-60.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="21S">
+					<crs>EPSG:32721</crs>
+					<west>-60.0000</west>
+					<south>-80.0000</south>
+					<east>-54.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="22S">
+					<crs>EPSG:32722</crs>
+					<west>-54.0000</west>
+					<south>-80.0000</south>
+					<east>-48.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="23S">
+					<crs>EPSG:32723</crs>
+					<west>-48.0000</west>
+					<south>-80.0000</south>
+					<east>-42.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="24S">
+					<crs>EPSG:32724</crs>
+					<west>-42.0000</west>
+					<south>-80.0000</south>
+					<east>-36.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="25S">
+					<crs>EPSG:32725</crs>
+					<west>-36.0000</west>
+					<south>-80.0000</south>
+					<east>-30.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="26S">
+					<crs>EPSG:32726</crs>
+					<west>-30.0000</west>
+					<south>-80.0000</south>
+					<east>-24.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="27S">
+					<crs>EPSG:32727</crs>
+					<west>-24.0000</west>
+					<south>-80.0000</south>
+					<east>-18.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="28S">
+					<crs>EPSG:32728</crs>
+					<west>-18.0000</west>
+					<south>-80.0000</south>
+					<east>-12.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="29S">
+					<crs>EPSG:32729</crs>
+					<west>-12.0000</west>
+					<south>-80.0000</south>
+					<east>-6.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="30S">
+					<crs>EPSG:32730</crs>
+					<west>-6.0000</west>
+					<south>-80.0000</south>
+					<east>0.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="31S">
+					<crs>EPSG:32731</crs>
+					<west>0.0000</west>
+					<south>-80.0000</south>
+					<east>6.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="32S">
+					<crs>EPSG:32732</crs>
+					<west>6.0000</west>
+					<south>-80.0000</south>
+					<east>12.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="33S">
+					<crs>EPSG:32733</crs>
+					<west>12.0000</west>
+					<south>-80.0000</south>
+					<east>18.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="34S">
+					<crs>EPSG:32734</crs>
+					<west>18.0000</west>
+					<south>-80.0000</south>
+					<east>24.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="35S">
+					<crs>EPSG:32735</crs>
+					<west>24.0000</west>
+					<south>-80.0000</south>
+					<east>30.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="36S">
+					<crs>EPSG:32736</crs>
+					<west>30.0000</west>
+					<south>-80.0000</south>
+					<east>36.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="37S">
+					<crs>EPSG:32737</crs>
+					<west>36.0000</west>
+					<south>-80.0000</south>
+					<east>42.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="38S">
+					<crs>EPSG:32738</crs>
+					<west>42.0000</west>
+					<south>-80.0000</south>
+					<east>48.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="39S">
+					<crs>EPSG:32739</crs>
+					<west>48.0000</west>
+					<south>-80.0000</south>
+					<east>54.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="40S">
+					<crs>EPSG:32740</crs>
+					<west>54.0000</west>
+					<south>-80.0000</south>
+					<east>60.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="41S">
+					<crs>EPSG:32741</crs>
+					<west>60.0000</west>
+					<south>-80.0000</south>
+					<east>66.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="42S">
+					<crs>EPSG:32742</crs>
+					<west>66.0000</west>
+					<south>-80.0000</south>
+					<east>72.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="43S">
+					<crs>EPSG:32743</crs>
+					<west>72.0000</west>
+					<south>-80.0000</south>
+					<east>78.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="44S">
+					<crs>EPSG:32744</crs>
+					<west>78.0000</west>
+					<south>-80.0000</south>
+					<east>84.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="45S">
+					<crs>EPSG:32745</crs>
+					<west>84.0000</west>
+					<south>-80.0000</south>
+					<east>90.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="46S">
+					<crs>EPSG:32746</crs>
+					<west>90.0000</west>
+					<south>-80.0000</south>
+					<east>96.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="47S">
+					<crs>EPSG:32747</crs>
+					<west>96.0000</west>
+					<south>-80.0000</south>
+					<east>102.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="48S">
+					<crs>EPSG:32748</crs>
+					<west>102.0000</west>
+					<south>-80.0000</south>
+					<east>108.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="49S">
+					<crs>EPSG:32749</crs>
+					<west>108.0000</west>
+					<south>-80.0000</south>
+					<east>114.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="50S">
+					<crs>EPSG:32750</crs>
+					<west>114.0000</west>
+					<south>-80.0000</south>
+					<east>120.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="51S">
+					<crs>EPSG:32751</crs>
+					<west>120.0000</west>
+					<south>-80.0000</south>
+					<east>126.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="52S">
+					<crs>EPSG:32752</crs>
+					<west>126.0000</west>
+					<south>-80.0000</south>
+					<east>132.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="53S">
+					<crs>EPSG:32753</crs>
+					<west>132.0000</west>
+					<south>-80.0000</south>
+					<east>138.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="54S">
+					<crs>EPSG:32754</crs>
+					<west>138.0000</west>
+					<south>-80.0000</south>
+					<east>144.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="55S">
+					<crs>EPSG:32755</crs>
+					<west>144.0000</west>
+					<south>-80.0000</south>
+					<east>150.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="56S">
+					<crs>EPSG:32756</crs>
+					<west>150.0000</west>
+					<south>-80.0000</south>
+					<east>156.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="57S">
+					<crs>EPSG:32757</crs>
+					<west>156.0000</west>
+					<south>-80.0000</south>
+					<east>162.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="58S">
+					<crs>EPSG:32758</crs>
+					<west>162.0000</west>
+					<south>-80.0000</south>
+					<east>168.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="59S">
+					<crs>EPSG:32759</crs>
+					<west>168.0000</west>
+					<south>-80.0000</south>
+					<east>174.0000</east>
+					<north>0.0000</north>
+				</zone>
+				<zone name="60S">
+					<crs>EPSG:32760</crs>
+					<west>174.0000</west>
+					<south>-80.0000</south>
+					<east>180.0000</east>
+					<north>0.0000</north>
+				</zone>
+			</xsl:variable>
+			<xsl:for-each select="$UTM-SOUTH/zone">
+				<xsl:variable name="ZONE">
+					<xsl:value-of select="@name" />
+				</xsl:variable>
+				<xsl:variable name="ZN-WEST">
+					<xsl:value-of select="./west" />
+				</xsl:variable>
+				<xsl:variable name="ZN-SOUTH">
+					<xsl:value-of select="./south" />
+				</xsl:variable>
+				<xsl:variable name="ZN-EAST">
+					<xsl:value-of select="./east" />
+				</xsl:variable>
+				<xsl:variable name="ZN-NORTH">
+					<xsl:value-of select="./north" />
+				</xsl:variable>
+				<xsl:variable name="ZN-CRS">
+					<xsl:value-of select="./crs" />
+				</xsl:variable>
+				<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+					<xsl:variable name="bbox" select="ancestor-or-self::wms:Layer[wms:EX_GeographicBoundingBox][1]/wms:EX_GeographicBoundingBox"/>
+					<xsl:variable name="BB-WEST">
+						<xsl:value-of select="$bbox/wms:westBoundLongitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-SOUTH">
+						<xsl:value-of select="$bbox/wms:southBoundLatitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-EAST">
+						<xsl:value-of select="$bbox/wms:eastBoundLongitude" />
+					</xsl:variable>
+					<xsl:variable name="BB-NORTH">
+						<xsl:value-of select="$bbox/wms:northBoundLatitude" />
+					</xsl:variable>
+					<xsl:if
+						test="number($BB-WEST) &lt;= number($ZN-EAST) and number($BB-SOUTH) &lt;=number($ZN-NORTH)
+									and number($BB-EAST) &gt;=number($ZN-WEST) and number($BB-NORTH) &gt;=number($ZN-SOUTH)">
+						<xsl:if test="not(ancestor-or-self::wms:Layer/wms:CRS = $ZN-CRS)">
+							<ctl:message>Layer <xsl:value-of select="./wms:Name" /> does not support <xsl:value-of select="$ZN-CRS" />.</ctl:message>
+							<ctl:fail />
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:png-properties">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>PNG output does not include gamma-correction, color-balance, and colorimetric profile.</ctl:assertion>
+		<ctl:link title="Section 3.5.2, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S352</ctl:link>
+		<ctl:code>
+			<xsl:variable name="layer-info">
+				<ctl:call-function name="functions:layer-info">
+					<ctl:with-param name="root-layer" select="$CAPABILITIES/wms:Capability/wms:Layer" />
+					<ctl:with-param name="preferred-name"></ctl:with-param>
+					<ctl:with-param name="preferred-crs"></ctl:with-param>
+					<ctl:with-param name="preferred-bbox"></ctl:with-param>
+					<ctl:with-param name="preferred-width">100</ctl:with-param>
+					<ctl:with-param name="preferred-height">100</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:variable name="response">
+				<ctl:request>
+					<ctl:url>
+						<xsl:value-of select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+					</ctl:url>
+					<ctl:method>get</ctl:method>
+					<ctl:param name="LaYeRs">
+						<xsl:value-of select="functions:encode($layer-info/LayerInfo/@name)" />
+					</ctl:param>
+					<ctl:param name="CrS">
+						<xsl:value-of select="functions:encode($layer-info/LayerInfo/@crs)" />
+					</ctl:param>
+					<ctl:param name="BbOx">
+						<xsl:value-of select="$layer-info/LayerInfo/@bbox" />
+					</ctl:param>
+					<ctl:param name="WiDtH">100</ctl:param>
+					<ctl:param name="ReQuEsT">GetMap</ctl:param>
+					<ctl:param name="StYlEs" />
+					<ctl:param name="HeIgHt">100</ctl:param>
+					<ctl:param name="FoRmAt">
+						<xsl:value-of select="functions:encode('image/png')" />
+					</ctl:param>
+					<ctl:param name="VeRsIoN">
+						<xsl:value-of select="functions:version()" />
+					</ctl:param>
+					<xsl:for-each select="$layer-info/LayerInfo/dim">
+						<ctl:param name="{@param-name}">
+							<xsl:value-of select="functions:encode(.)" />
+						</ctl:param>
+					</xsl:for-each>
+					<parsers:ImageParser>
+						<parsers:metadata />
+					</parsers:ImageParser>
+				</ctl:request>
+			</xsl:variable>
+			<xsl:if test="$response/parsers:ImageParser/parsers:metadata/javax_imageio_png_1.0/gAMA">
+				<ctl:message>Error: PNG output contains gamma correction information</ctl:message>
+				<ctl:fail />
+			</xsl:if>
+			<xsl:if test="$response/parsers:ImageParser/parsers:metadata/javax_imageio_png_1.0/cHRM">
+				<ctl:message>Error: PNG output contains color balance information</ctl:message>
+				<ctl:fail />
+			</xsl:if>
+			<xsl:if test="$response/parsers:ImageParser/parsers:metadata/javax_imageio_png_1.0/iCCP">
+				<ctl:message>Error: PNG output contains colorimetric profile information</ctl:message>
+				<ctl:fail />
+			</xsl:if>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:layers-with-dims">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:assertion>Layers with dimensions can generate 2D still images.</ctl:assertion>
+		<ctl:comment>
+			For each layer with a dimension, verify that PNG, GIF, and JPEG are supported and the results do not include animation.
+		</ctl:comment>
+		<ctl:link title="Section 3.7.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S371</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]/ancestor-or-self::wms:Layer[wms:Dimension]/wms:Name">
+				<ctl:call-test name="dgiwg:layer-with-dims">
+					<ctl:with-param name="CAPABILITIES" select="$CAPABILITIES" />
+					<ctl:with-param name="layer" select="string(.)" label="Each named layer with a dimension"
+						label-expr="concat('Layer &quot;', ., '&quot;')" />
+				</ctl:call-test>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:layer-with-dims">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="layer" />
+		<ctl:assertion>{$layer} can generate a 2D still image.</ctl:assertion>
+		<ctl:link title="Section 3.7.1, Test type 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S371</ctl:link>
+		<ctl:code>
+			<xsl:variable name="image-formats">
+				<format>image/png</format>
+				<format>image/gif</format>
+				<format>image/jpeg</format>
+			</xsl:variable>
+			<xsl:variable name="layer-info">
+				<ctl:call-function name="functions:layer-info">
+					<ctl:with-param name="root-layer" select="$CAPABILITIES/wms:Capability/wms:Layer" />
+					<ctl:with-param name="preferred-name" select="$layer" />
+					<ctl:with-param name="preferred-crs"></ctl:with-param>
+					<ctl:with-param name="preferred-bbox"></ctl:with-param>
+					<ctl:with-param name="preferred-width">100</ctl:with-param>
+					<ctl:with-param name="preferred-height">100</ctl:with-param>
+				</ctl:call-function>
+			</xsl:variable>
+			<xsl:for-each select="$image-formats/format">
+				<xsl:variable name="response">
+					<ctl:request>
+						<ctl:url>
+							<xsl:value-of
+								select="$CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href" />
+						</ctl:url>
+						<ctl:method>get</ctl:method>
+						<ctl:param name="LaYeRs">
+							<xsl:value-of select="functions:encode($layer-info/LayerInfo/@name)" />
+						</ctl:param>
+						<ctl:param name="CrS">
+							<xsl:value-of select="functions:encode($layer-info/LayerInfo/@crs)" />
+						</ctl:param>
+						<ctl:param name="BbOx">
+							<xsl:value-of select="$layer-info/LayerInfo/@bbox" />
+						</ctl:param>
+						<ctl:param name="WiDtH">100</ctl:param>
+						<ctl:param name="ReQuEsT">GetMap</ctl:param>
+						<ctl:param name="StYlEs" />
+						<ctl:param name="HeIgHt">100</ctl:param>
+						<ctl:param name="FoRmAt">
+							<xsl:value-of select="functions:encode(.)" />
+						</ctl:param>
+						<ctl:param name="VeRsIoN">
+							<xsl:value-of select="functions:version()" />
+						</ctl:param>
+						<xsl:for-each select="$layer-info/LayerInfo/dim">
+							<ctl:param name="{@param-name}">
+								<xsl:value-of select="functions:encode(.)" />
+							</ctl:param>
+						</xsl:for-each>
+						<parsers:ImageParser>
+							<parsers:frames />
+						</parsers:ImageParser>
+					</ctl:request>
+				</xsl:variable>
+				<xsl:if test="not($response/parsers:ImageParser/parsers:frames = 1)">
+					<ctl:message>Layer <xsl:value-of select="$layer" /> did not produce a valid still 2D image for format <xsl:value-of select="." /></ctl:message>
+					<ctl:fail />
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:featureinfo-vector">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The feature info for a vector layer lists attributes of the designated objects using human readable text rather than dictionary codes.</ctl:assertion>
+		<ctl:comment>For each vector layer with featureinfo in the uploaded metadata, manually verify the featureinfo results.</ctl:comment>
+		<ctl:link title="Section 3.10.4, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3104</ctl:link>
+		<ctl:link title="Section 4.6.1, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S461</ctl:link>
+		<ctl:code>
+			<xsl:variable name="INFO-FORMAT">
+				<xsl:choose>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='text/html']">text/html</xsl:when>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='text/xml']">text/xml</xsl:when>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='image/png']">image/png</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[1]"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='vector'">
+							<xsl:choose>
+								<xsl:when test="not(./featureinfo)">
+									<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> does not have featureinfo data.</ctl:message>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:variable name="URL">
+										<xsl:value-of select="functions:correct-url-prefix($CAPABILITIES/wms:Capability/wms:Request/wms:GetFeatureInfo/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href)" />
+										<xsl:text>VERSION=</xsl:text>
+										<xsl:value-of select="functions:version()" />
+										<xsl:text>&amp;REQUEST=GetFeatureInfo</xsl:text>
+										<xsl:text>&amp;QUERY_LAYERS=</xsl:text>
+										<xsl:value-of select="functions:encode(string($LYR-NAME))" />
+										<xsl:text>&amp;LAYERS=</xsl:text>
+										<xsl:value-of select="functions:encode(string($LYR-NAME))" />
+										<xsl:text>&amp;STYLES=</xsl:text>
+										<xsl:text>&amp;I=</xsl:text>
+										<xsl:value-of select="./featureinfo/@i" />
+										<xsl:text>&amp;J=</xsl:text>
+										<xsl:value-of select="./featureinfo/@j" />
+										<xsl:text>&amp;INFO_FORMAT=</xsl:text>
+										<xsl:value-of select="$INFO-FORMAT" />
+										<xsl:text>&amp;CRS=CRS:84</xsl:text>
+										<xsl:text>&amp;BBOX=</xsl:text>
+										<xsl:value-of select="./featureinfo/@bbox" />
+										<xsl:text>&amp;WIDTH=</xsl:text>
+										<xsl:value-of select="./featureinfo/@width" />
+										<xsl:text>&amp;HEIGHT=</xsl:text>
+										<xsl:value-of select="./featureinfo/@height" />
+										<xsl:text>&amp;FORMAT=</xsl:text>
+										<xsl:value-of
+											select="functions:encode(string($CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:Format[1]))" />
+									</xsl:variable>
+									<xsl:variable name="form-values">
+										<ctl:form width="700" height="500">
+											<p>
+												Verify that the FeatureInfo shown below lists attributes for a feature in the
+												<xsl:value-of select="$LYR-NAME" />
+												layer and uses human readable text rather than dictionary codes.
+											</p>
+											<iframe width="100%" height="360" frameborder="1" scrolling="yes" src="{$URL}">
+												<p>
+													<a target="_blank" href="{$URL}">FeatureInfo</a>
+												</p>
+											</iframe>
+											<p>
+												<input type="submit" name="submit" value="yes" />
+												<input type="submit" name="submit" value="no" />
+											</p>
+										</ctl:form>
+									</xsl:variable>
+									<xsl:if test="not($form-values/values/value[@key='submit']='yes')">
+										<ctl:fail />
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:featureinfo-coverage">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>The feature info for a coverage layer lists the measures at the designated location.</ctl:assertion>
+		<ctl:comment>For each coverage layer with featureinfo in the uploaded metadata, manually verify featureinfo results.</ctl:comment>
+		<ctl:link title="Section 3.10.4, Test type 2" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S3104</ctl:link>
+		<ctl:code>
+			<xsl:variable name="INFO-FORMAT">
+				<xsl:choose>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='text/html']">text/html</xsl:when>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='text/xml']">text/xml</xsl:when>
+					<xsl:when test="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[.='image/png']">image/png</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$CAPABILITIES//wms:Request/wms:GetFeatureInfo/wms:Format[1]"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME">
+					<xsl:value-of select="./wms:Name" />
+				</xsl:variable>
+				<xsl:for-each select="$METADATA/self::TestConfig/layer">
+					<xsl:variable name="CFG-NAME">
+						<xsl:value-of select="./@name" />
+					</xsl:variable>
+					<xsl:variable name="CFG-TYPE">
+						<xsl:value-of select="./@type" />
+					</xsl:variable>
+
+					<xsl:if test="deep-equal($LYR-NAME,$CFG-NAME)">
+						<xsl:if test="$CFG-TYPE='coverage'">
+							<xsl:choose>
+								<xsl:when test="not(./featureinfo)">
+									<ctl:message>Vector Layer <xsl:value-of select="$LYR-NAME" /> does not have featureinfo data.</ctl:message>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:variable name="URL">
+										<xsl:value-of select="functions:correct-url-prefix($CAPABILITIES/wms:Capability/wms:Request/wms:GetFeatureInfo/wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href)" />
+										<xsl:text>VERSION=</xsl:text>
+										<xsl:value-of select="functions:version()" />
+										<xsl:text>&amp;REQUEST=GetFeatureInfo</xsl:text>
+										<xsl:text>&amp;QUERY_LAYERS=</xsl:text>
+										<xsl:value-of select="functions:encode(string($LYR-NAME))" />
+										<xsl:text>&amp;LAYERS=</xsl:text>
+										<xsl:value-of select="functions:encode(string($LYR-NAME))" />
+										<xsl:text>&amp;STYLES=</xsl:text>
+										<xsl:text>&amp;I=</xsl:text>
+										<xsl:value-of select="./featureinfo/@i" />
+										<xsl:text>&amp;J=</xsl:text>
+										<xsl:value-of select="./featureinfo/@j" />
+										<xsl:text>&amp;INFO_FORMAT=</xsl:text>
+										<xsl:value-of select="$INFO-FORMAT" />
+										<xsl:text>&amp;CRS=CRS:84</xsl:text>
+										<xsl:text>&amp;BBOX=</xsl:text>
+										<xsl:value-of select="./featureinfo/@bbox" />
+										<xsl:text>&amp;WIDTH=</xsl:text>
+										<xsl:value-of select="./featureinfo/@width" />
+										<xsl:text>&amp;HEIGHT=</xsl:text>
+										<xsl:value-of select="./featureinfo/@height" />
+										<xsl:text>&amp;FORMAT=</xsl:text>
+										<xsl:value-of select="functions:encode(string($CAPABILITIES/wms:Capability/wms:Request/wms:GetMap/wms:Format[1]))" />
+									</xsl:variable>
+									<xsl:variable name="form-values">
+										<ctl:form width="700" height="500">
+											<p>
+												Verify that the FeatureInfo shown below lists measures for a location in the
+												<xsl:value-of select="$LYR-NAME" />
+												layer.
+											</p>
+											<iframe width="100%" height="360" frameborder="1" scrolling="yes" src="{$URL}">
+												<p>
+													<a target="_blank" href="{$URL}">FeatureInfo</a>
+												</p>
+											</iframe>
+											<p>
+												<input type="submit" name="submit" value="yes" />
+												<input type="submit" name="submit" value="no" />
+											</p>
+										</ctl:form>
+									</xsl:variable>
+									<xsl:if test="not($form-values/values/value[@key='submit']='yes')">
+										<ctl:fail />
+									</xsl:if>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:if>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+	<ctl:test name="dgiwg:legendurls">
+		<ctl:param name="CAPABILITIES" />
+		<ctl:param name="METADATA" />
+		<ctl:assertion>Each style for each vector layer advertises at least one LegendURL in PNG, GIF, or JPEG Format</ctl:assertion>
+		<ctl:comment></ctl:comment>
+		<ctl:link title="Section 3.9.1, Test level 1" >http://cite.geoenterpriselab.com/dgiwg_wms1.3_profile/profile.htm#S391</ctl:link>
+		<ctl:code>
+			<xsl:for-each select="$CAPABILITIES//wms:Layer[wms:Name]">
+				<xsl:variable name="LYR-NAME" select="string(wms:Name)" />
+				<xsl:if test="$METADATA/self::TestConfig/layer[@name=$LYR-NAME]/@type = 'vector'">
+					<xsl:if test="not(wms:Style/wms:LegendURL/wms:Format[starts-with(., 'image/png') or starts-with(., 'image/gif') or starts-with(., 'image/jpeg')])">
+						<ctl:message>Layer <xsl:value-of select="wms:Name"/> does not have a style with a LegendURL in PNG, GIF, or JPEG Format.</ctl:message>
+						<ctl:fail/>
+					</xsl:if>
+				</xsl:if>
+			</xsl:for-each>
+		</ctl:code>
+	</ctl:test>
+
+</ctl:package>

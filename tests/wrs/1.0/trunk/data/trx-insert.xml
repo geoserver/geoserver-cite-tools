@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:Transaction
+        xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+        xmlns:gml="http://www.opengis.net/gml"
+        xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+        xmlns:wrs="http://www.opengis.net/cat/wrs/1.0"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        verboseResponse="true"
+        service="WRS"
+        version="1.0.0">
+
+    <csw:Insert handle="test-data-csw">
+        <rim:Service id="urn:uuid:1ef30a8b-876d-4828-9246-c37ab4510bbd" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Service">
+            <rim:Slot name="http://purl.org/dc/terms/spatial" slotType="urn:ogc:def:dataType:ISO-19107:GM_Envelope">
+                <wrs:ValueList>
+                    <wrs:AnyValue>
+                        <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                            <gml:lowerCorner>60.042 13.754</gml:lowerCorner>
+                            <gml:upperCorner>68.410 17.920</gml:upperCorner>
+                        </gml:Envelope>
+                    </wrs:AnyValue>
+                </wrs:ValueList>
+            </rim:Slot>
+            <rim:Description>
+                <rim:LocalizedString value="Proin sit amet justo. In justo. Aenean adipiscing nulla id tellus."/>
+            </rim:Description>
+        </rim:Service>
+        <rim:Service id="urn:uuid:6a3de50b-fa66-4b58-a0e6-ca146fdd18d4" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Service">
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Vegetation</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Ut facilisis justo ut lacus"/>
+            </rim:Name>
+        </rim:Service>
+        <rim:Association id="id99438" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:RelatedTo" sourceObject="urn:uuid:6a3de50b-fa66-4b58-a0e6-ca146fdd18d4" targetObject="urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63"/>
+        <wrs:ExtrinsicObject id="urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Dataset">
+            <rim:Slot name="http://purl.org/dc/terms/modified" slotType="urn:oasis:names:tc:ebxml-regrep:DataType:Date">
+                <rim:ValueList>
+                    <rim:Value>2005-10-24Z</rim:Value>
+                </rim:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/terms/spatial" slotType="urn:ogc:def:dataType:ISO-19107:GM_Envelope">
+                <wrs:ValueList>
+                    <wrs:AnyValue>
+                        <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                            <gml:lowerCorner>44.792 -6.171</gml:lowerCorner>
+                            <gml:upperCorner>51.126 -2.228</gml:upperCorner>
+                        </gml:Envelope>
+                    </wrs:AnyValue>
+                </wrs:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Hydrography-Oceanographic</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Ñunç elementum"/>
+            </rim:Name>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:66ae76b7-54ba-489b-a582-0f0633d96493" mimeType="application/xhtml+xml" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Document">
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Marine sediments</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Maecenas enim"/>
+            </rim:Name>
+            <rim:Description>
+                <rim:LocalizedString value="Pellentesque tempus magna non sapien fringilla blandit."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Dataset">
+            <rim:Slot name="http://purl.org/dc/terms/modified" slotType="urn:oasis:names:tc:ebxml-regrep:DataType:Date">
+                <rim:ValueList>
+                    <rim:Value>2006-03-26Z</rim:Value>
+                </rim:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/terms/spatial" slotType="urn:ogc:def:dataType:ISO-19107:GM_Envelope">
+                <wrs:ValueList>
+                    <wrs:AnyValue>
+                        <gml:Envelope srsName="urn:ogc:def:crs:EPSG:4326">
+                            <gml:lowerCorner>47.595 -4.097</gml:lowerCorner>
+                            <gml:upperCorner>51.217 0.889</gml:upperCorner>
+                        </gml:Envelope>
+                    </wrs:AnyValue>
+                </wrs:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Vegetation-Cropland</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Mauris sed neque"/>
+            </rim:Name>
+            <rim:Description>
+                <rim:LocalizedString value="Curabitur lacinia, ante non porta tempus, mi lorem feugiat odio, eget suscipit eros pede ac velit."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:784e2afd-a9fd-44a6-9a92-a3848371c8ec" mimeType="application/pdf" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Document">
+            <rim:Slot name="http://purl.org/dc/terms/modified" slotType="urn:oasis:names:tc:ebxml-regrep:DataType:Date">
+                <rim:ValueList>
+                    <rim:Value>2006-05-12Z</rim:Value>
+                </rim:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Hydrography--Dictionaries</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Aliquam fermentum purus quis arcu"/>
+            </rim:Name>
+            <rim:Description>
+                <rim:LocalizedString value="Vestibulum quis ipsum sit amet metus imperdiet vehicula. Nulla scelerisque cursus mi."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:829babb0-b2f1-49e1-8cd5-7b489fe71a1e" mimeType="image/jp2" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Image">
+            <rim:Name>
+                <rim:LocalizedString value="Vestibulum massa purus"/>
+            </rim:Name>
+        </wrs:ExtrinsicObject>
+        <rim:Association id="id99639" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:RelatedTo" sourceObject="urn:uuid:829babb0-b2f1-49e1-8cd5-7b489fe71a1e" targetObject="urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc"/>
+        <wrs:ExtrinsicObject id="urn:uuid:19887a8a-f6b0-4a63-ae56-7fba0e17801f" mimeType="image/svg+xml" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Image">
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Tourism--Greece</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Lorem ipsum"/>
+            </rim:Name>
+            <rim:Description>
+                <rim:LocalizedString value="Quisque lacus diam, placerat mollis, pharetra in, commodo sed, augue. Duis iaculis arcu vel arcu."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Dataset">
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Physiography-Landforms</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Description>
+                <rim:LocalizedString value="Donec scelerisque pede ut nisl luctus accumsan. Quisque ultrices, lorem eget feugiat fringilla, lorem dui porttitor ante, cursus ultrices magna odio eu neque."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="urn:uuid:a06af396-3105-442d-8b40-22b57a90d2f2" mimeType="image/jpeg" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Image">
+            <rim:Name>
+                <rim:LocalizedString value="Lorem ipsum dolor sit amet"/>
+            </rim:Name>
+        </wrs:ExtrinsicObject>
+        <rim:Service id="urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Service">
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Physiography</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Description>
+                <rim:LocalizedString value="Suspendisse accumsan molestie lorem. Nullam velit turpis, mattis ut, varius bibendum, laoreet non, quam."/>
+            </rim:Description>
+        </rim:Service>
+        <rim:Association id="id99779" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:RelatedTo" sourceObject="urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a" targetObject="urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357"/>
+        <wrs:ExtrinsicObject id="urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db" mimeType="text/rtf" objectType="urn:ogc:def:ebRIM-ObjectType:OGC:Document">
+            <rim:Slot name="http://purl.org/dc/terms/modified" slotType="urn:oasis:names:tc:ebxml-regrep:DataType:Date">
+                <rim:ValueList>
+                    <rim:Value>2003-05-09Z</rim:Value>
+                </rim:ValueList>
+            </rim:Slot>
+            <rim:Slot name="http://purl.org/dc/elements/1.1/subject">
+                <rim:ValueList><rim:Value>Land titles</rim:Value></rim:ValueList>
+            </rim:Slot>
+            <rim:Name>
+                <rim:LocalizedString value="Fuscé vitae ligulä"/>
+            </rim:Name>
+            <rim:Description>
+                <rim:LocalizedString value="Morbi ultriçes, dui suscipit vestibulum prètium, velit ante pretium tortor, egët tincidunt pede odio ac nulla."/>
+            </rim:Description>
+        </wrs:ExtrinsicObject>
+        <wrs:ExtrinsicObject id="eo-1">
+            <wrs:repositoryItemRef xlink:type="simple" xlink:href="./repository-items/DataSet-01.xml" />
+        </wrs:ExtrinsicObject>
+    </csw:Insert>
+
+</csw:Transaction>

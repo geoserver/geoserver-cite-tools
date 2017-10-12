@@ -1,0 +1,687 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+
+	<ctl:test name="wcseo:GetCapabilities">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Test EO-WCS GetCapabilities.</ctl:assertion>
+    		<ctl:code>
+			<ctl:call-test name="wcseo:req29">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req30">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req31">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req32">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req33">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test>     
+			<ctl:call-test name="wcseo:req34">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req35">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req36">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 
+			<ctl:call-test name="wcseo:req37">
+				<ctl:with-param name="url" select="$url"/> 			
+				<ctl:with-param name="Capabilities" select="$Capabilities"/>      
+			</ctl:call-test> 			
+    		</ctl:code>
+  	</ctl:test>
+
+	<ctl:test name="wcseo:req29">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req29:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req29">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req29">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>
+  	
+	<ctl:test name="wcseo:get-kvp-req29">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req29:If a GetCapabilities request contains a sections element then this element shall contain section elements with the values defined in OWS Common, or DatasetSeriesSummary, or CoverageSummary..</ctl:assertion>
+    		<ctl:code>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">DatasetSeriesSummary,CoverageSummary</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='Capabilities'))">
+           					<ctl:message>[FAILURE] Send a valid GetCapabilities request, and the result should contain an Capabilities element.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req29">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req29:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 	 
+  
+	<ctl:test name="wcseo:req30">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req30:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req30">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req30">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>
+  	
+	<ctl:test name="wcseo:get-kvp-req30">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req30:A WCS service implementing this extension shall include the following URI in a Profile element in the ServiceIdentification in a GetCapabilities response:http://www.opengis.net/wcseo/1.0/conf/ap-eo.</ctl:assertion>
+    		<ctl:code>
+        		<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo') )">
+	        		<ctl:fail/>
+        		</xsl:if>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req30">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req30:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+  
+ 	<ctl:test name="wcseo:req31">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req31:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req31">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req31">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test> 
+	<ctl:test name="wcseo:get-kvp-req31">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req31:The response to a successful GetCapabilities request shall consist of a data structure as defined in Figure 7, Table 7, and the XML Schema being part of this standard</ctl:assertion>
+    		<ctl:code>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='Capabilities'))">
+           					<ctl:message>[FAILURE] Send a valid GetCapabilities request, and the result should contain an Capabilities element.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req31">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req31:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+  
+ 	<ctl:test name="wcseo:req32">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req32:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req32">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req32">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>  	
+	<ctl:test name="wcseo:get-kvp-req32">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req32:In the response to a successful GetCapabilities request containing a WCSEO::DatasetSeriesSummary section, each Dataset Series identifier listed shall refer to a Dataset Series offered by the server.</ctl:assertion>
+    		<ctl:code>
+  			<xsl:choose>
+  				<xsl:when test="empty($Capabilities//*[local-name()='Contents')/*[local-name()='DatasetSeriesSummary')">
+					<ctl:message>[MESSAGE] the GetCapabilities response does not contain a WCSEO::DatasetSeriesSummary section.</ctl:message>
+  				</xsl:when>
+  				<xsl:otherwise>
+
+					<xsl:for-each select="$Capabilities//*[local-name()='Contents']/*[local-name()='DatasetSeriesSummary']/*[local-name()='DatasetSeriesId']">
+						<xsl:variable name="DescribeEOCoverageSet">
+							<ctl:request>
+								<ctl:url>
+									<xsl:value-of select="$url"/>
+								</ctl:url>
+								<ctl:method>get</ctl:method>
+								<ctl:param name="service">WCS</ctl:param>
+								<ctl:param name="VERSION">2.0.0</ctl:param>
+								<ctl:param name="request">DescribeEOCoverageSet</ctl:param>
+								<ctl:param name="EOID"><xsl:value-of select="."/></ctl:param>             				
+								<ctlp:XMLValidatingParser>
+									<ctlp:schemas>
+										<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+									</ctlp:schemas>
+								</ctlp:XMLValidatingParser>
+							</ctl:request>
+						</xsl:variable>
+
+						<xsl:choose>
+							<xsl:when test="string-length($DescribeEOCoverageSet)=0">
+								<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+								<ctl:fail/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="not(empty($DescribeEOCoverageSet//ows:ExceptionReport))">
+									<ctl:message>[FAILURE] The  result should not be an ows:ExceptionReport when the request identifies valid DatasetSeriesId.</ctl:message>
+									<ctl:fail/>
+								</xsl:if> 
+							</xsl:otherwise>
+						</xsl:choose>         			
+					</xsl:for-each>            					
+  				</xsl:otherwise>
+			</xsl:choose>   		
+
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req32">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req32:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+	   
+ 	<ctl:test name="wcseo:req33">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req33:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req33">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req33">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test> 
+	<ctl:test name="wcseo:get-kvp-req33">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req33:A response to a successful GetCapabilities request containing a WCSEO::DatasetSeriesSummary section shall not contain any duplicate Dataset Series identifier.</ctl:assertion>
+    		<ctl:code>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="not(count(distinct-values($Capabilities//*[local-name()='Contents']/*[local-name()='DatasetSeriesSummary']/*[local-name()='DatasetSeriesId']))=count($Capabilities//*[local-name()='Contents']/*[local-name()='DatasetSeriesSummary']/*[local-name()='DatasetSeriesId']))">
+           					<ctl:message>[FAILURE] Send a valid GetCapabilities request, and the result should contain any duplicate Dataset Series identifier.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req33">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req33:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+   
+ 	<ctl:test name="wcseo:req34">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req34:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req34">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req34">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>  	
+	<ctl:test name="wcseo:get-kvp-req34">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req34:In the response to a successful GetCapabilities request containing an EO Coverage in a WCS::CoverageSummary section, each coverage identifier listed as EO Coverage shall refer to an EO Coverage offered by the server.</ctl:assertion>
+    		<ctl:code>
+  			<xsl:choose>
+  				<xsl:when test="empty($Capabilities//*[local-name()='Contents']/*[local-name()='CoverageSummary'])">
+					<ctl:message>[MESSAGE] the GetCapabilities response does not contain a CoverageSummary section.</ctl:message>
+  				</xsl:when>
+  				<xsl:otherwise>
+
+					<xsl:for-each select="$Capabilities//*[local-name()='Contents']/*[local-name()='CoverageSummary']/*[local-name()='CoverageId']">
+						<xsl:variable name="DescribeCoverage">
+							<ctl:request>
+								<ctl:url>
+									<xsl:value-of select="$url"/>
+								</ctl:url>
+								<ctl:method>get</ctl:method>
+								<ctl:param name="service">WCS</ctl:param>
+								<ctl:param name="VERSION">2.0.0</ctl:param>
+								<ctl:param name="request">DescribeCoverage</ctl:param>
+								<ctl:param name="CoverageId"><xsl:value-of select="."/></ctl:param>             				
+								<ctlp:XMLValidatingParser>
+									<ctlp:schemas>
+										<ctlp:schema type="resource">wcseo/1.0/wcsEODescribeEOCoverageSet.xsd</ctlp:schema>
+									</ctlp:schemas>
+								</ctlp:XMLValidatingParser>
+							</ctl:request>
+						</xsl:variable>
+
+						<xsl:choose>
+							<xsl:when test="string-length($DescribeCoverage)=0">
+								<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+								<ctl:fail/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="not(empty($DescribeCoverage//ows:ExceptionReport))">
+									<ctl:message>[FAILURE] The  result should not be an ows:ExceptionReport when the request identifies valid CoverageId.</ctl:message>
+									<ctl:fail/>
+								</xsl:if> 
+							</xsl:otherwise>
+						</xsl:choose>         			
+					</xsl:for-each>            					
+  				</xsl:otherwise>
+			</xsl:choose>   		
+
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req34">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req34:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+   
+ 	<ctl:test name="wcseo:req35">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req35:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req35">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req35">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>  	
+	<ctl:test name="wcseo:get-kvp-req35">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req35:If a GetCapabilities request contains a sections parameter then a successful response shall contain wcs:CoverageSummary elements if and only if the section parameter list contains one of the values CoverageSummary, Contents or All.</ctl:assertion>
+    		<ctl:code>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">CoverageSummary</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an CoverageSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">Contents</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an CoverageSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>	
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">All</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='CoverageSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an CoverageSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>			
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req35">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req35:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+   
+ 	<ctl:test name="wcseo:req36">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req36:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req36">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req36">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>  	
+	<ctl:test name="wcseo:get-kvp-req36">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req36:If a GetCapabilities request contains a sections parameter then a successful response shall contain a wcseo:DatasetSeriesSummary elements if and only if the section parameter list contains one of the values DatasetSeriesSummary or All.</ctl:assertion>
+    		<ctl:code>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">DatasetSeriesSummary</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='DatasetSeriesSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an DatasetSeriesSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">Contents</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='DatasetSeriesSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an DatasetSeriesSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>	
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+           				<ctl:param name="Sections">All</ctl:param>             				
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+        				<xsl:if test="empty($Capabilities//*[local-name()='DatasetSeriesSummary'))">
+           					<ctl:message>[FAILURE] The result should contain an DatasetSeriesSummary.</ctl:message>
+           					<ctl:fail/>
+        				</xsl:if> 
+  				</xsl:otherwise>
+			</xsl:choose>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req36">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req36:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+   
+ 	<ctl:test name="wcseo:req37">
+   		<ctl:param name="url"/>
+	    	<ctl:param name="Capabilities"/>   		
+    		<ctl:assertion>Req37:</ctl:assertion>
+    		<ctl:code>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_get-kvp')">
+				<ctl:call-test name="wcseo:get-kvp-req37">
+					<ctl:with-param name="url" select="$url"/>      
+				</ctl:call-test>            									
+			</xsl:if>
+			<xsl:if test="contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap')">
+				<ctl:call-test name="wcseo:soap-req37">
+					<ctl:with-param name="url" select="$url"/>      					
+				</ctl:call-test>             
+			</xsl:if>  
+    		</ctl:code>
+  	</ctl:test>  	
+	<ctl:test name="wcseo:get-kvp-req37">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req37:In the response to a successful GetCapabilities request, each EO Coverage listed shall contain in its WCS::CoverageSubtype element the value given in Table 8 corresponding to its type.</ctl:assertion>
+    		<ctl:code>
+ 			<xsl:choose>
+  				<xsl:when test="string-length($Capabilities)=0">
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+  				</xsl:when>
+  				<xsl:otherwise>
+					<xsl:for-each select="$Capabilities//*[local-name()='Contents']/*[local-name()='CoverageSummary']">
+						<xsl:if test="not(index-of(('RectifiedDataset','RectifiedDataset','RectifiedStitchedMosaic','ReferenceableStitchedMosaic'),./*[local-name()='CoverageSubtype'])>0)">
+							<ctl:message>[FAILURE] The CoverageSubtype of <xsl:value-of select="./*[local-name()='CoverageId']"/> is unknown </ctl:message>
+							<ctl:fail/>
+						</xsl:if>         			
+					</xsl:for-each>  
+  				</xsl:otherwise>
+			</xsl:choose>
+	    	</ctl:code>
+	 </ctl:test> 
+	<ctl:test name="wcseo:soap-req37">
+	    	<ctl:param name="Capabilities"/>
+	    	<ctl:param name="url"/>
+	    	<ctl:assertion>Req37:</ctl:assertion>
+    		<ctl:code>
+	        	<ctl:message>[MESSAGE] TBD.</ctl:message> 
+	    	</ctl:code>
+	 </ctl:test> 
+   
+
+</ctl:package>

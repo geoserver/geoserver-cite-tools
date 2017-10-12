@@ -1,0 +1,28 @@
+VERSION 300
+Charset "WindowsLatin1"
+DELIMITER ","
+COORDSYS Earth Projection 1, 104
+COLUMNS 1
+  id char(64)
+DATA
+REGION 1
+  5
+ -1 0
+ 0 1
+ 1 0
+ 0 -1
+ -1 0
+REGION 1
+  5
+ -2 6
+ 1 6
+ 1 3
+ -2 3
+ -2 6
+REGION 1
+  5
+ -1 5
+ 2 5
+ 2 2
+ -1 2
+ -1 5

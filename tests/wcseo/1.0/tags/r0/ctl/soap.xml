@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:wcseo="http://www.opengis.net/wcseo/1.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+	<ctl:test name="wcseo:soap">
+    		<ctl:param name="url"/>
+   		<ctl:assertion>Test EO-WCS soap extension.</ctl:assertion>
+    		<ctl:code>
+      			<xsl:variable name="Capabilities">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+					<ctl:method>post</ctl:method>
+					<ctl:header name="Content-type">text/xml</ctl:header>
+					       <ctl:body>
+						<![CDATA[
+						<?xml version="1.0" encoding="UTF-8"?>
+						<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"> 
+						    <env:Header/>
+						    <env:Body>
+							<wcs:GetCapabilities  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+							    xmlns:ows='http://www.opengis.net/ows/2.0'
+							    xmlns:wcs='http://www.opengis.net/wcs/2.0'
+							    xsi:schemaLocation='http://www.opengis.net/wcs/2.0 ../../wcsAll.xsd'
+							    service="WCS">
+							</wcs:GetCapabilities>
+						    </env:Body>
+						</env:Envelope>
+						]]>
+					       </ctl:body>
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcseo/1.0/wcsEOGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>
+      			<xsl:choose>
+        			<xsl:when test="string-length($Capabilities)!=0">
+	  				<ctl:call-test name="wcseo:soap-req1">
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>
+	  				<ctl:call-test name="wcseo:soap-req2">
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	
+	  				<ctl:call-test name="wcseo:soap-req3">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>
+	  				<ctl:call-test name="wcseo:soap-req4">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	  
+	  				<ctl:call-test name="wcseo:soap-req5">
+	    					<ctl:with-param name="url" select="$url"/>
+	    					<ctl:with-param name="Capabilities" select="$Capabilities"/>
+	  				</ctl:call-test>	  
+        			</xsl:when>
+        			<xsl:otherwise>
+					<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+					<ctl:fail/>
+        			</xsl:otherwise>
+      			</xsl:choose>
+    		</ctl:code>
+  	</ctl:test>
+
+<!--req1-->  
+    
+	<ctl:test name="wcseo:soap-req1">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req1:Implementations of this Earth Observation Application Profile which support the ap_eo_soap conformance class shall support the WCS 2.0 protocol extension SOAP.</ctl:assertion>
+    		<ctl:code>        
+        		<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/spec/WCS_protocol-binding_soap/1.0/conf/soap') )">
+	        		<ctl:fail/>
+        		</xsl:if>
+    		</ctl:code>
+  	</ctl:test> 
+
+<!--req2--> 
+	<ctl:test name="wcseo:soap-req2">
+    		<ctl:param name="Capabilities"/>
+    		<ctl:assertion>Req2:Implementations of this Earth Observation Application Profile which support the ap_eo_soap conformance class shall include the following URI in a Profile element in the ServiceIdentification in a GetCapabilities response:http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap.</ctl:assertion>
+    		<ctl:code>        
+        		<xsl:if test="not(contains(string-join(($Capabilities//*[local-name()='ServiceIdentification']/*[local-name()='Profile']),' '), 'http://www.opengis.net/wcseo/1.0/conf/ap-eo_soap') )">
+	        		<ctl:fail/>
+        		</xsl:if>
+    		</ctl:code>
+  	</ctl:test> 
+  
+<!--req3--> 
+	<ctl:test name="wcseo:soap-req3">
+    		<ctl:param name="Capabilities"/>
+     		<ctl:param name="url"/>   		
+    		<ctl:assertion>Req3:A DescribeEOCoverageSet request shall contain exactly one Body element containing exactly one DescribeEOCoverageSet element.</ctl:assertion>
+    		<ctl:code>        
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test> 
+<!--req4--> 
+	<ctl:test name="wcseo:soap-req4">
+    		<ctl:param name="Capabilities"/>
+     		<ctl:param name="url"/>     		
+    		<ctl:assertion>Req4:In the response to a successful DescribeEOCoverageSet request, the SOAP Envelope shall contain exactly one Body element which contains a WCSEO::EOCoverageSet Description as its single element.</ctl:assertion>
+    		<ctl:code>        
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test> 
+<!--req5--> 
+	<ctl:test name="wcseo:soap-req5">
+    		<ctl:param name="Capabilities"/>
+      		<ctl:param name="url"/>    		
+    		<ctl:assertion>Req5:Publication of a WCS SOAP service endpoint shall use the binding as defined in file wsdl/wcs-soap-binding.wsdl of the WCS EO-AP package</ctl:assertion>
+    		<ctl:code>        
+                    <ctl:message>[MESSAGE] TBD.</ctl:message>
+    		</ctl:code>
+  	</ctl:test>   	
+</ctl:package>

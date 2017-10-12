@@ -1,0 +1,236 @@
+<xsd:schema
+  targetNamespace="http://www.opengis.net/cite/bluelake"
+  xmlns:cblf="http://www.opengis.net/cite/bluelake"
+  xmlns:gml="http://www.opengis.net/gml"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  version="0.1"
+>
+
+  <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="feature.xsd"/>
+
+  <xsd:element name="BlueLakeFeatureCollection" type="cblf:BlueLakeFeatureCollectionType" substitutionGroup="gml:_FeatureCollection"/>
+  <xsd:element name="_BlueLakeFeature" type="cblf:AbstractBlueLakeFeatureType" abstract="true" substitutionGroup="gml:_Feature"/>
+  <xsd:element name="BridgeFeature" type="cblf:BridgeFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="BuildingFeature" type="cblf:BuildingFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="DividedRouteFeature" type="cblf:DividedRouteFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="ForestFeature" type="cblf:ForestFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="LakeFeature" type="cblf:LakeFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="MapNeatlineFeature" type="cblf:MapNeatlineFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="NamedPlaceFeature" type="cblf:NamedPlaceFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="PondFeature" type="cblf:PondFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="RoadSegmentFeature" type="cblf:RoadSegmentFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="StreamFeature" type="cblf:StreamFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+  <xsd:element name="AutoFeature" type="cblf:AutoFeatureType" substitutionGroup="cblf:_BlueLakeFeature"/>
+
+  <xsd:complexType name="BlueLakeFeatureCollectionType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureCollectionType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AbstractBlueLakeFeatureType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BridgeFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="position" type="gml:PointPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BuildingFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="address" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="position" type="gml:PointPropertyType" nillable="true"/>
+          <xsd:element name="footprint" type="gml:PolygonPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DividedRouteFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="num_lanes" type="xsd:integer" nillable="true"/>
+          <xsd:element name="centerlines" type="gml:MultiLineStringPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ForestFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="boundary" type="gml:MultiPolygonPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="LakeFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="elev" type="xsd:integer" minOccurs="0" nillable="true"/>
+          <xsd:element name="shore" type="gml:PolygonPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="MapNeatlineFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="neatline" type="gml:LineStringPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="NamedPlaceFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="boundary" type="gml:PolygonPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="PondFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="type" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="shore" type="gml:MultiPolygonPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RoadSegmentFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+<!-- **************************************************************************************
+      Although these elements were defined in the SFSQL test doc, values for them were not
+     **************************************************************************************
+          <xsd:element name="aliases" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="num_lanes" type="xsd:integer" nillable="true"/>
+-->
+          <xsd:element name="centerline" type="gml:LineStringPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="StreamFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="name" nillable="true">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="64"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="centerline" type="gml:LineStringPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AutoFeatureType">
+    <xsd:complexContent>
+      <xsd:extension base="cblf:AbstractBlueLakeFeatureType">
+        <xsd:sequence>
+          <xsd:element name="num" type="xsd:integer" nillable="true"/>
+          <xsd:element name="time" type="xsd:dateTime" nillable="true"/>
+          <xsd:element name="position" type="gml:PointPropertyType" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+</xsd:schema>

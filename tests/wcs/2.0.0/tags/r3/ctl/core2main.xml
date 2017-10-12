@@ -1,0 +1,187 @@
+<ctl:package
+ xmlns:ctl="http://www.occamlab.com/ctl"
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:ows='http://www.opengis.net/ows/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:wcs='http://www.opengis.net/wcs/2.0'
+ xmlns:ctlp="http://www.occamlab.com/te/parsers"
+ xmlns:wcs2="http://www.opengis.net/wcs/2.0"
+ xmlns:sch="http://purl.oclc.org/dsdl/schematron"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+<!--NOTE: As there is no canonical practice among and within communities dealing with coverages to use one particular protocol none of the protocols specified in WCS extensions is mandatory. In practice, this may lead to a lack of interoperability between client and server implementations. In future user communities might agree eventually to make on particular protocol binding mandatory.We use the GetCapabilities in HTTP Get KVP as a intially starting point--> 
+  <ctl:test name="wcs2:core-main">
+    <ctl:param name="url"/>
+    <ctl:assertion>Test the WCS 2.0 Core.</ctl:assertion>
+    <ctl:code>
+      
+      			<xsl:variable name="response">
+       				<ctl:request>
+          				<ctl:url>
+            					<xsl:value-of select="$url"/>
+          				</ctl:url>
+          				<ctl:method>get</ctl:method>
+          				<ctl:param name="SERVICE">WCS</ctl:param>
+          				<ctl:param name="VERSION">2.0.0</ctl:param>
+          				<ctl:param name="REQUEST">GetCapabilities</ctl:param>
+      						<ctlp:XMLValidatingParser>
+	       						<ctlp:schemas>
+                      						<ctlp:schema type="resource">wcs/2.0/wcsGetCapabilities.xsd</ctlp:schema>
+        						</ctlp:schemas>
+         					</ctlp:XMLValidatingParser>
+        			</ctl:request>
+      			</xsl:variable>        
+
+      
+<!--Invoke the core tests--> 
+	<xsl:choose>
+        	<xsl:when test="string-length($response)!=0">
+          		<ctl:call-test name="wcs2:req1-8">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>	    				 		
+	    		<ctl:call-test name="wcs2:req9">
+	      			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>	      			
+	    		</ctl:call-test>
+	    		<ctl:call-test name="wcs2:req10">
+	      			<ctl:with-param name="url" select="$url"/>	
+	    			<ctl:with-param name="Capabilities" select="$response"/>	      			
+	    		</ctl:call-test>	
+	    		<ctl:call-test name="wcs2:req11">
+	      			<ctl:with-param name="url" select="$url"/>	
+	    			<ctl:with-param name="Capabilities" select="$response"/>	      			
+	   		</ctl:call-test>
+	    		<ctl:call-test name="wcs2:req12">
+	      			<ctl:with-param name="url" select="$url"/>	
+	    			<ctl:with-param name="Capabilities" select="$response"/>	      			
+	    		</ctl:call-test>	
+	    		<ctl:call-test name="wcs2:req13">
+	      			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>	      			
+	    		</ctl:call-test>	
+	    		<ctl:call-test name="wcs2:req14">
+	      			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>   
+	    		</ctl:call-test>	    			
+	    		<ctl:call-test name="wcs2:req15">
+	      			<ctl:with-param name="url" select="$url"/>
+	      			<ctl:with-param name="Capabilities" select="$response"/>
+              		</ctl:call-test>
+	    		<ctl:call-test name="wcs2:req16">
+	      			<ctl:with-param name="url" select="$url"/>
+	      			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	    		<ctl:call-test name="wcs2:req17">
+	      			<ctl:with-param name="url" select="$url"/>
+	      			<ctl:with-param name="Capabilities" select="$response"/>
+             		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req18">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req19">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req20">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>    
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req21">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req22">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req23">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req24">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req25">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>    
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req26">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req27">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req28">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req29">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req30">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>    
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req31">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req32">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req33">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>			
+	  		<ctl:call-test name="wcs2:req34">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req35">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>    
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req36">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+	  		</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req37">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>
+	  		<ctl:call-test name="wcs2:req38">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>			
+	  		<ctl:call-test name="wcs2:req39">
+	    			<ctl:with-param name="url" select="$url"/>
+	    			<ctl:with-param name="Capabilities" select="$response"/>
+        		</ctl:call-test>	
+          		<ctl:call-test name="wcs2:req40">
+            			<ctl:with-param name="Capabilities" select="$response"/>
+          		</ctl:call-test>
+          		<ctl:call-test name="wcs2:req41">
+            			<ctl:with-param name="Capabilities" select="$response"/>
+               		</ctl:call-test>
+          		<ctl:call-test name="wcs2:req42">
+            			<ctl:with-param name="Capabilities" select="$response"/>
+			</ctl:call-test>        		
+        	</xsl:when>
+        	<xsl:otherwise>
+          		<ctl:message>[FAILURE] Parsing or validation errors.</ctl:message>
+          		<ctl:fail/>
+        	</xsl:otherwise>
+      	</xsl:choose>
+     </ctl:code>
+   </ctl:test>   
+</ctl:package>

@@ -1,0 +1,15 @@
+WCS 1.1.1 Test Suite Release Notes
+
+Changes included in latest revision:
+
+
+=== Changes included in r0 ===
+
+2010-11-15 (kstegemoller):
+- tag r0
+- release notes updated
+- change version name to 1.1.1 in config
+ 
+2010-07-13 (aschmitz):
+- added accept_versions to getcapabilities-main (issue #339)
+

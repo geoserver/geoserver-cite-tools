@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>WMTS 1.0.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the OGC WMTS 1.0 Abstract Test Suite (<a href="WMTS 1.0 ATS.html">ATS</a>) and the following specifications:</p>
+
+<ul>
+         <li id="OGC-06-121r3">
+			<a href="http://portal.opengeospatial.org/files/?artifact_id=20040">OpenGIS Web Services Common Specification, Version 1.3 with Corrigendum 1</a> (OGC 06-121r3)
+		 </li>
+		 <li id="OGC-07-057r7">
+			<a href="http://portal.opengeospatial.org/files/?artifact_id=35326">OpenGIS Web Map Tile Service Implementation Standard, Version 1.0.0</a> (OGC 07-057r7)
+		</li>
+		<li id="IETF-RFC2616">
+			<a href="http://www.ietf.org/rfc/rfc2616">HTTP 1.1</a> (RFC 2616)
+		</li>
+		<li id="W3C-SOAP-Messaging-Framework">
+			<a href="http://www.w3.org/TR/2003/REC-soap12-part1-20030624/">W3C SOAP Version 1.2 Part 1: Messaging Framework, W3C Recommendation 24 June 2003</a>
+		</li>
+		<li id="W3C-SOAP-Attachment-Feature">
+			<a href="http://www.w3.org/TR/soap12-af/">W3C SOAP 1.2 Attachment Feature, W3C Working Group Note 8 June 2004</a>
+		</li>
+		<li id="W3C-WSDL">
+			<a href="http://www.w3.org/TR/wsdl">W3C Web Services Description Language (WSDL) 1.1, W3C Note 15 March 2001</a>
+		</li> 
+</ul>
+
+<h2>What is tested</h2>
+<p>WMTS Server capabilities are tested.  The server under test must support the GetCapabilities operation request in either the <i>KVP GET</i> or <i>RESTful</i> protocol binding, so that the capabilities response XML document may be analyzed during a bootstrap process to determine which protocol bindings are supported and which test prerequisites are met by the server.  </p>
+<p>The test suite allows selection of tests for any or all of the following protocol binding profiles:
+<ul>
+	<li><i>KVP GET</i></li>
+	<li><i>KVP POST</i></li>
+	<li><i>XML POST</i></li>
+	<li><i>SOAP POST</i></li>
+	<li><i>RESTful</i></li>
+</ul>
+<p>Each of these protocol binding profiles includes test groups for the following conformance classes:</p>
+<ul>
+	<li>Common Operations (<i>Mandatory</i>)</li>
+	<li>GetCapabilities (<i>Mandatory</i>)</li>
+	<li>GetCapabilities (<i>Mandatory If Implemented</i>)</li>
+	<li>GetTile (<i>Mandatory</i>)</li>
+	<li>GetTile  (<i>Mandatory If Implemented</i>)</li>
+	<li>GetFeatureInfo  (<i>Mandatory If Implemented</i>)</li>
+</ul>
+<p>Each of these profiles allows selection of all tests for conformance certification.</p>
+<p>To facilitate rapid debugging and correction of software that fails particular tests,  each of these profiles also </p>
+<ul>
+	<li>allows selection of conformance class test groups and individual tests</li>
+	<li>allows "Redo using cached values" to reuse the bootstrap capabilities document, and optionally the test selections. </li>
+</ul>
+<p>All tests in one or more protocol binding profiles must be selected for conformance certification.  </p>
+<p>All tests in <i>Mandatory</i> conformance class test groups must be passed for conformance certification.  Tests in <i>Mandatory If Implemented</i> conformance class test groups are skipped if the capabilities they test are not implemented by the server under test.  All tests in <i>Mandatory If Implemented</i> conformance class test groups for capabilities that are implemented by the server under test must be passed for conformance class certification.</p>
+
+<h2>What is not tested</h2>
+<p>WMTS Client capabilities are not tested</p>
+
+<h2>Test data</h2>
+<p>Test data consists of one image, <a href="../resources/noDataSquare.png">noDataSquare.png</a>.  The configuration of the server under test must be modified as described in the release notes so that so that noDataSquare.png is returned in response to a GetTile request for layer TransparentNodata style Default_style format image/png tileMatrixSet TransparentNodata tileMatrix 0 row 0 col 0.</p>
+
+
+<h2>Release notes</h2>
+<p>
+  Release notes are available at the <a href="relnotes.txt">relnotes.txt</a> file.
+</p>
+
+
+</body>
+</html>
+

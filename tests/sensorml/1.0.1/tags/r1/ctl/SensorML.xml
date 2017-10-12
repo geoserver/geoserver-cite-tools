@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ctl:package 
+	xmlns:ctl="http://www.occamlab.com/ctl" 
+	xmlns:parsers="http://www.occamlab.com/te/parsers" 
+	xmlns:ocp="http://www.occamlab.com/te/parsers" 
+	xmlns:tep="http://teamengine.sourceforge.net/parsers" 
+	xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+	xmlns:swe="http://www.opengis.net/swe/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude" 
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:gml="http://www.opengis.net/gml" 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+>
+<!--xmlns:sml="http://www.opengis.net/sensorML/1.0"-->
+	
+  <ctl:suite name="sml:suite">
+    <ctl:title>SensorML 1.0.1 Compliance Test Suite</ctl:title>
+    <ctl:description>Verifies that an SensorML 1.0.1 implementation complies with the Sensor Model Language (SensorML) Implementation Specification.</ctl:description>
+    <ctl:starting-test>sml:Main</ctl:starting-test>
+  </ctl:suite>
+  <ctl:test name="sml:Main">
+    <ctl:assertion>The schema satisfies all applicable assertions.</ctl:assertion>
+    <ctl:code>
+      <!--
+                1.)  Prompt the user to provide the url for an SensorML implementation.
+                2.)  Send a request to the provided url to determine if there is a response
+                3.)  If there is a response, then begin executing tests, else fail.
+            -->
+      <ctl:message>**********************************************************************</ctl:message>
+      <ctl:message>Testing started at:  <xsl:value-of select="current-dateTime()" /></ctl:message>
+      <ctl:message>**********************************************************************</ctl:message>
+      <xsl:variable name="form-values">
+        <ctl:form height="600" width="800">
+          <body>
+            <h2>Compliance Test Suite for Sensor Model Language (SensorML) 1.0.1</h2>
+            <p>
+                  Please provide a URL from which a SensorML document can 
+                  be retrieved. Modify the URL template below to specify the 
+                  location of an OGC SensorML 1.0.1 implementation to be tested.
+                  </p>
+            <blockquote>
+              <table border="1" padding="4" bgcolor="#99ccff">
+                <tr>
+                  <td align="left">
+                    <b>SensorML URL:</b>
+                  </td>
+                  <td align="center">
+                    <input name="service-url" size="128" type="text" value="http://hostname:port/path" />
+                  </td>
+                </tr>
+              </table>
+            </blockquote>
+            <input type="submit" value="Start" />
+          </body>
+        </ctl:form>
+      </xsl:variable>
+      <!-- Get user input:  Get the value of the SensorML URL that the user supplies -->
+      <xsl:variable name="sml.get.url" select="$form-values/values/value[@key='service-url']" />
+      <ctl:message>Executing tests on the SensorML implementation found at the following URL:  <xsl:value-of select="$sml.get.url" /></ctl:message>
+      <!--Call each test passing the SensorML URL as the parameter-->
+      <ctl:call-test name="sml:SchemaValidation">
+        <ctl:with-param name="serviceURL" select="$sml.get.url" />
+      </ctl:call-test>
+    </ctl:code>
+  </ctl:test>
+  <ctl:package>
+    <ctl:test name="sml:SchemaValidation">
+      <ctl:param name="serviceURL" />
+      <ctl:assertion>The provided SensorML complies with the SensorML 1.0.1 Implementation Specification.</ctl:assertion>
+      <ctl:code>
+        <ctl:message>Executing a request for getting the context of the provided SensorML from "<xsl:value-of select="$serviceURL" />"</ctl:message>
+        <xsl:variable name="response">
+          <ctl:request>
+            <ctl:url>
+              <xsl:value-of select="$serviceURL" />
+            </ctl:url>
+            <ctl:method>get</ctl:method>
+            <parsers:XMLValidatingParser>
+              <parsers:schemas>
+				<parsers:schema type="url">http://www.w3.org/2001/03/xml.xsd</parsers:schema>
+                <parsers:schema type="url">http://schemas.opengis.net/sensorML/1.0.1/sensorML.xsd</parsers:schema>
+              </parsers:schemas>
+            </parsers:XMLValidatingParser>
+          </ctl:request>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="not($response/*)">
+            <ctl:message>FAILURE: Missing or invalid response entity.</ctl:message>
+            <ctl:fail />
+          </xsl:when>
+        </xsl:choose>
+      </ctl:code>
+    </ctl:test>
+  </ctl:package>
+</ctl:package>

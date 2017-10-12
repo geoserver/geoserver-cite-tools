@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-DescribeRecord-tc1.1 -->
+<csw:DescribeRecord xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW"
+  version="2.0.1">
+</csw:DescribeRecord>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>CSW 2.0.1 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>Overview</h1>
+<p>This test suite is based on the following OGC specifications:</p>
+<ul>
+  <li><em>OGC Catalogue Services Specification</em>, version 2.0.1 <a href="http://portal.opengeospatial.org/files/?artifact_id=5929&amp;version=2">[OGC 04-021r3]</a></li>
+  <li><em>OpenGIS Web Services Common Specification</em>, version 1.0.0 <a href="https://portal.opengeospatial.org/files/?artifact_id=8798">[OGC 05-008c1]</a></li>
+  <li><em>Filter Encoding Implementation Specification</em>, version 1.1.0 <a href="http://portal.opengeospatial.org/files/?artifact_id=8340">[OGC 04-095]</a></li>
+  <li><em>Geographic information -- Geography Markup Language</em> <a href="http://portal.opengeospatial.org/files/?artifact_id=4700">[OGC 03-105r1]</a></li>
+</ul>
+<p>
+The conformance tests provided here are <strong>not</strong> intended to be used
+in a stand-alone manner, but to be incorporated into profile-specific test suites;
+they apply to all CSW-based catalogue implementations.
+</p>
+
+<h2>What is tested</h2>
+<ul>
+  <li>GetCapabilities, GET method</li>
+  <li>DescribeRecord, POST method</li>
+  <li>GetRecordById, GET method</li>
+  <li>GetRecords, POST method</li>
+</ul>
+
+<h2>What is not tested</h2>
+<ul>
+  <li>GetCapabilities with updateSequence parameter</li>
+  <li>SOAP protocol bindings</li>
+  <li>Spatial predicates Beyond, DWithin (broken filter schema)</li>
+  <li>Arithmetic operators</li>
+  <li>Distributed search</li>
+  <li>Asynchronous processing</li>
+  <li>Persistent result sets</li>
+  <li>Transaction (profile-specific)</li>
+  <li>Harvest (profile-specific)</li>
+</ul>
+
+<h2>Test data</h2>
+<p>
+The <a href="../../../data/data-csw-2.0.1.zip">CSW-2.0.1 test data</a> are
+available in the common CSW record format. Loading the records into the catalogue
+is a precondition for compliance testing. While the test data are represented as a
+collection of csw:Record instances, no assumption is made about which application
+profile is supported by the implementation. It is expected that each profile defines
+a suitable mapping for csw:Record items.
+</p>
+<h2>Notes</h2>
+<p>
+  The test engine can only execute the whole test suite, it cannot be used to run single tests or test groups directly. See the TEAM engine
+  documentation for details on how to run scripts locally, or re-execute single tests.
+</p>
+
+<h2>Release Notes</h2>
+<p>
+  Release notes are available from the <a href="relnotes.txt">relnotes.txt</a>.
+</p>
+
+</body>
+</html>

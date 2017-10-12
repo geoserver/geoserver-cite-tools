@@ -1,0 +1,221 @@
+<cblf:BlueLakeFeatureCollection xmlns:gml="http://www.opengis.net/gml"
+                                xmlns:cblf="http://www.opengis.net/cite/bluelake"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xsi:schemaLocation="http://www.opengis.net/cite/bluelake blueLakeFeatures.xsd http://www.opengis.net/gml feature.xsd">
+   <gml:description>The cite:Autos layer</gml:description>
+   <gml:name>cite:Autos</gml:name>
+   <gml:boundedBy>
+      <gml:Box srsName="CRS:84">
+         <gml:coordinates>-0.0042,-0.0024 0.0042,0.0024</gml:coordinates>
+      </gml:Box>
+   </gml:boundedBy>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.1">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:00Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0014,0.0002</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.2">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:05Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0022,0.0</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.3">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:10Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0029,-0.0002</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.4">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:15Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0004</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.5">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:20Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0008</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.6">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:25Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0014</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-1.7">
+         <cblf:num>1</cblf:num>
+         <cblf:time>2000-01-01T00:00:30Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0022</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-2.5">
+         <cblf:num>2</cblf:num>
+         <cblf:time>2000-01-01T00:00:20Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,0.0022</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-2.6">
+         <cblf:num>2</cblf:num>
+         <cblf:time>2000-01-01T00:00:25Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,0.0012</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-2.7">
+         <cblf:num>2</cblf:num>
+         <cblf:time>2000-01-01T00:00:30Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,0.0002</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-2.8">
+         <cblf:num>2</cblf:num>
+         <cblf:time>2000-01-01T00:00:35Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0008</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-2.9">
+         <cblf:num>2</cblf:num>
+         <cblf:time>2000-01-01T00:00:40Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0032,-0.0018</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-3.9">
+         <cblf:num>3</cblf:num>
+         <cblf:time>2000-01-01T00:00:40Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0026,-0.0020</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-3.10">
+         <cblf:num>3</cblf:num>
+         <cblf:time>2000-01-01T00:00:45Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0026,-0.0012</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-3.11">
+         <cblf:num>3</cblf:num>
+         <cblf:time>2000-01-01T00:00:50Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0026,-0.0004</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-3.12">
+         <cblf:num>3</cblf:num>
+         <cblf:time>2000-01-01T00:00:55Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0026,0.0004</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-3.13">
+         <cblf:num>3</cblf:num>
+         <cblf:time>2000-01-01T00:01:00Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>-0.0026,0.0012</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-4.12">
+         <cblf:num>4</cblf:num>
+         <cblf:time>2000-01-01T00:00:55Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>0.0029,0.0019</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+   <gml:featureMember>
+      <cblf:AutoFeature fid="Auto-4.13">
+         <cblf:num>4</cblf:num>
+         <cblf:time>2000-01-01T00:01:00Z</cblf:time>
+         <cblf:position>
+            <gml:Point srsName="CRS:84">
+               <gml:coordinates>0.0028,0.0014</gml:coordinates>
+            </gml:Point>
+         </cblf:position>
+      </cblf:AutoFeature>
+   </gml:featureMember>
+</cblf:BlueLakeFeatureCollection>

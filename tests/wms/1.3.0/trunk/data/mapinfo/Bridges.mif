@@ -1,0 +1,9 @@
+VERSION 300
+Charset "WindowsLatin1"
+DELIMITER ","
+COORDSYS Earth Projection 1, 104
+COLUMNS 2
+  fid char(16)
+  name char(64)
+DATA
+POINT 0.0002 0.0007

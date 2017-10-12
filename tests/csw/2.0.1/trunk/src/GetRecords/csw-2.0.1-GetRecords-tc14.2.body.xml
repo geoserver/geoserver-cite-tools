@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- test case id: csw-2.0.1-GetRecords-tc14.2 -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw"
+  service="CSW" version="2.0.1"
+  resultType="results"
+  maxRecords="20">
+  <csw:Query typeNames="csw:Record" 
+    xmlns:dc="http://purl.org/dc/elements/1.1/" 
+    xmlns:ows="http://www.opengis.net/ows">
+    <csw:ElementName>./dc:identifier</csw:ElementName>
+    <csw:ElementName>./ows:BoundingBox</csw:ElementName>
+    <csw:Constraint version="1.1.0">
+      <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"
+        xmlns:gml="http://www.opengis.net/gml">
+        <ogc:Not>
+        <ogc:BBOX>
+          <ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+          <gml:Envelope srsName="urn:x-ogc:def:crs:EPSG:6.11:4326">
+            <gml:lowerCorner>60.0 12.0</gml:lowerCorner>
+            <gml:upperCorner>70.0 20.0</gml:upperCorner>
+          </gml:Envelope>
+        </ogc:BBOX>
+        </ogc:Not>
+      </ogc:Filter>
+    </csw:Constraint>
+  </csw:Query>
+</csw:GetRecords>

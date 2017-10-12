@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:wms="http://www.opengis.net/wms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import namespace="http://www.opengis.net/wms" schemaLocation="http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd"/>
+  <xsd:annotation>
+    <xsd:documentation>
+      <description>Schema for configuration metadata for the DGIWG WMS 1.3 Profile Test Suite</description>
+    </xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="TestConfig" substitutionGroup="wms:_ExtendedCapabilities">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="layer" maxOccurs="unbounded">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="scale" type="xsd:double" maxOccurs="unbounded"/>
+              <xsd:element name="featureinfo">
+                <xsd:complexType>
+                  <xsd:attribute name="i" type="xsd:integer"/>
+                  <xsd:attribute name="j" type="xsd:integer"/>
+                  <xsd:attribute name="bbox" type="xsd:string"/>
+                  <xsd:attribute name="height" type="xsd:integer"/>
+                  <xsd:attribute name="width" type="xsd:integer"/>
+                  <xsd:attribute name="over99" type="xsd:boolean" default="false"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string"/>
+            <xsd:attribute name="type">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="vector"/>
+                  <xsd:enumeration value="raster"/>
+                  <xsd:enumeration value="coverage"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="vmap" type="xsd:boolean" default="false"/>
+            <xsd:attribute name="elevation" type="xsd:boolean" default="false"/>
+            <xsd:attribute name="bathymetry" type="xsd:boolean" default="false"/>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

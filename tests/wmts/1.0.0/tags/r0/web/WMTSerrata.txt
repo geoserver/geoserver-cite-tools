@@ -1,0 +1,153 @@
+3/14/2011
+
+fig 5 p16 tileMatrixSet 1..*  vs table 5 p17 Zero or more (optional)
+
+The introduction, page xiii 2nd paragraph, 
+
+"The standard defines the GetCapabilities, GetTile and optional GetFeatureInfo operations for procedure oriented architectural style based approaches 
+using several different message encodings, including messages encoded using Key-Value Pairs (KVP), XML messages, or XML messages embedded in SOAP envelopes. 
+The standard also defines the request mechanisms and endpoint publishing strategy to enable a resource oriented architectural style"
+
+section 5.4 p. 4,
+
+"This document currently specifies encodings appropriate for HTTP GET transfer of operations requests (using KVP or RESTful encodings), 
+and for HTTP POST transfer of operations requests (using XML or SOAP encodings)."
+
+and section 7.1.1.1.1 p 15
+
+"b) The value "XML" shall indicate that XML encoding is allowed (without SOAP message encapsulation).
+ c) The value "KVP" shall indicate that KVP encoding is allowed, when using HTTP POST transfer."
+
+declare support for KVP and XML POST encoding, but section 7.4, table 28 on page 49 of 07-057r7, and section 11.1.1 appear to exclude XML Post encoding.
+
+Inconsistent cardinalities for Default and Current elements of Dimension
+Figure 6
+  default cardinality unspecified (1)
+  current cardinality unspecified (1)
+Table 9 p 23
+  default One (mandatory)
+  current Zero or One (optional)
+wmtsGetCapabilities_response.xsd 
+  line 245 <element name="Default" type="string" minOccurs="0">
+  line 253 <element name="Current" type="boolean" minOccurs="0">
+  
+There is no prohibition on naming sample dimensions the same as other WMTS GetTile parameters, but there should
+be, as doing this would lead to ambiguous requests.
+  
+If a GetTile request is made with a parameter for the name/identifier of a sample dimension that is not defined
+in the Service Metadata, the locator value in the exception report would be the invalid name/identifier used.  
+This locator value should be reserved for exceptions from GetTile requests where the value for a defined 
+dimension is invalid.  When an undefined name is used, the locator value should be "SampleDimension".
+
+There is no explicit statement of how to request a "default" or "current" sample dimension value.
+
+The KVP encoding for GetFeatureInfo has separate parameters for Format and InfoFormat (see Table 30) 
+since the pixel locations of real world features in different formats may be different.  
+However, the template for RESTful GetFeatureInfo requests overloads the Format parameter with InfoFormat values. 
+So the requests are inconsistent in their information content.  Either the format parameter in the KVP encoding
+is unnecessary, or it will be impossible to correctly perform RESTful GetFeatureInfo operations on layers that are provided in more than one format.
+
+Inconsistent cardinalities for WellKnownScaleSets
+Figure 8  unspecified (1)
+Table 13  optional: 0 or 1
+wmtsGetCapabilities_respons
+
+e.xsd  minOccurs="0"
+
+Clause A.3.4.10.c on p. 79 references table 11, should be table 8
+
+Clause A.3.6.3 FeatureInfo correct InfoFormat on p. 85 refers to GetTile, should be GetFeatureInfo
+
+There is no explicit statement about client options or server support for RESTful GetCapabilties requests; 
+do they include AcceptVersions, AcceptFormats, Sections or UpdateSequence options or not?  
+c.f. OGC-07-057r7 section 7.1.1.1, table 19, and sections 10.1.3 and 10.1.5.
+
+Inconsistent cardinalities for ServiceMetadataURL
+Figure 4 p 12 0..1
+Table 3 p 14 Zero or more
+WMSGetCapabilities_response.xsd 0..*
+clause 10.1.1 one or more
+
+4/12/2011
+
+Invalid schema documents URL: http://schemas.opengis.net/wmts/1.0.0 
+should be http://schemas.opengis.net/wmts/1.0
+  Annex B 1st paragraph
+  Annex D 1st doc example
+  Annex F F.4
+  
+5/5/2011  From 4/6/2011 email from Herve.Caumont@erdas.com
+
+Here is nevertheless one comment for you to consider.
+
+It results from OGC Interoperability Day testing last February in Barcelona.
+
+It lead to a change request for WMTS 1.0.0, created Monday 4th (Request ID: 143).
+
+Considering both « OGC 07-057r7 » and « wmtsGetCapabilities_response.xsd »
+
+we have discrepancies for the following elements’ types of TileMatrixLimits :
+
+-          MinTileRow 
+-          MaxTileRow
+-          MinTileCol
+-          MaxTileCol
+
+TileMatrixLimits elements are by nature ‘indexes’.
+
+Issue is the spec confirms « 0 values are allowed » (table 12) when at the same time refer to « xs:positiveInteger » data type… 
+
+« wmtsGetCapabilities_response.xsd »
+
+	<element name="TileMatrixLimits">
+		<annotation>
+			<documentation>Metadata describing the limits of a TileMatrix 
+						for this layer.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="TileMatrix" type="string">
+					<annotation>
+						<documentation>Reference to a TileMatrix identifier</documentation>
+					</annotation>
+				</element>
+				<element name="MinTileRow" type="nonNegativeInteger">
+					<annotation>
+						<documentation>Minimum tile row index valid for this 
+						layer. From 0 to maxTileRow</documentation>
+					</annotation>
+					<!-- was  type="positiveInteger" but that is incorrect per the documentation -->
+				</element>
+				<element name="MaxTileRow" type="nonNegativeInteger">
+					<annotation>
+						<documentation>Maximim tile row index valid for this 
+						layer. From minTileRow to matrixWidth-1 of the tileMatrix 
+						section of this tileMatrixSet</documentation>
+					</annotation>
+					<!-- was  type="positiveInteger" but that is incorrect per the documentation -->
+				</element>
+				<element name="MinTileCol" type="nonNegativeInteger">
+					<annotation>
+						<documentation>Minimum tile column index valid for this 
+						layer. From 0 to maxTileCol</documentation>
+					</annotation>
+					<!-- was  type="positiveInteger" but that is incorrect per the documentation -->
+				</element>
+				<element name="MaxTileCol" type="nonNegativeInteger">
+					<annotation>
+						<documentation>Maximim tile column index valid for this layer. 
+						From minTileCol to tileHeight-1 of the tileMatrix section 
+						of this tileMatrixSet.</documentation>
+					</annotation>
+					<!-- was  type="positiveInteger" but that is incorrect per the documentation -->
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	
+9/11/2011
+
+    In the KVP GET/POST, XML POST and SOAP POST interfaces, a GetFeatureRequest must include both the format of the tile, and the infoFormat of the FeatureInfo.  
+However, Table 33 on p. 65  of OGC 07-057r7 specifies that the format attribute of the URL template is to be used for the infoFormat of the FeatureInfo.  As there is no 
+infoFormat variable specified in Table 34 on pp 66-67, this leaves no way to specify the Tile format, making the RESTful GetFeatureRequest inconsistent with the other interfaces.
+

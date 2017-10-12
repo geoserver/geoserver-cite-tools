@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>WFS 1.0.0 compliance test suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+	<h1>Overview</h1>
+
+	<p>This test engine is designed to test implementations of the Web
+		Feature Service 1.0.0 with filters defined using OGC Filter Encoding
+		1.0.0 specification and features defined using Geography Markup
+		Language 2.1.2 specification.</p>
+
+	<p>This test suite is based on the following documents:</p>
+	<ul>
+		<li><em>Web Feature Service Implementation Specification</em>,
+			version 1.0.0 [OGC 02-058] (<a
+			href="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">PDF
+				version</a>, <a href="OGCTestData/wfs/1.0.0/specs/wfs/1.0.0/02-058.html">HTML
+				version</a>)</li>
+		<li><em>Filter Encoding Implementation Specification</em>,
+			version 1.0.0 [OGC 02-059] (<a
+			href="http://portal.opengeospatial.org/files/?artifact_id=1171">PDF
+				version</a>, <a
+			href="OGCTestData/wfs/1.0.0/specs/filter/1.0.0/02-059.html">HTML
+				version</a>)</li>
+		<li><em>Web Feature Service Requirements</em> (<a
+			href="testreq.html">HTML version</a>)</li>
+	</ul>
+
+	<h1>Description</h1>
+	<p>The <a href="execsummary.html">Executive Summary</a> provides an overview description of the test.</p>
+	
+	<p>
+		The assertions implemented in this test can be found in the document
+		summarizing the <a href="testreq.html">requirements</a>.
+	</p>
+
+	<p>The Web Feature service defines the following profiles of
+		implementations. An implementation will be tested for compliance with
+		one of these profiles based on the operations supported in the
+		capabilities document.</p>
+
+	<ul>
+		<li><strong>Basic</strong> - GetCapabilities, DescribeFeatureType
+			and GetFeature</li>
+		<li><strong>Transactional</strong> - Basic + Transaction</li>
+		<li><strong>Locking</strong> - Transactional + LockFeature and
+			GetFeatureWithLock</li>
+	</ul>
+
+
+	<h2>Release Notes</h2>
+	<p>
+		Release notes are available from the <a href="relnotes.txt">relnotes.txt</a>.
+	</p>
+
+</body>
+</html>
