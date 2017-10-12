@@ -1,6 +1,6 @@
 [submodule "engine"]
 	path = engine
-	url = git://github.com/jdeolive/teamengine.git
+	url = git://github.com/geoserver/teamengine.git
 [submodule "cite1"]
 	path = cite1
 	url = git://github.com/jdeolive/cite1.git
