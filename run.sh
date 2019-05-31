@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# Usage:
+# * git
+# * ant
+# * maven
+# * postgreSQL, installed locally, with a `cite` user.
+#
+# Setup:
+# cd geoserver-cite #cite test jenkins workspace
+# copy run.sh and setEnv.sh to current dir.
+#
+# mkdir geoserver
+# mkdir geoserver_data
+# git clone git://github.com/geoserver/geoserver.git git
+# git clone https://github.com/geoserver/geoserver-cite-tools.git tools
+#
+# cd tools
+# git submodule update --init
+# mvn install
+#
+# cd ..
+# cp -rf tools/forms .
+#
+# Modify the xml files in ./forms to use port 11010 instead of 8080
+
+mvn install
+
+Then, configure jenkins to run:
+
+./run.sh ${CITE_TEST_NAME} ${GEOSERVER_BRANCH}
+
 set -x
 
 if [ $# -lt 2 ]; then
@@ -20,7 +50,7 @@ if [ $# -eq 2 ]; then
 fi
 
 PORT=11010
-DIST=/var/www/geoserver 
+DIST=http://build.geoserver.org/geoserver
 
 # kill old cite jobs hanging around
 ps aux | grep java | grep cite | sed 's/  */ /g' | cut -d ' ' -f 2 | xargs kill -9
@@ -42,7 +72,8 @@ popd
 # grap latest geoserver
 rm -rf geoserver
 mkdir geoserver
-unzip $DIST/${VERSION}/geoserver-${VERSION}-latest-bin.zip -d geoserver
+wget $DIST/${VERSION}/geoserver-${VERSION}-latest-bin.zip
+unzip geoserver-${VERSION}-latest-bin.zip -d geoserver
 
 GEOSERVER_DIR="geoserver/`ls geoserver`"
 GEOSERVER_URL="http://localhost:${PORT}/geoserver"
